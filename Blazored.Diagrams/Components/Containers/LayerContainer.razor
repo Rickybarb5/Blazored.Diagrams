@@ -1,0 +1,75 @@
+@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Services.Virtualization
+@inject IVirtualizationService VirtualizationService
+@implements IDisposable
+@if (_layer is not null)
+{
+    <div>
+        @* Rendering order matters *@
+        @if (_layer.IsVisible)
+        {
+            @foreach (var node in VirtualizationService.Virtualize(DiagramService.Diagram, _layer.Nodes))
+            {
+                <NodeContainer Node="node"></NodeContainer>
+            }
+
+            @foreach (var group in VirtualizationService.Virtualize(DiagramService.Diagram, _layer.Groups))
+            {
+                <GroupContainer Group="group"></GroupContainer>
+            }
+
+            @foreach (var link in _layer.AllLinks)
+            {
+                <LinkContainer Link="link"></LinkContainer>
+            }
+        }
+    </div>
+}
+
+@code {
+
+    [CascadingParameter] public required IDiagramService? DiagramService { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required ILayer Layer
+    {
+        get => _layer;
+        set
+        {
+            if (_layer != value)
+            {
+                _redrawSubscription?.Dispose();
+                _layer = value;
+                _redrawSubscription = DiagramService?.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == _layer.Id, Redraw);
+                InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _redrawSubscription = DiagramService?.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == _layer.Id, Redraw);
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void Redraw(LayerRedrawEvent e)
+    {
+        StateHasChanged();
+    }
+
+    private IDisposable? _redrawSubscription;
+    private ILayer _layer = null!;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _redrawSubscription?.Dispose();
+    }
+
+}

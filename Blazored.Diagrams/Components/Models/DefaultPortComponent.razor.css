@@ -1,0 +1,18 @@
+.default-port {
+    height: 30px;
+    width: 30px;
+    /*border-radius: 50%;*/
+    background-color: whitesmoke;
+    border-color: black;
+    border-style: solid;
+    border-width: 2px;
+    -webkit-user-drag: none;
+}
+
+.linked {
+    background-color: #696969;
+}
+
+.default-port:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
+}

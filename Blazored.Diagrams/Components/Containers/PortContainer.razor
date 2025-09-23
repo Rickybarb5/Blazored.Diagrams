@@ -1,0 +1,146 @@
+﻿@using Blazored.Diagrams.Services.Observers
+@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Services.Registry
+@using System.Text
+@implements IAsyncDisposable;
+@if (_port is not null)
+{
+    <div style="@(Style)"
+
+         @onpointerleave="ctx => DiagramService.Events.Publish(new PortPointerLeaveEvent(_port, ctx))"
+         @onpointerdown="ctx => DiagramService.Events.Publish(new PortPointerDownEvent(_port, ctx))"
+         @onpointerenter="ctx => DiagramService.Events.Publish(new PortPointerEnterEvent(_port, ctx))"
+         @onpointermove="ctx => DiagramService.Events.Publish(new PortPointerMoveEvent(_port, ctx))"
+         @onpointerup="ctx => DiagramService.Events.Publish(new PortPointerUpEvent(_port, ctx))"
+         @onwheel="ctx => DiagramService.Events.Publish(new PortWheelEvent(_port, ctx))"
+         @onclick="ctx => DiagramService.Events.Publish(new PortClickedEvent(_port, ctx))"
+         @ondblclick="ctx => DiagramService.Events.Publish(new PortDoubleClickedEvent(_port, ctx))"
+         @onpointerdown:stopPropagation
+         @ref="_componentRef" id="@(ContainerId)">
+        <DynamicComponent Type="@(ComponentRegistry.GetComponentType(Port.GetType()))" Parameters="@(Parameters)"></DynamicComponent>
+    </div>
+}
+
+@code {
+    
+    [Inject]
+    IComponentRegistry ComponentRegistry { get; init; } = null!;
+
+    /// <summary>
+    /// ID of the port container.
+    /// </summary>
+    public string ContainerId => $"port-container-{Port.Id}";
+
+    /// <summary>
+    ///     Cascading diagram from <see cref="DiagramContainer"/>
+    /// </summary>
+    [CascadingParameter]
+    public required IDiagramService? DiagramService { get; set; }
+
+    /// <summary>
+    ///     Port instance to be rendered in the UI.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public required IPort Port
+    {
+        get => _port;
+        set
+        {
+            if (_port != value)
+            {
+                _redrawSubscription?.Dispose();
+                _visibilitySubscription?.Dispose();
+                _port = value;
+                _redrawSubscription = DiagramService?.Events.SubscribeWhere<PortRedrawEvent>(p => p.Model.Id == _port.Id, Redraw);
+                _visibilitySubscription = DiagramService?.Events.SubscribeWhere<PortVisibilityChangedEvent>(p => p.Model.Id == _port.Id, OnPortVisibilityChanged);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void Redraw(PortRedrawEvent e)
+    {
+        Style = GetDefaultStyle();
+        AddVisibilityStyle(_port);
+        StateHasChanged();
+    }
+
+    private void OnPortVisibilityChanged(PortVisibilityChangedEvent e)
+    {
+        AddVisibilityStyle(e.Model);
+    }
+
+    private void AddVisibilityStyle(IPort arg1)
+    {
+        if (!arg1.IsVisible)
+        {
+            Style += "display:none;";
+        }
+        else
+        {
+            Style = GetDefaultStyle();
+        }
+    }
+
+    private IPort _port = null!;
+    private IDisposable? _redrawSubscription;
+    private IDisposable? _visibilitySubscription;
+    private Dictionary<string, object> Parameters => new() { { nameof(Port), Port } };
+
+    /// <summary>
+    /// <see cref="IJSRuntime"/>
+    /// </summary>
+    [Inject]
+    public required IJSRuntime Js { get; set; }
+
+    [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+
+    private string Style { get; set; } = null!;
+    private StringBuilder _sb = new();
+
+
+    private const string StyleTemplate = "left:{0}px;top:{1}px;position:absolute;";
+    private ElementReference _componentRef;
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _redrawSubscription = DiagramService?.Events.SubscribeWhere<PortRedrawEvent>(p => p.Model.Id == _port.Id, Redraw);
+            _visibilitySubscription = DiagramService?.Events.SubscribeWhere<PortVisibilityChangedEvent>(p => p.Model.Id == _port.Id, OnPortVisibilityChanged);
+            await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
+            var size = await Js.GetBoundingClientRect(_componentRef);
+            SetSize((int)size.Width, (int)size.Height);
+            Style = GetDefaultStyle();
+            AddVisibilityStyle(_port);
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnSizeChanged(ResizeObserverEntry obj)
+    {
+        SetSize((int)obj.Width, (int)obj.Height);
+    }
+
+    private void SetSize(int width, int height)
+    {
+        _port.SetSize(width, height);
+    }
+
+    private string GetDefaultStyle()
+    {
+        return string.Format(StyleTemplate, Port.PositionX, Port.PositionY);
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        _redrawSubscription?.Dispose();
+        _visibilitySubscription?.Dispose();
+        await ResizeObserverService.UnobserveAsync(ContainerId);
+    }
+
+}

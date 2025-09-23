@@ -1,0 +1,131 @@
+﻿@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Services.Observers
+@using Blazored.Diagrams.Services.Registry
+@implements IAsyncDisposable
+@if (_link is not null && _link.IsVisible && _link.SourcePort is not null)
+{
+    <CascadingValue Value=@(this) TValue="LinkContainer">
+        <div style="@ContainerStyle" id="@($"link-container-{_link.Id}")" @ref="_componentRef">
+            <DynamicComponent Type=@(ComponentRegistry.GetComponentType(Link.GetType())) Parameters=@Parameters></DynamicComponent>
+        </div>
+    </CascadingValue>
+}
+
+
+@code {
+
+
+    [Inject] private IComponentRegistry ComponentRegistry { get; set; } = null!;
+
+    /// <summary>
+    ///     Cascading diagram from <see cref="DiagramContainer"/>
+    /// </summary>
+    [CascadingParameter]
+    public required IDiagramService? DiagramService { get; set; }
+
+    [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+
+    /// <summary>
+    /// <see cref="IJSRuntime"/>
+    /// </summary>
+    [Inject]
+    public required IJSRuntime Js { get; set; }
+
+    /// <summary>
+    ///     Link instance to be presented in the UI.
+    /// </summary>
+    [Parameter]
+    public required ILink Link
+    {
+        get => _link;
+        set
+        {
+            if (_link != value)
+            {
+                _redrawSubscription?.Dispose();
+                _link = value;
+                _redrawSubscription = DiagramService?
+                    .Events
+                    .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == _link.Id, Redraw);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private ILink _link = null!;
+    private ElementReference _componentRef;
+    private IDisposable? _redrawSubscription;
+    private Dictionary<string, object> Parameters => new() { { nameof(Link), Link } };
+
+    /// <summary>
+    /// ID of the link container
+    /// </summary>
+    public string ContainerId => $"link-container-{_link.Id}";
+
+
+    /// <summary>
+    /// Current container style.
+    /// </summary>
+    public string ContainerStyle => $"position:absolute;left:{PositionX}px; top:{PositionY}px;width:{Width}px;height:{Height}px;pointer-events:none";
+
+
+    /// <summary>
+    /// X coordinate of the target position.
+    /// </summary>
+    public int TargetX => _link.TargetPort?.GetCenterCoordinates().CenterX ?? _link.TargetPositionX;
+
+    /// <summary>
+    /// Y coordinate of the end of the link.
+    /// </summary>
+    public int TargetY => _link.TargetPort?.GetCenterCoordinates().CenterY ?? _link.TargetPositionY;
+
+
+    /// <summary>
+    /// X coordinate of the start of the link
+    /// </summary>
+    public int PositionX => Math.Min(_link.SourcePort.GetCenterCoordinates().CenterX, TargetX);
+
+    /// <summary>
+    ///  Y coordinate of the start of the link
+    /// </summary>
+    public int PositionY => Math.Min(_link.SourcePort.GetCenterCoordinates().CenterY, TargetY);
+
+    private int Width => Math.Abs(_link.SourcePort.GetCenterCoordinates().CenterX - TargetX);
+
+    private int Height => Math.Abs(_link.SourcePort.GetCenterCoordinates().CenterY - TargetY);
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _redrawSubscription = DiagramService?
+                .Events
+                .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == _link.Id, Redraw);
+            await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
+            var size = await Js.GetBoundingClientRect(_componentRef);
+            _link.SetSize((int)(size.Width), (int)(size.Height));
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    private void Redraw(LinkRedrawEvent e)
+    {
+        StateHasChanged();
+    }
+
+    private void OnSizeChanged(ResizeObserverEntry obj)
+    {
+        _link.SetSize((int)(obj.Width), (int)(obj.Height));
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        _redrawSubscription?.Dispose();
+        await ResizeObserverService.DisposeAsync();
+    }
+
+}

@@ -1,0 +1,108 @@
+﻿@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Services.Observers
+@using Blazored.Diagrams.Services.Registry
+@implements IAsyncDisposable
+@if (_node is not null && Node.IsVisible)
+{
+    <div style="@($"left:{Node.PositionX}px;top:{Node.PositionY}px;position:absolute;")"
+         @onpointerleave="ctx => DiagramService?.Events.Publish(new NodePointerLeaveEvent(_node, ctx))"
+         @onpointerdown="ctx => DiagramService?.Events.Publish(new NodePointerDownEvent(_node, ctx))"
+         @onpointerenter="ctx => DiagramService?.Events.Publish(new NodePointerEnterEvent(_node, ctx))"
+         @onpointermove="ctx => DiagramService?.Events.Publish(new NodePointerMoveEvent(_node, ctx))"
+         @onpointerup="ctx => DiagramService?.Events.Publish(new NodePointerUpEvent(_node, ctx))"
+         @onwheel="ctx => DiagramService?.Events.Publish(new NodeWheelEvent(_node, ctx))"
+         @onclick="ctx => DiagramService?.Events.Publish(new NodeClickedEvent(_node, ctx))"
+         @ondblclick="ctx => DiagramService?.Events.Publish(new NodeDoubleClickedEvent(_node, ctx))"
+         @onpointerdown:stopPropagation
+         @ref="_componentRef" id="@(ContainerId)">
+        <DynamicComponent Type=@(ComponentRegistry.GetComponentType(Node.GetType())) Parameters="@(Parameters)"></DynamicComponent>
+    </div>
+    @foreach (var port in _node.Ports)
+    {
+        <PortContainer Port="port"></PortContainer>
+    }
+}
+
+@code {
+    
+    [Inject]
+    IComponentRegistry ComponentRegistry { get; init; } = null!;
+
+    /// <summary>
+    ///  <see cref="IJSRuntime"/>
+    /// </summary>
+    [Inject]
+    public required IJSRuntime Js { get; set; }
+
+    /// <summary>
+    ///     Cascading diagram from <see cref="DiagramContainer"/>
+    /// </summary>
+    [CascadingParameter]
+    public required IDiagramService? DiagramService { get; set; }
+
+    /// <summary>
+    ///     Node instance to be presented in the UI.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public required INode Node
+    {
+        get => _node;
+        set
+        {
+            if (_node != value)
+            {
+                _redrawSubscription?.Dispose();
+                _node = value;
+                _redrawSubscription = DiagramService?.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == _node.Id, Redraw);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private INode _node = null!;
+
+    [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+
+
+    private ElementReference _componentRef;
+    private IDisposable? _redrawSubscription;
+    private Dictionary<string, object> Parameters => new() { { nameof(Node), Node } };
+
+    /// <summary>
+    /// ID of the node container
+    /// </summary>
+    public string ContainerId => $"node-container-{_node.Id}";
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _redrawSubscription = DiagramService?.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == _node.Id, Redraw);
+            await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
+            var size = await Js.GetBoundingClientRect(_componentRef);
+            _node.SetSize((int)(size.Width), (int)(size.Height));
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void Redraw(NodeRedrawEvent e)
+    {
+        StateHasChanged();
+    }
+
+    private void OnSizeChanged(ResizeObserverEntry obj)
+    {
+        _node.SetSize((int)(obj.Width), (int)(obj.Height));
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        _redrawSubscription?.Dispose();
+        await ResizeObserverService.UnobserveAsync(ContainerId);
+    }
+
+}

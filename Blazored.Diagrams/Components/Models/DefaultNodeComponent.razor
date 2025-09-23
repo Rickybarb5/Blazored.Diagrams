@@ -1,0 +1,55 @@
+﻿@using Blazored.Diagrams.Events
+@using System.Text
+@implements IDisposable
+<div class="@_class"></div>
+
+@code {
+
+    /// <summary>
+    /// <see cref="Node"/>
+    /// </summary>
+    [Parameter]
+    public required Node Node { get; set; }
+
+    /// <summary>
+    /// <see cref="IDiagramService"/>
+    /// </summary>
+    [CascadingParameter]
+    public IDiagramService DiagramService { get; set; } = null!;
+
+    private const string NodeCssClass = "default-node";
+    private string _class = NodeCssClass;
+    private readonly StringBuilder _builder = new();
+    private IDisposable _subscription = null!;
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _subscription = DiagramService.Events.SubscribeWhere<NodeSelectionChangedEvent>(p => p.Model.Id == Node.Id, SetNodeCssClass);
+        }
+    }
+
+    private void SetNodeCssClass(NodeSelectionChangedEvent e)
+    {
+        _builder.Clear();
+        _builder.Append(NodeCssClass);
+        if (e.Model.IsSelected)
+        {
+            _builder.Append(" selected");
+        }
+
+        _class = _builder.ToString();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Dispose()
+    {
+        _subscription.Dispose();
+    }
+
+}

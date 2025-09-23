@@ -1,0 +1,174 @@
+@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Options.Behaviours
+
+@if (Link is not null)
+{
+    <svg style="width: 100%; height: 100%;overflow:visible;">
+        <defs>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+                <feFlood flood-color="#C0C0C0" result="flood"/>
+                <feComposite in="flood" in2="blur" operator="in" result="colorBlur"/>
+                <feMerge>
+                    <feMergeNode in="colorBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+        <path d="@LinkPath"
+              style="pointer-events: auto"
+              id="@(PathId)"
+              fill="none"
+              stroke="@StrokeColor"
+              stroke-width="@(DiagramService.Diagram.Options.Get<DrawLinkOptions>()!.StrokeWidth)"
+              @onpointerleave="HandlePointerLeave"
+              @onpointerdown="HandlePointerDown"
+              @onpointerenter="HandlePointerEnter"
+              @onpointermove="HandlePointerMove"
+              @onpointerup="HandlePointerUp"
+              @onwheel="ctx => DiagramService.Events.Publish(new LinkWheelEvent(Link, ctx))"
+              @onclick="HandleClick"
+              @ondblclick="HandleDoubleClick"/>
+
+    </svg>
+}
+
+@code {
+
+    /// <summary>
+    ///     Link to be rendered.
+    /// </summary>
+    [Parameter]
+    public required Link Link { get; set; }
+
+    /// <summary>
+    /// Service cascaded through the <see cref="LinkContainer"/>
+    /// </summary>
+    [CascadingParameter]
+    public IDiagramService DiagramService { get; set; } = null!;
+
+    [Inject] private IJSRuntime Js { get; set; } = null!;
+
+    /// <summary>
+    ///     The <see cref="LinkContainer"/> that renders the component.
+    /// </summary>
+    [CascadingParameter]
+    public required LinkContainer Container { get; set; }
+
+    private LinkPath _lt;
+    private string StrokeColor => Link.IsSelected ? DiagramService.Diagram.Options.Get<DrawLinkOptions>()!.SelectedStrokeColor : DiagramService.Diagram.Options.Get<DrawLinkOptions>()!.StrokeColor;
+
+    /// <summary>
+    ///     ID of the element.
+    /// </summary>
+    public string PathId => $"link-path-{Link.Id}";
+
+    private string LinkPath => GetPath();
+
+    /// <inheritdoc />
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _lt = DiagramService.Diagram.Options.Get<DrawLinkOptions>()!.DefaultLinkPath;
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkClickedEvent(Link, e));
+        }
+    }
+
+    private async Task HandleDoubleClick(MouseEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkDoubleClickedEvent(Link, e));
+        }
+    }
+
+    private async Task HandlePointerDown(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerDownEvent(Link, e));
+        }
+    }
+
+    private async Task HandlePointerUp(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerUpEvent(Link, e));
+        }
+    }
+
+    private async Task HandlePointerLeave(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerLeaveEvent(Link, e));
+        }
+    }
+
+    private async Task HandlePointerEnter(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerEnterEvent(Link, e));
+        }
+    }
+
+    private async Task HandlePointerMove(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerMoveEvent(Link, e));
+        }
+    }
+
+    private int RelativeX1 => Link.SourcePort.GetCenterCoordinates().CenterX - Container.PositionX;
+    private int RelativeY1 => Link.SourcePort.GetCenterCoordinates().CenterY - Container.PositionY;
+    private int RelativeX2 => Container.TargetX - Container.PositionX;
+    private int RelativeY2 => Container.TargetY - Container.PositionY;
+
+
+    private string GetPath()
+    {
+        switch (_lt)
+        {
+            case Options.Behaviours.LinkPath.Curved:
+                const int waveHeight = 20; // Height of the wave, adjust as needed
+
+                // Calculate control points for a single sine wave
+                var control1X = (RelativeX1 + RelativeX2) / 2;
+                var control1Y = RelativeY1 - waveHeight; // control point above the line
+                var control2X = (RelativeX1 + RelativeX2) / 2;
+                var control2Y = RelativeY2 + waveHeight; // control point below the line
+
+                // Using a simple cubic Bézier curve to draw a single wave
+                return $"M {RelativeX1} {RelativeY1} C {control1X} {control1Y}, {control2X} {control2Y}, {RelativeX2} {RelativeY2}";
+            case Options.Behaviours.LinkPath.Line:
+                return $"M {RelativeX1} {RelativeY1} L {RelativeX2} {RelativeY2}";
+            case Options.Behaviours.LinkPath.Orthogonal:
+                var sourceX = RelativeX1;
+                var sourceY = RelativeY1;
+                var targetX = RelativeX2;
+                var targetY = RelativeY2;
+
+                var midX = (sourceX + targetX) / 2;
+                return $"M {sourceX} {sourceY} " +
+                       $"H {midX} " +
+                       $"V {targetY} " +
+                       $"H {targetX}";
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+}

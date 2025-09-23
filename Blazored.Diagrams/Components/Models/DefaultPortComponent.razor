@@ -1,0 +1,147 @@
+﻿@using Blazored.Diagrams.Events
+@using System.Text
+@implements IDisposable
+<div class="@_class"
+     style="@(Style)"
+     @onpointerleave="HandlePointerLeave"
+     @onpointerdown="HandlePointerDown"
+     @onpointerenter="HandlePointerEnter"
+     @onpointermove="HandlePointerMove"
+     @onpointerup="HandlePointerUp"
+     @onpointerdown:stopPropagation>
+</div>
+
+@code {
+    [CascadingParameter] public required IDiagramService DiagramService { get; set; }
+    [Parameter] public required Port Port { get; set; }
+    private List<IDisposable> _subscriptions = [];
+
+    private const string PortCssClass = "default-port";
+    private string _class = PortCssClass;
+    private readonly StringBuilder _builder = new();
+    private bool _pointerIsDown = false;
+    private readonly StringBuilder _sb = new();
+    private string Style { get; set; } = null!;
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeWhere<IncomingLinkAddedEvent>(p => p.Model.Id == Port.Id, LinkAdded),
+                DiagramService.Events.SubscribeWhere<IncomingLinkRemovedEvent>(p => p.Model.Id == Port.Id, LinkRemoved),
+                DiagramService.Events.SubscribeWhere<OutgoingLinkAddedEvent>(p => p.Model.Id == Port.Id, LinkAdded),
+                DiagramService.Events.SubscribeWhere<OutgoingLinkRemovedEvent>(p => p.Model.Id == Port.Id, LinkRemoved),
+                DiagramService.Events.SubscribeWhere<PortPointerEnterEvent>(p => p.Model.Id == Port.Id, OnPointerEnter),
+                DiagramService.Events.SubscribeWhere<PortPointerLeaveEvent>(p => p.Model.Id == Port.Id, OnPointerLeave),
+            ];
+        }
+    }
+
+    private void LinkRemoved(OutgoingLinkRemovedEvent obj)
+    {
+        SetNodeCssClass();
+    }
+
+    private void LinkAdded(OutgoingLinkAddedEvent obj)
+    {
+        SetNodeCssClass();
+    }
+
+
+    private void LinkRemoved(IncomingLinkRemovedEvent incomingLinkRemovedEvent)
+    {
+        SetNodeCssClass();
+    }
+
+    private void LinkAdded(IncomingLinkAddedEvent incomingLinkAddedEvent)
+    {
+        SetNodeCssClass();
+    }
+
+    private void OnPointerEnter(PortPointerEnterEvent portPointerEnterEvent)
+    {
+        SetNodeCssClass();
+    }
+
+    private void OnPointerLeave(PortPointerLeaveEvent portPointerLeaveEvent)
+    {
+        SetNodeCssClass();
+    }
+
+    private void SetNodeCssClass()
+    {
+        _builder.Clear();
+        _builder.Append(PortCssClass);
+        if (Port.HasLinks)
+        {
+            _builder.Append(" linked");
+        }
+        else
+        {
+            _class = PortCssClass;
+        }
+
+        _class = _builder.ToString();
+    }
+
+    private Task HandlePointerDown(PointerEventArgs e)
+    {
+        _pointerIsDown = true;
+        _sb.Clear();
+        _sb.Append("cursor:grabbing;");
+        Style = _sb.ToString();
+        DiagramService.Events.Publish(new PortPointerDownEvent(Port, e));
+        return Task.CompletedTask;
+    }
+
+    private Task HandlePointerUp(PointerEventArgs e)
+    {
+        _sb.Clear();
+        _pointerIsDown = false;
+        Style = _sb.ToString();
+        DiagramService.Events.Publish(new PortPointerUpEvent(Port, e));
+        return Task.CompletedTask;
+    }
+
+    private Task HandlePointerLeave(PointerEventArgs e)
+    {
+        _sb.Clear();
+        if (!_pointerIsDown)
+        {
+            _sb.Append(Style);
+            _sb.Append("cursor:grab;");
+        }
+
+        Style = _sb.ToString();
+        DiagramService.Events.Publish(new PortPointerLeaveEvent(Port, e));
+        return Task.CompletedTask;
+    }
+
+    private Task HandlePointerEnter(PointerEventArgs e)
+    {
+        _sb.Clear();
+        _sb.Append(Style);
+        _sb.Append("cursor:grab;");
+        Style = _sb.ToString();
+        DiagramService.Events.Publish(new PortPointerEnterEvent(Port, e));
+        return Task.CompletedTask;
+    }
+
+    private Task HandlePointerMove(PointerEventArgs e)
+    {
+        DiagramService.Events.Publish(new PortPointerMoveEvent(Port, e));
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _subscriptions.DisposeAll();
+    }
+
+
+}

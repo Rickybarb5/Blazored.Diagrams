@@ -1,0 +1,69 @@
+﻿@using Blazored.Diagrams.Events
+@using System.Text
+@implements IDisposable
+<div class="@_class"></div>
+
+@code {
+
+    /// <summary>
+    /// <see cref="Group"/>
+    /// </summary>
+    [Parameter]
+    public required Group Group { get; set; }
+
+    /// <summary>
+    /// <see cref="DiagramService"/>
+    /// </summary>
+    [CascadingParameter]
+    public IDiagramService DiagramService { get; set; } = null!;
+
+    private const string GroupCssClass = "default-group";
+    private string _class = GroupCssClass;
+    private readonly StringBuilder _builder = new();
+    private IDisposable _subscription = null!;
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _subscription = DiagramService.Events.SubscribeWhere<GroupSelectionChanged>(p => p.Model.Id == Group.Id, SetGroupCssClass);
+        }
+
+        SetGroupCssClass();
+    }
+
+    private void SetGroupCssClass(GroupSelectionChanged e)
+    {
+        SetGroupCssClass();
+    }
+
+    private void SetGroupCssClass()
+    {
+        _builder.Clear();
+        if (Group.Nodes.Count == 0 && Group.Groups.Count == 0)
+        {
+            _builder.Append($"{GroupCssClass} min-size");
+            //Todo:Change later
+            Group.SetSize(100, 100);
+        }
+        else
+        {
+            _builder.Append(GroupCssClass);
+            if (Group.IsSelected)
+            {
+                _builder.Append(" selected");
+            }
+        }
+
+        _class = _builder.ToString();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _subscription.Dispose();
+    }
+
+}

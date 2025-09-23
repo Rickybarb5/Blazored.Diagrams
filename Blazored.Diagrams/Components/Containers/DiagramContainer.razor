@@ -1,0 +1,184 @@
+﻿@using System.Globalization
+@using Blazored.Diagrams.Services.Observers
+@using Blazored.Diagrams.Events
+@using System.Text
+@implements IAsyncDisposable
+@if (DiagramService is not null && DiagramService.IsInitialized)
+{
+    <CascadingValue Value="_diagramService">
+        <div
+            @onpointerleave="ctx => _diagramService.Events.Publish(new DiagramPointerLeaveEvent(_diagramService.Diagram, ctx))"
+            @onpointerdown="ctx => _diagramService.Events.Publish(new DiagramPointerDownEvent(_diagramService.Diagram, ctx))"
+            @onpointerenter="ctx => _diagramService.Events.Publish(new DiagramPointerEnterEvent(_diagramService.Diagram, ctx))"
+            @onpointermove="ctx => _diagramService.Events.Publish(new DiagramPointerMoveEvent(_diagramService.Diagram, ctx))"
+            @onpointerup="ctx => _diagramService.Events.Publish(new DiagramPointerUpEvent(_diagramService.Diagram, ctx))"
+            @onclick="ctx => _diagramService.Events.Publish(new DiagramClickedEvent(_diagramService.Diagram, ctx))"
+            @ondblclick="ctx => _diagramService.Events.Publish(new DiagramDoubleClickedEvent(_diagramService.Diagram, ctx))"
+            @onkeydown="ctx => _diagramService.Events.Publish(new DiagramKeyDownEvent(_diagramService.Diagram, ctx))"
+            @onkeyup="ctx => _diagramService.Events.Publish(new DiagramKeyUpEvent(_diagramService.Diagram, ctx))"
+            tabindex="-1"
+            id="@(ContainerId)"
+            @ref="_componentRef"
+            style="@(GetContainerStyle())">
+            <div style=@($"transform: translate({_diagramService.Diagram.PanX}px,{_diagramService.Diagram.PanY}px) scale({_diagramService.Diagram.Zoom.ToString(_nfi)});transition: transform 0.05s ease-out;")>
+                @foreach (var layer in _diagramService.Diagram.Layers)
+                {
+                    <LayerContainer Layer="layer"></LayerContainer>
+                }
+            </div>
+            @ChildContent
+        </div>
+    </CascadingValue>
+}
+
+
+@code {
+
+    /// <summary>
+    ///     Used to add additional components on top of the diagram.
+    /// </summary>
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+
+    /// <summary>
+    /// Diagram instance to show in the UI.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public required IDiagramService? DiagramService
+    {
+        get => _diagramService!;
+        set
+        {
+            if (_diagramService != value)
+            {
+                _redrawSubscription?.Dispose();
+                _diagramService = value;
+                _redrawSubscription = _diagramService.Events.SubscribeWhere<DiagramRedrawEvent>(p => p.Model.Id == DiagramService?.Diagram.Id, Redraw);
+                InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private void Redraw(DiagramRedrawEvent obj)
+    {
+        StateHasChanged();
+    }
+
+    private IDiagramService _diagramService = null!;
+
+    [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+
+    /// <summary>
+    /// <see cref="IJSRuntime"/>
+    /// </summary>
+    [Inject]
+    public required IJSRuntime Js { get; set; }
+
+    readonly NumberFormatInfo _nfi = new();
+    readonly StringBuilder _sb = new();
+    private ElementReference _componentRef;
+    private IDisposable? _redrawSubscription;
+
+    /// <summary>
+    /// ID of the diagram container
+    /// </summary>
+    public string ContainerId => $"diagram-container-{_diagramService.Diagram.Id}";
+
+    /// <inheritdoc />
+    protected override Task OnInitializedAsync()
+    {
+        _nfi.NumberDecimalSeparator = ".";
+        _nfi.NumberDecimalDigits = 3;
+        return base.OnInitializedAsync();
+    }
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
+            var rect = await Js.GetBoundingClientRect(_componentRef);
+            _diagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
+            _diagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
+            await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnSizeChanged(ResizeObserverEntry obj)
+    {
+        _diagramService.Diagram.SetSize((int)(obj.Width), (int)(obj.Height));
+    }
+
+    private string GetContainerStyle()
+    {
+        _sb.Clear();
+        _sb.Append(_diagramService.Diagram.Options.Styles.ContainerStyle);
+        if (_diagramService.Diagram.Options.Styles.GridEnabled)
+        {
+            _sb.Append(_diagramService.Diagram.Options.Styles.GridStyle);
+        }
+
+        return _sb.ToString();
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        _redrawSubscription?.Dispose();
+        await ResizeObserverService.UnobserveAsync(ContainerId);
+    }
+
+    /// <summary>
+    /// Handles the wheel events from JS.
+    /// Implemented this way due to an open blazor issue where wheel event cannot be stopped from propagating.
+    /// TODO:Add github issue here.
+    /// </summary>
+    /// <param name="args"></param>
+    [JSInvokable]
+    public void OnZoom(WheelEventData args)
+    {
+        _diagramService.Events.Publish(new DiagramWheelEvent(_diagramService.Diagram, args));
+        StateHasChanged();
+    }
+
+
+    /// <summary>
+    /// Container class for the wheel data.
+    /// </summary>
+    public record WheelEventData
+    {
+        public double DeltaX { get; set; }
+        public double DeltaY { get; set; }
+        public double ClientX { get; set; }
+        public double ClientY { get; set; }
+        public bool CtrlKey { get; set; }
+        public bool ShiftKey { get; set; }
+        public bool AltKey { get; set; }
+
+
+        /// <summary>
+        /// Implicit operator to convert WheelEventData to WheelEventArgs.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static implicit operator WheelEventArgs(WheelEventData data)
+        {
+            return new WheelEventArgs
+            {
+                DeltaX = data.DeltaX,
+                DeltaY = data.DeltaY,
+                ClientX = data.ClientX,
+                ClientY = data.ClientY,
+                CtrlKey = data.CtrlKey,
+                ShiftKey = data.ShiftKey,
+                AltKey = data.AltKey
+            };
+        }
+    }
+
+}

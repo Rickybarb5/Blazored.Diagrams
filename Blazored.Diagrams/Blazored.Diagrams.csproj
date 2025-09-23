@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="wwwroot\Blazored.Diagrams.js">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Services\DiagramService.Create.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\DiagramService.Delete.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\EventPropagator.Diagram.cs">
+            <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\EventPropagator.Group.cs">
+            <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\EventPropagator.Layer.cs">
+            <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\EventPropagator.Link.cs">
+            <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\EventPropagator.Node.cs">
+            <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\EventPropagator.Port.cs">
+            <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Behaviours.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Diagram.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Groups.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Layer.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Links.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Node.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Events\Events.Ports.cs">
+            <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Ports\Port.Features.cs">
+            <DependentUpon>Port.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Links\LinkFeatures.cs">
+            <DependentUpon>Link.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Diagrams\Diagram.Features.cs">
+            <DependentUpon>Diagram.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\DiagramService.Behaviours.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+</Project>
