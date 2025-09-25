@@ -1,6 +1,6 @@
 using Blazored.Diagrams.Interfaces;
 
-namespace Blazored.Diagrams.Events;
+namespace Blazored.Diagrams.Services.Events;
 
 /// <summary>
 ///     Base Model for a model event.

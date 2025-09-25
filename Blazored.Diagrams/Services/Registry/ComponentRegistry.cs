@@ -9,7 +9,7 @@ namespace Blazored.Diagrams.Services.Registry;
 /// </summary>
 public class ComponentRegistry : IComponentRegistry
 {
-    private readonly Dictionary<Type, Type> _componentTypes = new();
+    private readonly Dictionary<Type, Type> _componentTypes = [];
 
     /// <summary>
     ///     Initializes a new instance of <see cref="ComponentRegistry"/>

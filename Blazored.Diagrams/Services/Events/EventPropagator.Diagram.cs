@@ -1,7 +1,7 @@
 using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Layers;
 
-namespace Blazored.Diagrams.Events;
+namespace Blazored.Diagrams.Services.Events;
 
 internal partial class EventPropagator
 {

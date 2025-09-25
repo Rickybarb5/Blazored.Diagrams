@@ -133,8 +133,7 @@ public partial class Diagram : IDiagram
             foreach (var val in value) _layers.Add(val);
         }
     }
-
-
+    
     /// <inheritdoc />
     [JsonIgnore]
     public virtual IReadOnlyList<INode> AllNodes => _layers.SelectMany(layer => layer.AllNodes).ToList().AsReadOnly();

@@ -1,7 +1,7 @@
 using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Test.Behaviours;
 

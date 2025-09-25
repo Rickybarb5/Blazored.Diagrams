@@ -2,7 +2,7 @@ using Blazored.Diagrams.Behaviours;
 using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Links;
 
-namespace Blazored.Diagrams.Events;
+namespace Blazored.Diagrams.Services.Events;
 
 /// <summary>
 /// Event triggered when the panning starts in the <see cref="PanBehaviour"/>

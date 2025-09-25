@@ -1,9 +1,8 @@
 using Blazored.Diagrams.Extensions;
-using Blazored.Diagrams.Services;
 
-namespace Blazored.Diagrams.Events;
+namespace Blazored.Diagrams.Services.Events;
 
-internal partial class EventPropagator : IDisposable
+internal partial class EventPropagator : IEventPropagator
 {
     private readonly IDiagramService _service;
     private List<IDisposable> _subscriptions = [];
@@ -60,8 +59,7 @@ internal partial class EventPropagator : IDisposable
             _service.Events.SubscribeTo<LinkRemovedEvent>(UnsubscribeFromEvents),
         ];
     }
-
-
+    
     public void Dispose()
     {
         _service.Diagram.Layers.OnItemAdded -= SubscribeToEvents;

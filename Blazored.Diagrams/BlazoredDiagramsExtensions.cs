@@ -2,6 +2,7 @@
 using Blazored.Diagrams.Services;
 using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Observers;
+using Blazored.Diagrams.Services.Providers;
 using Blazored.Diagrams.Services.Registry;
 using Blazored.Diagrams.Services.Virtualization;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +24,10 @@ public static class BlazoredDiagramsExtensions
         this IServiceCollection services)
     {
         services
-            .AddTransient<IDiagramService, DiagramService>()
             .AddSingleton<IResizeObserverService, ResizeObserverService>()
+            .AddSingleton<IDiagramServiceProvider, DiagramServiceProvider>()
             .AddTransient<IVirtualizationService, VirtualizationService>()
-            .AddTransient<IComponentRegistry, ComponentRegistry>()
-            .AddTransient<IEventAggregator, EventAggregator>();
+            .AddTransient<IComponentRegistry, ComponentRegistry>();
         
         return services;
     }

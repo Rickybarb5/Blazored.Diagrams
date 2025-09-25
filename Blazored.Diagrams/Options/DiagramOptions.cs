@@ -9,7 +9,7 @@ namespace Blazored.Diagrams.Options;
 /// </summary>
 public class DiagramOptions
 {
-    internal readonly List<IDiagramOptions> _behaviours = new();
+    internal readonly List<IDiagramOptions> _behaviours = [];
 
     /// <summary>
     ///     Default constructor.

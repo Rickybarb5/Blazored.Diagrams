@@ -1,9 +1,10 @@
 ﻿@using System.Globalization
 @using Blazored.Diagrams.Services.Observers
-@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Services.Events
+@using Blazored.Diagrams.Services.Providers
 @using System.Text
 @implements IAsyncDisposable
-@if (DiagramService is not null && DiagramService.IsInitialized)
+@if (_diagram is not null)
 {
     <CascadingValue Value="_diagramService">
         <div
@@ -34,57 +35,58 @@
 
 @code {
 
-    /// <summary>
-    ///     Used to add additional components on top of the diagram.
-    /// </summary>
-    [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
-
-
-    /// <summary>
-    /// Diagram instance to show in the UI.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public required IDiagramService? DiagramService
-    {
-        get => _diagramService!;
-        set
-        {
-            if (_diagramService != value)
-            {
-                _redrawSubscription?.Dispose();
-                _diagramService = value;
-                _redrawSubscription = _diagramService.Events.SubscribeWhere<DiagramRedrawEvent>(p => p.Model.Id == DiagramService?.Diagram.Id, Redraw);
-                InvokeAsync(StateHasChanged);
-            }
-        }
-    }
-
-    private void Redraw(DiagramRedrawEvent obj)
-    {
-        StateHasChanged();
-    }
-
+    private IDiagram? _diagram = null!;
+    readonly NumberFormatInfo _nfi = new();
+    readonly StringBuilder _sb = new();
+    private ElementReference _componentRef;
+    private IDisposable? _redrawSubscription;
     private IDiagramService _diagramService = null!;
-
+    
+    
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+    [Inject] private IDiagramServiceProvider DiagramServiceProvider { get; set; } = null!;
 
     /// <summary>
     /// <see cref="IJSRuntime"/>
     /// </summary>
     [Inject]
     public required IJSRuntime Js { get; set; }
-
-    readonly NumberFormatInfo _nfi = new();
-    readonly StringBuilder _sb = new();
-    private ElementReference _componentRef;
-    private IDisposable? _redrawSubscription;
-
+    
+    /// <summary>
+    ///     Used to add additional components on top of the diagram.
+    /// </summary>
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+    
+    /// <summary>
+    /// Diagram instance to show in the UI.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public required IDiagram? Diagram
+    {
+        get => _diagram;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            if (_diagram != value)
+            {
+                _redrawSubscription?.Dispose();
+                _diagramService?.Dispose();
+                _diagram = value;
+                
+                _diagramService = DiagramServiceProvider.GetDiagramService(_diagram!);
+                _redrawSubscription = _diagramService.Events
+                    .SubscribeWhere<DiagramRedrawEvent>(p => p.Model.Id == _diagramService?.Diagram.Id, Redraw);
+                InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+    
     /// <summary>
     /// ID of the diagram container
     /// </summary>
-    public string ContainerId => $"diagram-container-{_diagramService.Diagram.Id}";
+    public string ContainerId => $"diagram-container-{_diagram.Id}";
 
     /// <inheritdoc />
     protected override Task OnInitializedAsync()
@@ -101,8 +103,8 @@
         {
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var rect = await Js.GetBoundingClientRect(_componentRef);
-            _diagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
-            _diagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
+            _diagram.SetPosition((int)rect.Left, (int)rect.Top);
+            _diagram.SetSize((int)(rect.Width), (int)(rect.Height));
             await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
         }
 
@@ -111,16 +113,16 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        _diagramService.Diagram.SetSize((int)(obj.Width), (int)(obj.Height));
+        _diagram.SetSize((int)(obj.Width), (int)(obj.Height));
     }
 
     private string GetContainerStyle()
     {
         _sb.Clear();
-        _sb.Append(_diagramService.Diagram.Options.Styles.ContainerStyle);
-        if (_diagramService.Diagram.Options.Styles.GridEnabled)
+        _sb.Append(_diagram.Options.Styles.ContainerStyle);
+        if (_diagram.Options.Styles.GridEnabled)
         {
-            _sb.Append(_diagramService.Diagram.Options.Styles.GridStyle);
+            _sb.Append(_diagram.Options.Styles.GridStyle);
         }
 
         return _sb.ToString();
@@ -142,15 +144,19 @@
     [JSInvokable]
     public void OnZoom(WheelEventData args)
     {
-        _diagramService.Events.Publish(new DiagramWheelEvent(_diagramService.Diagram, args));
+        _diagramService.Events.Publish(new DiagramWheelEvent(_diagram, args));
         StateHasChanged();
     }
-
-
+    
+    private void Redraw(DiagramRedrawEvent obj)
+    {
+        StateHasChanged();
+    }
+    
     /// <summary>
     /// Container class for the wheel data.
     /// </summary>
-    public record WheelEventData
+    public class WheelEventData
     {
         public double DeltaX { get; set; }
         public double DeltaY { get; set; }

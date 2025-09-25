@@ -1,8 +1,8 @@
-﻿using Blazored.Diagrams.Events;
-using Blazored.Diagrams.Extensions;
+﻿using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Behaviours;

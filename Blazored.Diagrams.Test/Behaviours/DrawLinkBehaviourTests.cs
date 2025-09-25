@@ -1,9 +1,9 @@
 using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components.Web;
 using Moq;
 

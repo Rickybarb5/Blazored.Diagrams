@@ -1,5 +1,3 @@
-using Blazored.Diagrams.Events;
-
 namespace Blazored.Diagrams.Services.Events;
 
 /// <summary>
@@ -7,7 +5,7 @@ namespace Blazored.Diagrams.Services.Events;
 /// </summary>
 public class EventAggregator : IEventAggregator
 {
-    private readonly Dictionary<Type, List<Subscription>> _subscriptions = new();
+    private readonly Dictionary<Type, List<Subscription>> _subscriptions = [];
     private long _subscriptionCount;
 
     private class Subscription

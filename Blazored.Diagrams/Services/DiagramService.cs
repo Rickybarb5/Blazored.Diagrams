@@ -1,45 +1,35 @@
 using Blazored.Diagrams.Behaviours;
 using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 
 namespace Blazored.Diagrams.Services;
 
 public partial class DiagramService : IDiagramService
 {
-    private IEventAggregator _events = new EventAggregator();
-    private IDiagram? _currentDiagram;
-
-    /// <inheritdoc />
+    private readonly IEventAggregator _events;
+    private readonly IDiagram _currentDiagram;
     public IEventAggregator Events => _events;
-
-    private EventPropagator? _eventPropagator;
-
-    /// <inheritdoc />
-    public bool IsInitialized => _currentDiagram is not null;
+    private IEventPropagator? _eventPropagator;
 
     /// <inheritdoc />
-    public IDiagram Diagram =>
-        _currentDiagram ??
-        throw new InvalidOperationException(
-            $"No diagram is currently active. Did you call the {nameof(Create)} method?");
+    public IDiagram Diagram => _currentDiagram;
 
-    /// <inheritdoc />
-    public TDiagram Create<TDiagram>()
-        where TDiagram : IDiagram, new()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="diagram"></param>
+    /// <param name="diagramServiceProvider"></param>
+    public DiagramService(IDiagram diagram, IDiagramServiceProvider diagramServiceProvider)
     {
-        var diagram = new TDiagram();
         _currentDiagram = diagram;
         AddDefaultBehaviours();
-
-        _eventPropagator?.Dispose();
-        _eventPropagator = new EventPropagator(this);
-
+        _eventPropagator = diagramServiceProvider.GetDiagramEventPropagator(diagram);
+        _events = diagramServiceProvider.GetDiagramEventAggregator(diagram);
         _events.Publish(new DiagramRedrawEvent(Diagram));
-        return diagram;
     }
-
+    
     private void AddDefaultBehaviours()
     {
         AddBehaviour(new DefaultGroupBehaviour(this), new DefaultGroupOptions());
@@ -66,7 +56,5 @@ public partial class DiagramService : IDiagramService
         {
             behaviour.Dispose();
         }
-
-        _currentDiagram?.Dispose();
     }
 }

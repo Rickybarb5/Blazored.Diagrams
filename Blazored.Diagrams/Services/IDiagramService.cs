@@ -14,11 +14,6 @@ namespace Blazored.Diagrams.Services;
 public interface IDiagramService : IDisposable
 {
     /// <summary>
-    /// Gets a value indicating if the diagram has been initialized.
-    /// </summary>
-    bool IsInitialized { get; }
-
-    /// <summary>
     /// Diagram instance
     /// </summary>
     IDiagram Diagram { get; }
@@ -28,15 +23,6 @@ public interface IDiagramService : IDisposable
     /// Allows you to subscribe to and publish events.
     /// </summary>
     IEventAggregator Events { get; }
-
-    /// <summary>
-    /// Creates a new diagram instance for the service.
-    /// </summary>
-    /// <param name="configure"></param>
-    /// <typeparam name="TDiagram"></typeparam>
-    /// <returns></returns>
-    TDiagram Create<TDiagram>() where TDiagram : IDiagram, new();
-
 
     /// <summary>
     /// Removes a node from the diagram.

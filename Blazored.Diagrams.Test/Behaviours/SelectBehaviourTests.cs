@@ -1,5 +1,4 @@
 using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
@@ -7,6 +6,7 @@ using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Test.Behaviours;

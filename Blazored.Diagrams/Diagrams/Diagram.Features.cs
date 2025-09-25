@@ -29,8 +29,7 @@ public partial class Diagram
     {
         foreach (var layer in _layers) layer.SelectAll();
     }
-
-
+    
     /// <inheritdoc />
     public virtual void StepZoomUp()
     {

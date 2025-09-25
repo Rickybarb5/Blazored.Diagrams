@@ -2,7 +2,7 @@ using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace Blazored.Diagrams.Events;
+namespace Blazored.Diagrams.Services.Events;
 
 /// <summary>
 ///     Base layer event.

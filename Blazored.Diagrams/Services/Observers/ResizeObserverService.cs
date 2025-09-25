@@ -13,7 +13,7 @@ namespace Blazored.Diagrams.Services.Observers;
 public class ResizeObserverService : IResizeObserverService
 {
     private readonly IJSRuntime _jsRuntime;
-    private readonly ConcurrentDictionary<string, Action<ResizeObserverEntry>> _callbacks = new();
+    private readonly ConcurrentDictionary<string, Action<ResizeObserverEntry>> _callbacks = [];
     private readonly DotNetObjectReference<ResizeObserverService> _dotNetRef;
 
     /// <summary>
@@ -70,21 +70,4 @@ public class ResizeObserverService : IResizeObserverService
         await _jsRuntime.InvokeVoidAsync(JsFunctionConstants.RemoveAllObservers);
         _callbacks.Clear();
     }
-}
-
-/// <summary>
-/// 
-/// </summary>
-[ExcludeFromCodeCoverage]
-public record ResizeObserverEntry
-{
-    /// <summary>
-    /// New width of the element
-    /// </summary>
-    public double Width { get; set; }
-
-    /// <summary>
-    /// New height of the element
-    /// </summary>
-    public double Height { get; set; }
 }
