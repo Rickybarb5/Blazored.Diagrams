@@ -41,6 +41,45 @@
         <Compile Update="Services\DiagramService.Behaviours.cs">
             <DependentUpon>DiagramService.cs</DependentUpon>
         </Compile>
+        <Compile Update="Services\Events\EventPropagator.Diagram.cs">
+          <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\EventPropagator.Group.cs">
+          <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\EventPropagator.Layer.cs">
+          <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\EventPropagator.Link.cs">
+          <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\EventPropagator.Node.cs">
+          <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\EventPropagator.Port.cs">
+          <DependentUpon>EventPropagator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Behaviours.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Diagram.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Groups.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Layer.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Links.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Node.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.Ports.cs">
+          <DependentUpon>Events.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Layers;
@@ -130,7 +131,7 @@ public partial class Diagram : IDiagram
         init
         {
             _layers.Clear();
-            foreach (var val in value) _layers.Add(val);
+            value.ForEach(l=>_layers.Add(l));
         }
     }
     

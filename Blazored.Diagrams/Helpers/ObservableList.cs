@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Text.Json.Serialization;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
 
 namespace Blazored.Diagrams.Helpers;
@@ -15,12 +16,12 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     /// <summary>
     /// Event triggered when an item is added.
     /// </summary>
-    public event Action<TModel>? OnItemAdded;
+    internal event Action<TModel>? OnItemAdded;
 
     /// <summary>
     /// Event triggered when an item is removed.
     /// </summary>
-    public event Action<TModel>? OnItemRemoved;
+    internal event Action<TModel>? OnItemRemoved;
 
     /// <inheritdoc />
     [JsonIgnore]
@@ -63,10 +64,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     /// <param name="collection"></param>
     public void AddRange(IEnumerable<TModel> collection)
     {
-        foreach (var item in collection)
-        {
-            Add(item);
-        }
+        collection.ForEach(Add);
     }
 
     /// <summary>
@@ -90,10 +88,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     {
         var itemsToRemove = _internalIDictionary.Values.ToList();
         _internalIDictionary.Clear();
-        foreach (var item in itemsToRemove)
-        {
-            OnItemRemoved?.Invoke(item);
-        }
+        itemsToRemove.ForEach(x => OnItemRemoved?.Invoke(x));
     }
 
     /// <inheritdoc />
@@ -139,19 +134,5 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
-    }
-
-    /// <summary>
-    /// Applies an action to every element.
-    /// </summary>
-    /// <param name="action"></param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public void ForEach(Action<TModel> action)
-    {
-        ArgumentNullException.ThrowIfNull(action);
-        foreach (var item in _internalIDictionary.Values)
-        {
-            action(item);
-        }
     }
 }

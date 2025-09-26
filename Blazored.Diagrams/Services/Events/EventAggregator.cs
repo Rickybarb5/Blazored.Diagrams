@@ -64,13 +64,13 @@ public class EventAggregator : IEventAggregator
     {
         if (!_subscriptions.TryGetValue(eventType, out var subs)) return;
 
-        foreach (var sub in subs.ToList())
+        subs.ForEach(sub =>
         {
             if (sub.Predicate == null || sub.Predicate(eventData!))
             {
                 ((Action<TEvent>)sub.Handler)(eventData);
-            }
-        }
+            } 
+        });
     }
 
     private long GetNextId() => Interlocked.Increment(ref _subscriptionCount);

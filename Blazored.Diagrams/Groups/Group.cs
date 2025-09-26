@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
@@ -202,7 +203,7 @@ public partial class Group : IGroup
         init
         {
             _ports.Clear();
-            foreach (var val in value) _ports.Add(val);
+            value.ForEach(p=>_ports.Add(p));
         }
     }
 
@@ -213,7 +214,7 @@ public partial class Group : IGroup
         init
         {
             _nodes.Clear();
-            foreach (var val in value) _nodes.Add(val);
+            value.ForEach(n=>_nodes.Add(n));
         }
     }
 
@@ -224,7 +225,7 @@ public partial class Group : IGroup
         init
         {
             _groups.Clear();
-            foreach (var val in value) _groups.Add(val);
+            value.ForEach(g=>_groups.Add(g));
         }
     }
 

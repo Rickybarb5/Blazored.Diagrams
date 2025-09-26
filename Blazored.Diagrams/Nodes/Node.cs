@@ -1,4 +1,5 @@
-﻿using Blazored.Diagrams.Helpers;
+﻿using Blazored.Diagrams.Extensions;
+using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Ports;
 
 namespace Blazored.Diagrams.Nodes;
@@ -142,7 +143,7 @@ public partial class Node : INode
         init
         {
             _ports.Clear();
-            foreach (var val in value) _ports.Add(val);
+            value.ForEach(val=>_ports.Add(val));
         }
     }
 

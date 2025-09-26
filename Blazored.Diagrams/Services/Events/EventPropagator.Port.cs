@@ -1,3 +1,4 @@
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Ports;

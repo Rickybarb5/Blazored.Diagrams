@@ -224,7 +224,8 @@ public class DrawLinkBehavior : IBehaviour
 
     private void ClearUnboundedLinks()
     {
-        var unboundedLinks = _service.Diagram.AllLinks.Where(x => x.TargetPort is null);
-        foreach (var unboundedLink in unboundedLinks) unboundedLink.Dispose();
+        _service.Diagram.AllLinks
+            .Where(x => x.TargetPort is null)
+            .ForEach(l=>l.Dispose());
     }
 }

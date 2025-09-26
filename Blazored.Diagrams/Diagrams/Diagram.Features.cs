@@ -1,3 +1,4 @@
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Options.Behaviours;
 
@@ -21,13 +22,13 @@ public partial class Diagram
     /// <inheritdoc />
     public virtual void UnselectAll()
     {
-        foreach (var layer in _layers) layer.UnselectAll();
+        _layers.ForEach(l =>l.UnselectAll());
     }
 
     /// <inheritdoc />
     public virtual void SelectAll()
     {
-        foreach (var layer in _layers) layer.SelectAll();
+        _layers.ForEach(l =>l.SelectAll());
     }
     
     /// <inheritdoc />

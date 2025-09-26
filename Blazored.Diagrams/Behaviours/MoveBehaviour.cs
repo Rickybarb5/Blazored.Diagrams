@@ -92,12 +92,12 @@ public class MoveBehaviour : IBehaviour
         var xDiffAdjusted = xDiff * inverseZoom;
         var yDiffAdjusted = yDiff * inverseZoom;
 
-        foreach (var model in SelectedModels)
+        SelectedModels.ForEach(model =>
         {
             var x = (int)(model.PositionX + xDiffAdjusted);
             var y = (int)(model.PositionY + yDiffAdjusted);
             model.SetPosition(x, y);
-        }
+        });
 
         _lastPointerX = obj.Args.ClientX;
         _lastPointerY = obj.Args.ClientY;

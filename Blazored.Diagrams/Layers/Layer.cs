@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Links;
@@ -57,7 +58,7 @@ public partial class Layer : ILayer
         init
         {
             _nodes.Clear();
-            foreach (var val in value) _nodes.Add(val);
+            value.ForEach(val=>_nodes.Add(val));
         }
     }
 
@@ -68,7 +69,8 @@ public partial class Layer : ILayer
         init
         {
             _groups.Clear();
-            foreach (var val in value) _groups.Add(val);
+            
+            value.ForEach(val=>_groups.Add(val));
         }
     }
 
@@ -148,7 +150,7 @@ public partial class Layer : ILayer
             x.IsSelected = false;
             x.UnselectAll();
         });
-        foreach (var link in AllLinks) link.IsSelected = false;
+        AllLinks.ForEach(x => x.IsSelected = false);
     }
 
     /// <inheritdoc />
@@ -160,7 +162,7 @@ public partial class Layer : ILayer
             x.IsSelected = true;
             x.SelectAll();
         });
-        foreach (var link in AllLinks) link.IsSelected = true;
+        AllLinks.ForEach(x => x.IsSelected = true);
     }
 
     /// <inheritdoc />

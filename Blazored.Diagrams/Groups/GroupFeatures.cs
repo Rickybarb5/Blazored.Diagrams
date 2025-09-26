@@ -1,3 +1,5 @@
+using Blazored.Diagrams.Extensions;
+
 namespace Blazored.Diagrams.Groups;
 
 public partial class Group
@@ -49,28 +51,14 @@ public partial class Group
     /// <inheritdoc />
     public virtual void UnselectAll()
     {
-        foreach (var node in AllNodes)
-        {
-            node.IsSelected = false;
-        }
-
-        foreach (var nestedGroup in AllGroups)
-        {
-            nestedGroup.IsSelected = false;
-        }
+        AllNodes.ForEach(node=>node.IsSelected = false);
+        AllGroups.ForEach(group=>group.IsSelected = false);
     }
 
     /// <inheritdoc />
     public virtual void SelectAll()
     {
-        foreach (var node in AllNodes)
-        {
-            node.IsSelected = true;
-        }
-
-        foreach (var nestedGroup in AllGroups)
-        {
-            nestedGroup.IsSelected = true;
-        }
+        AllNodes.ForEach(node=>node.IsSelected = true);
+        AllGroups.ForEach(group=>group.IsSelected = true);
     }
 }

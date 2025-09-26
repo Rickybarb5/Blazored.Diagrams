@@ -1,3 +1,4 @@
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services;
 using Blazored.Diagrams.Services.Events;
@@ -55,25 +56,9 @@ public class DeleteWithKeyBehaviour : IBehaviour
         if (obj.Code != _options.DeleteKeyCode ||
             !_options.IsEnabled) return;
 
-        var selectedGroups = _service.Diagram.AllGroups.Where(x => x.IsSelected);
-        var selectedLinks = _service.Diagram.AllLinks.Where(x => x.IsSelected);
-        var selectedNodes = _service.Diagram.AllNodes.Where(x => x.IsSelected);
-
-
-        foreach (var link in selectedLinks)
-        {
-            _service.Remove(link);
-        }
-
-        foreach (var group in selectedGroups)
-        {
-            _service.Remove(group);
-        }
-
-        foreach (var node in selectedNodes)
-        {
-            _service.Remove(node);
-        }
+        _service.Diagram.AllGroups.Where(x => x.IsSelected).ForEach(group =>_service.Remove(group));
+        _service.Diagram.AllLinks.Where(x => x.IsSelected).ForEach(link =>_service.Remove(link));
+        _service.Diagram.AllNodes.Where(x => x.IsSelected).ForEach(node =>_service.Remove(node));
     }
 
     /// <inheritdoc />

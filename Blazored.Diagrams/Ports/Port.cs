@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
@@ -162,11 +163,11 @@ public partial class Port : IPort
         init
         {
             _outgoingLinks.Clear();
-            foreach (var val in value)
+            value.ForEach(val =>
             {
                 _outgoingLinks.Add(val);
                 val.SourcePort = this;
-            }
+            });
         }
     }
 
@@ -177,11 +178,11 @@ public partial class Port : IPort
         init
         {
             _incomingLinks.Clear();
-            foreach (var val in value)
+            value.ForEach(val =>
             {
                 _incomingLinks.Add(val);
                 val.TargetPort = this;
-            }
+            });
         }
     }
 

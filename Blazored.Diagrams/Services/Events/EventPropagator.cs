@@ -17,31 +17,12 @@ internal partial class EventPropagator : IEventPropagator
     {
         _service.Diagram.Layers.OnItemAdded += SubscribeToEvents;
         _service.Diagram.Layers.OnItemRemoved += UnsubscribeFromEvents;
-        foreach (var layer in _service.Diagram.Layers)
-        {
-            SubscribeToEvents(layer);
-        }
-
-        foreach (var node in _service.Diagram.AllNodes)
-        {
-            SubscribeToEvents(node);
-        }
-
-        foreach (var group in _service.Diagram.AllGroups)
-        {
-            SubscribeToEvents(group);
-        }
-
-        foreach (var port in _service.Diagram.AllPorts)
-        {
-            SubscribeToEvents(port);
-        }
-
-        foreach (var link in _service.Diagram.AllLinks)
-        {
-            SubscribeToEvents(link);
-        }
-
+        _service.Diagram.Layers.ForEach(SubscribeToEvents);
+        _service.Diagram.AllNodes.ForEach(SubscribeToEvents);
+        _service.Diagram.AllGroups.ForEach(SubscribeToEvents);
+        _service.Diagram.AllPorts.ForEach(SubscribeToEvents);
+        _service.Diagram.AllLinks.ForEach(SubscribeToEvents);
+        
         SubscribeToEvents(_service.Diagram);
 
         _subscriptions =
@@ -64,31 +45,11 @@ internal partial class EventPropagator : IEventPropagator
     {
         _service.Diagram.Layers.OnItemAdded -= SubscribeToEvents;
         _service.Diagram.Layers.OnItemRemoved -= UnsubscribeFromEvents;
-        foreach (var layer in _service.Diagram.Layers)
-        {
-            UnsubscribeFromEvents(layer);
-        }
-
-        foreach (var node in _service.Diagram.AllNodes)
-        {
-            UnsubscribeFromEvents(node);
-        }
-
-        foreach (var group in _service.Diagram.AllGroups)
-        {
-            UnsubscribeFromEvents(group);
-        }
-
-        foreach (var port in _service.Diagram.AllPorts)
-        {
-            UnsubscribeFromEvents(port);
-        }
-
-        foreach (var link in _service.Diagram.AllLinks)
-        {
-            UnsubscribeFromEvents(link);
-        }
-
+        _service.Diagram.Layers.ForEach(UnsubscribeFromEvents);
+        _service.Diagram.AllNodes.ForEach(UnsubscribeFromEvents);
+        _service.Diagram.AllGroups.ForEach(UnsubscribeFromEvents);
+        _service.Diagram.AllPorts.ForEach(UnsubscribeFromEvents);
+        _service.Diagram.AllLinks.ForEach(UnsubscribeFromEvents);
         _subscriptions.DisposeAll();
     }
 }

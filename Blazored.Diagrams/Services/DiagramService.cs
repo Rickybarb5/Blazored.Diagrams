@@ -1,5 +1,6 @@
 using Blazored.Diagrams.Behaviours;
 using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Providers;
@@ -52,9 +53,6 @@ public partial class DiagramService : IDiagramService
     {
         _eventPropagator?.Dispose();
         _events.Dispose();
-        foreach (var behaviour in Behaviours)
-        {
-            behaviour.Dispose();
-        }
+        Behaviours.ForEach(b=> b.Dispose());
     }
 }
