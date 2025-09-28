@@ -1,0 +1,34 @@
+<MudCard>
+    <MudCardHeader>
+
+        <MudText>Edit Port</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudSelect T="PortAlignment" Value="Port.Alignment" ValueChanged="ctx => Port.Alignment = ctx">
+            @foreach (var value in Enum.GetValues<PortAlignment>())
+            {
+                <MudSelectItem T="PortAlignment" Value="value">@value</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="PortJustification" Value="Port.Justification" ValueChanged="ctx => Port.Justification = ctx">
+            @foreach (var value in Enum.GetValues<PortJustification>())
+            {
+                <MudSelectItem T="PortJustification" Value="value">@value</MudSelectItem>
+            }
+        </MudSelect>
+        <MudButton OnClick="DeletePort" Color="Color.Error" Variant="Variant.Filled">Delete Port</MudButton>
+    </MudCardContent>
+
+</MudCard>
+
+
+@code {
+
+    [Parameter] public IPort Port { get; set; }
+
+    private void DeletePort(MouseEventArgs obj)
+    {
+        Port.Parent.Ports.Remove(Port);
+    }
+
+}

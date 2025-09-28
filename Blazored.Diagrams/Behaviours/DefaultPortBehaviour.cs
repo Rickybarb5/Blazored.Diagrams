@@ -1,6 +1,6 @@
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -8,11 +8,10 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 /// Default behaviour of all ports.
 /// </summary>
-public class DefaultPortBehaviour : IBehaviour
+public class DefaultPortBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly DefaultPortOptions _options;
-    private List<IDisposable> _subscriptions;
+    private readonly DefaultPortBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="DefaultPortBehaviour"/>
@@ -21,9 +20,9 @@ public class DefaultPortBehaviour : IBehaviour
     public DefaultPortBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<DefaultPortOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<DefaultPortBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -38,14 +37,9 @@ public class DefaultPortBehaviour : IBehaviour
         }
     }
 
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             // Change port position.
             _service.Events.SubscribeTo<PortJustificationChangedEvent>(HandleJustificationUpdate),
@@ -140,8 +134,9 @@ public class DefaultPortBehaviour : IBehaviour
 
 
     /// <inheritdoc />
-    public void Dispose()
+    public new void Dispose()
     {
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
         DisposeSubscriptions();
     }
 }

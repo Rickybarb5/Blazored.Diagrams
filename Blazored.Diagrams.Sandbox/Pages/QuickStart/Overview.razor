@@ -1,0 +1,65 @@
+@page "/overview"
+<MudContainer>
+    <MudCard>
+        <MudContainer>
+            <MudText Typo="Typo.h4">Install nuget package</MudText>
+            <CodeHighlighter Code="dotnet add package Blazored.Diagrams" Language="powershell"></CodeHighlighter>
+        </MudContainer>
+    </MudCard>
+    <MudCard>
+        <MudContainer>
+            <MudText Typo="Typo.h4">Register services</MudText>
+            <MudText Typo="Typo.subtitle1"> The following registers all necessary services for Blazored.Diagrams to work correctly.</MudText>
+            <CodeHighlighter Code="@($"builder.Services.{nameof(BlazoredDiagramsExtensions.AddBlazoredDiagrams)}();")" Language="csharp"></CodeHighlighter>
+        </MudContainer>
+    </MudCard>
+    <MudCard>
+        <MudContainer>
+            <MudText Typo="Typo.h4">Components</MudText>
+            <MudText Typo="Typo.subtitle1"> Currently, the following component types are supported:</MudText>
+            <MudList>
+                <MudListItem>Nodes</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Groups</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Links</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Ports</MudListItem>
+                <MudDivider></MudDivider>
+            </MudList>
+
+            @* TODO:Showcase all of the different components *@
+            <MudText Typo="Typo.h4">Behaviours</MudText>
+            <MudText Typo="Typo.subtitle1">Behaviours allow you to run custom logic and organize your code. There are a few basic ones already developed:</MudText>
+            <MudList>
+                <MudListItem>Zooming</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Panning</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Selection and Multi-Selection</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Moving items within the diagram.</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>Link creation</MudListItem>
+                <MudDivider></MudDivider>
+            </MudList>
+            <MudText Typo="Typo.h4">Future features</MudText>
+            <MudText Typo="Typo.subtitle1">Here are some features planned for the future:</MudText>
+            <MudList >
+                <MudListItem>Readonly diagram - Lock the diagram to prevent editing</MudListItem>
+                <MudDivider></MudDivider>
+                <MudListItem>
+                    Want a new feature? Create a feature request at:
+                    @* TODO:Add url to github *@
+                </MudListItem>
+            </MudList>
+
+
+        </MudContainer>
+    </MudCard>
+</MudContainer>
+
+
+@code {
+
+}

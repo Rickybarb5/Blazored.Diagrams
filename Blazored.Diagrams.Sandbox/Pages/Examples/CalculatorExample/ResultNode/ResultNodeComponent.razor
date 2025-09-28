@@ -1,0 +1,43 @@
+@using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.OperatorNode
+<MudCard Style="min-width:250px;-webkit-user-select: none;-ms-user-select: none;user-select: none;-webkit-user-drag: none;">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Result</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        @if (Node.NumberOutput is not null)
+        {
+            <div style="display: flex;flex-direction: row;justify-content: center">
+                <MudText Typo="Typo.h5">@($"Result: {Node.NumberOutput}")</MudText>
+            </div>
+        }
+        else
+        {
+            <MudText>No result</MudText>
+        }
+    </MudCardContent>
+    <MudCardActions>
+
+        @if (Node.NumberOutput is null)
+        {
+            <MudText Color="Color.Error">Not enough information!</MudText>
+        }
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    [Parameter] public ResultNode Node { get; set; }
+
+    private string GetOperatorSign(Operator resultOperator)
+    {
+        return resultOperator switch
+        {
+            Operator.Add => "+",
+            Operator.Subtract => "-",
+            Operator.Multiply => "*",
+            Operator.Divide => "/",
+            _ => throw new ArgumentOutOfRangeException(nameof(resultOperator), resultOperator, null)
+        };
+    }
+
+}

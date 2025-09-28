@@ -1,4 +1,5 @@
 ﻿@using System.Text
+@using Blazored.Diagrams.Services.Diagrams
 @using Blazored.Diagrams.Services.Events
 @implements IDisposable
 <div class="@Class">
@@ -7,9 +8,6 @@
         @Content
     }
 </div>
-<NodeRenderer Nodes="Group.Nodes"></NodeRenderer>
-<GroupRenderer Groups="Group.Groups"></GroupRenderer>
-<PortRenderer Ports="Group.Ports"></PortRenderer>
 
 @code {
 
@@ -32,13 +30,6 @@
     public RenderFragment? Content { get; set; }
     
     /// <summary>
-    /// CSS class that styles the component.
-    /// Uses "default-group" available on <see cref="DefaultGroupComponent.razor.css"/> as default.
-    /// </summary>
-    [Parameter]
-    public string Class { get; set; } = DefaultCssClass;
-    
-    /// <summary>
     /// Minimum width of the group when it has no nested nodes or groups.
     /// </summary>
     [Parameter] 
@@ -50,6 +41,7 @@
     [Parameter] 
     public int MinHeight { get; set; } = 100;
     
+    private string Class { get; set; } = DefaultCssClass;
     private const string DefaultCssClass = "default-group";
     private readonly StringBuilder _builder = new();
     private IDisposable _subscription = null!;
@@ -76,12 +68,12 @@
         _builder.Clear();
         if (Group.Nodes.Count == 0 && Group.Groups.Count == 0)
         {
-            _builder.Append($"{Class} min-size");
+            _builder.Append($"{DefaultCssClass} min-size");
             Group.SetSize(MinWidth, MinHeight);
         }
         else
         {
-            _builder.Append(Class);
+            _builder.Append(DefaultCssClass);
             if (Group.IsSelected)
             {
                 _builder.Append(" selected");

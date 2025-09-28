@@ -2,8 +2,9 @@ using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 using Microsoft.AspNetCore.Components.Web;
 using Moq;
 
@@ -13,9 +14,8 @@ public class DrawLinkBehaviorTests
 {
     private IDiagramService CreateService()
     {
-        var service = new DiagramService();
-        service.Create<Diagram>();
-
+        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
+        var service = diagramServiceProvider.GetDiagramService(new Diagram());
         return service;
     }
 
@@ -27,7 +27,7 @@ public class DrawLinkBehaviorTests
         var sourceNode = new Node();
         var sourcePort = new Port();
         sourceNode.Ports.Add(sourcePort);
-        service.AddNode(sourceNode);
+        service.Add.Node(sourceNode);
 
         DrawLinkStartEvent? capturedEvent = null;
         service.Events.SubscribeTo<DrawLinkStartEvent>(e => capturedEvent = e);
@@ -57,7 +57,7 @@ public class DrawLinkBehaviorTests
         var sourceNode = new Node();
         var sourcePort = new Port();
         sourceNode.Ports.Add(sourcePort);
-        service.AddNode(sourceNode);
+        service.Add.Node(sourceNode);
 
         // Start link creation
         var startArgs = new PointerEventArgs
@@ -98,8 +98,8 @@ public class DrawLinkBehaviorTests
         var targetPort = new Port();
         sourceNode.Ports.Add(sourcePort);
         targetNode.Ports.Add(targetPort);
-        service.AddNode(sourceNode);
-        service.AddNode(targetNode);
+        service.Add.Node(sourceNode);
+        service.Add.Node(targetNode);
 
         DrawLinkCreatedEvent? capturedEvent = null;
         service.Events.SubscribeTo<DrawLinkCreatedEvent>(e => capturedEvent = e);
@@ -135,7 +135,7 @@ public class DrawLinkBehaviorTests
         sourcePort.Setup(x => x.IncomingLinks).Returns([]);
         sourcePort.Setup(x => x.OutgoingLinks).Returns([]);
         sourceNode.Ports.Add(sourcePort.Object);
-        service.AddNode(sourceNode);
+        service.Add.Node(sourceNode);
 
         DrawLinkCancelledEvent? capturedEvent = null;
         service.Events.SubscribeTo<DrawLinkCancelledEvent>(e => capturedEvent = e);
@@ -164,7 +164,7 @@ public class DrawLinkBehaviorTests
         var sourceNode = new Node();
         var sourcePort = new Port();
         sourceNode.Ports.Add(sourcePort);
-        service.AddNode(sourceNode);
+        service.Add.Node(sourceNode);
 
         // Start link creation
         var startArgs = new PointerEventArgs
@@ -187,12 +187,12 @@ public class DrawLinkBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<DrawLinkOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().IsEnabled = false;
 
         var sourceNode = new Node();
         var sourcePort = new Port();
         sourceNode.Ports.Add(sourcePort);
-        service.AddNode(sourceNode);
+        service.Add.Node(sourceNode);
 
         var startArgs = new PointerEventArgs
         {

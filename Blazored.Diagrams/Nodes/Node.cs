@@ -1,13 +1,15 @@
-﻿using Blazored.Diagrams.Extensions;
+﻿using Blazored.Diagrams.Components.Models;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Nodes;
 
 /// <summary>
 ///     Base class for all nodes.
 /// </summary>
-public partial class Node : INode
+public partial class Node : INode, IHasComponent<DefaultNodeComponent>
 {
     private readonly ObservableList<IPort> _ports = [];
     private int _height;

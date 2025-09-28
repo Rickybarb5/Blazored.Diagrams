@@ -1,0 +1,32 @@
+@if (_GroupContainer is not null)
+{
+    <MudButton OnClick="AddGroup">Add Group</MudButton>
+}
+
+@code {
+
+    [Parameter]
+    public object? SelectedItem
+    {
+        get => _GroupContainer;
+        set
+        {
+            if (value is IGroupContainer container)
+            {
+                _GroupContainer = container;
+            }
+            else
+            {
+                _GroupContainer = null;
+            }
+        }
+    }
+
+    private IGroupContainer? _GroupContainer;
+
+    private void AddGroup()
+    {
+        _GroupContainer!.Groups.Add(new Group());
+    }
+
+}

@@ -8,10 +8,10 @@ public class VirtualizationOptions
     /// <summary>
     /// Enables/disables virtualization.
     /// </summary>
-    public bool Enabled { get; set; }
+    public bool IsEnabled { get; set; }
 
     /// <summary>
-    /// Space in pixels to make model outside the viewport disappear
+    /// Space in pixels to make model outside the viewport disappear.
     /// </summary>
     public int BufferSize { get; set; } = 200;
 }

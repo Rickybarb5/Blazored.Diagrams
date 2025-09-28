@@ -1,4 +1,5 @@
 ﻿@using Blazored.Diagrams.Services.Events
+@using Blazored.Diagrams.Services.Diagrams
 @using System.Text
 @implements IDisposable
 <div class="@Class">
@@ -7,7 +8,6 @@
         @Content
     }
 </div>
-<PortRenderer Ports="Node.Ports"></PortRenderer>
 
 @code {
 
@@ -23,11 +23,7 @@
     [Parameter]
     public RenderFragment? Content { get; set; }
     
-    /// <summary>
-    /// CSS class that styles the component.
-    /// Uses "default-node" css class available on <see cref="DefaultNodeComponent.razor.css"/> as default.
-    /// </summary>
-    [Parameter] public string Class { get; set; } = DefaultCssClass;
+    private string Class { get; set; } = DefaultCssClass;
 
     /// <summary>
     /// <see cref="IDiagramService"/>
@@ -52,7 +48,7 @@
     private void SetNodeCssClass(NodeSelectionChangedEvent e)
     {
         _builder.Clear();
-        _builder.Append(Class);
+        _builder.Append(DefaultCssClass);
         if (e.Model.IsSelected)
         {
             _builder.Append(" selected");

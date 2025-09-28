@@ -24,5 +24,8 @@
     <ItemGroup>
       <ProjectReference Include="..\Blazored.Diagrams\Blazored.Diagrams.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
+    </ItemGroup>
 
 </Project>

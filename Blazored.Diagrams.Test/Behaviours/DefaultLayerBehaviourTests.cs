@@ -1,7 +1,8 @@
 using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Layers;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 
 namespace Blazored.Diagrams.Test.Behaviours;
 
@@ -9,9 +10,8 @@ public class DefaultLayerBehaviourTests
 {
     private IDiagramService CreateService()
     {
-        var service = new DiagramService();
-        service.Create<Diagram>();
-
+        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
+        var service = diagramServiceProvider.GetDiagramService(new Diagram());
         return service;
     }
 
@@ -23,7 +23,7 @@ public class DefaultLayerBehaviourTests
         var layer = new Layer();
 
         // Act
-        service.AddLayer(layer);
+        service.Add.Layer(layer);
 
         // Assert
         Assert.True(service.Diagram.Layers.First().IsCurrentLayer);
@@ -41,7 +41,7 @@ public class DefaultLayerBehaviourTests
 
 
         // Act
-        service.AddLayer(secondLayer);
+        service.Add.Layer(secondLayer);
 
         // Assert
         Assert.NotNull(capturedEvent);
@@ -55,7 +55,7 @@ public class DefaultLayerBehaviourTests
         using var service = CreateService();
         var secondLayer = new Layer();
 
-        service.AddLayer(secondLayer);
+        service.Add.Layer(secondLayer);
 
         // Act
         secondLayer.IsCurrentLayer = true;
@@ -81,7 +81,7 @@ public class DefaultLayerBehaviourTests
         using var service = CreateService();
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => service.Remove(service.Diagram.Layers.First()));
+        Assert.Throws<InvalidOperationException>(() => service.Remove.Layer(service.Diagram.Layers.First()));
     }
 
     [Fact]
@@ -91,10 +91,10 @@ public class DefaultLayerBehaviourTests
         using var service = CreateService();
         var secondLayer = new Layer { IsCurrentLayer = true };
 
-        service.AddLayer(secondLayer);
+        service.Add.Layer(secondLayer);
 
         // Act
-        service.Remove(secondLayer);
+        service.Remove.Layer(secondLayer);
 
         // Assert
         Assert.True(service.Diagram.Layers.First().IsCurrentLayer);
@@ -111,7 +111,7 @@ public class DefaultLayerBehaviourTests
         service.Events.SubscribeTo<IsCurrentLayerChangedEvent>(e => capturedEvent = e);
 
         // Verify initial behavior
-        service.AddLayer(layer);
+        service.Add.Layer(layer);
         Assert.NotNull(capturedEvent);
 
         // Reset and dispose

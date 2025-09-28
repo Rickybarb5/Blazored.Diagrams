@@ -1,8 +1,7 @@
 ﻿using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -12,13 +11,10 @@ namespace Blazored.Diagrams.Behaviours;
 ///     Selection behaviour for the UI.
 ///     Supports multi selection using ctrl key.
 /// </summary>
-public class SelectBehaviour : IBehaviour
+public class SelectBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly SelectOptions _options;
-
-
-    private List<IDisposable> _subscriptions = [];
+    private readonly SelectBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="SelectBehaviour"/>
@@ -27,9 +23,9 @@ public class SelectBehaviour : IBehaviour
     public SelectBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<SelectOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -45,17 +41,17 @@ public class SelectBehaviour : IBehaviour
     }
 
     /// <inheritdoc />
-    public void Dispose()
+    public new void Dispose()
     {
         DisposeSubscriptions();
-        _options.OnEnabledChanged -= OnEnabledChanged;
+        _behaviourOptions.OnEnabledChanged -= OnEnabledChanged;
     }
 
     private void SelectModel(ISelectable selectableModel, PointerEventArgs args)
     {
-        if (args.Button != 0 || !_options.SelectionEnabled) return;
+        if (args.Button != 0 || !_behaviourOptions.SelectionEnabled) return;
 
-        if (_options.MultiSelectEnabled && args.CtrlKey)
+        if (_behaviourOptions.MultiSelectEnabled && args.CtrlKey)
         {
             // Toggle selection when Ctrl is pressed
             selectableModel.IsSelected = !selectableModel.IsSelected;
@@ -74,21 +70,16 @@ public class SelectBehaviour : IBehaviour
         if (args.Button == 0) // Only handle left clicks
         {
             // Only clear selection if Ctrl is not pressed or multiselect is disabled
-            if (!_options.MultiSelectEnabled || !args.CtrlKey)
+            if (!_behaviourOptions.MultiSelectEnabled || !args.CtrlKey)
             {
                 diagram.UnselectAll();
             }
         }
     }
-
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
+    
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<NodePointerDownEvent>(e => SelectModel(e.Model, e.Args)),
             _service.Events.SubscribeTo<GroupPointerDownEvent>(e => SelectModel(e.Model, e.Args)),

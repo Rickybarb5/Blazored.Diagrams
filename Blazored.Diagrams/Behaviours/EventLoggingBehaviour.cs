@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -10,11 +9,10 @@ namespace Blazored.Diagrams.Behaviours;
 /// Behaviour for logging diagram events to the static logger.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class EventLoggingBehavior : IBehaviour
+public class EventLoggingBehavior : BaseBehaviour
 {
     private readonly IDiagramService _diagramService;
-    private readonly LoggingOptions _options;
-    private List<IDisposable> _subscriptions = [];
+    private readonly LoggingBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="EventLoggingBehavior"/>
@@ -23,9 +21,9 @@ public class EventLoggingBehavior : IBehaviour
     public EventLoggingBehavior(IDiagramService diagramService)
     {
         _diagramService = diagramService;
-        _options = _diagramService.Diagram.Options.Get<LoggingOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _diagramService.Behaviours.GetBehaviourOptions<LoggingBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -42,7 +40,7 @@ public class EventLoggingBehavior : IBehaviour
 
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             // Layer events
             _diagramService.Events.SubscribeTo<LayerAddedEvent>(e =>
@@ -161,14 +159,10 @@ public class EventLoggingBehavior : IBehaviour
         ];
     }
 
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
     /// <inheritdoc />
     public void Dispose()
     {
+        _behaviourOptions.OnEnabledChanged -= OnEnabledChanged;
         DisposeSubscriptions();
     }
 }

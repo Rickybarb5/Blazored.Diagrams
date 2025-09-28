@@ -29,7 +29,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
 
     /// <inheritdoc />
     [JsonIgnore]
-    public bool IsReadOnly => false;
+    public bool IsReadOnly { get; set; }
 
     /// <inheritdoc />
     [JsonIgnore]
@@ -59,7 +59,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     }
 
     /// <summary>
-    /// Adds an collection if items to the list.
+    /// Adds a collection of items to the list.
     /// </summary>
     /// <param name="collection"></param>
     public void AddRange(IEnumerable<TModel> collection)

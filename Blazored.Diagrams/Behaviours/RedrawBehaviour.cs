@@ -1,9 +1,9 @@
-﻿using Blazored.Diagrams.Extensions;
-using Blazored.Diagrams.Groups;
+﻿using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
+using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -13,10 +13,10 @@ namespace Blazored.Diagrams.Behaviours;
 ///     This behaviour forces triggers the redraw event when necessary.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class RedrawBehaviour : IBehaviour
+public class RedrawBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private List<IDisposable> _subscriptions = [];
+    private RedrawBehaviourOptions options;
 
     /// <summary>
     /// Instantiates a new RedrawBehaviour{T}
@@ -25,46 +25,33 @@ public class RedrawBehaviour : IBehaviour
     public RedrawBehaviour(IDiagramService service)
     {
         _service = service;
-        SubscribeToEvents();
+        options = _service.Behaviours.GetBehaviourOptions<RedrawBehaviourOptions>();
+        options.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(options.IsEnabled);
     }
 
-
-    /// <inheritdoc />
-    public void Dispose()
+    private void OnEnabledChanged(bool enabled)
     {
-        DisposeSubscriptions();
-    }
-
-    private bool _isEnabled = true;
-
-
-    /// <inheritdoc />
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set
+        if (enabled)
         {
-            if (value == _isEnabled) return;
-            _isEnabled = value;
-            if (value)
-            {
-                SubscribeToEvents();
-            }
-            else
-            {
-                DisposeSubscriptions();
-            }
+            SubscribeToEvents();
+        }
+        else
+        {
+            DisposeSubscriptions();
         }
     }
 
-    private void DisposeSubscriptions()
+    /// <inheritdoc />
+    public new void Dispose()
     {
-        _subscriptions.DisposeAll();
+        options.OnEnabledChanged -= OnEnabledChanged;
+        DisposeSubscriptions();
     }
 
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<NodeAddedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<NodeRemovedEvent>(e => NotifyRedraw(e.Model)),

@@ -1,0 +1,26 @@
+@if (_portContainer is not null)
+{
+    <h3>PortContainerDisplay</h3>
+}
+
+@code {
+
+    [Parameter]
+    public object? SelectedItem
+    {
+        get => _portContainer;
+        set
+        {
+            if (value is IPortContainer container)
+            {
+                _portContainer = container;
+            }
+            else
+            {
+                _portContainer = null;
+            }
+        }
+    }
+
+    private IPortContainer? _portContainer;
+}

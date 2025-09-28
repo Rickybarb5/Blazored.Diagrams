@@ -1,11 +1,10 @@
-using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -13,13 +12,11 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 ///     Performs cleanup actions when something is deleted from the diagram.
 /// </summary>
-public class DeleteBehaviour : IBehaviour
+public class DeleteBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly DeleteOptions _options;
-    private List<IDisposable> _subscriptions = [];
-
-
+    private readonly DeleteBehaviourOptions _behaviourOptions;
+    
     private void OnEnabledChanged(bool enabled)
     {
         if (enabled)
@@ -32,14 +29,9 @@ public class DeleteBehaviour : IBehaviour
         }
     }
 
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<NodeRemovedEvent>(e => CleanupNodeDependencies(e.Model)),
             _service.Events.SubscribeTo<LayerRemovedEvent>(e => CleanupLayerDependencies(e.Model)),
@@ -56,9 +48,9 @@ public class DeleteBehaviour : IBehaviour
     public DeleteBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<DeleteOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<DeleteBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void CleanupLayerDependencies(ILayer obj)
@@ -84,12 +76,5 @@ public class DeleteBehaviour : IBehaviour
     private void CleanupPortDependencies(IPort port)
     {
         port.Dispose();
-    }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        DisposeSubscriptions();
-        _options.OnEnabledChanged -= OnEnabledChanged;
     }
 }

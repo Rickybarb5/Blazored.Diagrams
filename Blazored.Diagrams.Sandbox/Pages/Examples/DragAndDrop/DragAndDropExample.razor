@@ -1,0 +1,53 @@
+@page "/drag-and-drop"
+@using Blazored.Diagrams.Sandbox.Pages.Nodes
+
+<div style="display:flex;flex-direction:row;width:100%; height:100%">
+    <div style="display:flex;flex-direction:column;height:100%;width:20%">
+        @foreach (var node in NodeList)
+        {
+            <MudPaper @ondragstart="() => OnDragStart(node)"
+                      @ondragend="OnDragEnd"
+                      draggable="true">
+                <MudText>@node</MudText>
+            </MudPaper>
+        }
+    </div>
+    <DiagramContainer DiagramService="Service"></DiagramContainer>
+</div>
+
+@code {
+    [Inject] public IDiagramService Service { get; set; }
+    private DragAndDropBehaviour DragAndDropBehaviour;
+
+    protected override Task OnInitializedAsync()
+    {
+        DragAndDropBehaviour = new DragAndDropBehaviour(Service);
+        Service.Behaviours.RegisterBehaviour(DragAndDropBehaviour);
+        return base.OnInitializedAsync();
+    }
+
+    private List<string> NodeList =
+    [
+        "Named Node",
+        "Circle Node",
+    ];
+
+    private void OnDragStart(string nodeKind)
+    {
+        INode node = nodeKind switch
+        {
+            "Named Node" => new NamedNode(),
+            "Circle Node" => new CircularNode(),
+            _ => throw new NotImplementedException()
+        };
+
+        DragAndDropBehaviour.Model = node;
+        DragAndDropBehaviour.StartDrag();
+    }
+
+    private void OnDragEnd()
+    {
+        DragAndDropBehaviour.EndDrag();
+    }
+
+}

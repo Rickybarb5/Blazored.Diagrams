@@ -11,7 +11,7 @@ public class VirtualizationService : IVirtualizationService
     /// <inheritdoc />
     public IEnumerable<T> Virtualize<T>(IDiagram diagram, IEnumerable<T> items) where T : IPosition, ISize
     {
-        if (diagram?.Options.Virtualization.Enabled != true)
+        if (diagram?.Options.Virtualization.IsEnabled != true)
         {
             foreach (var item in items)
             {

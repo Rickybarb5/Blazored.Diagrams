@@ -1,0 +1,32 @@
+@if (_nodeContainer is not null)
+{
+    <MudButton OnClick="AddNode">Add Node</MudButton>
+}
+
+@code {
+
+    [Parameter]
+    public object? SelectedItem
+    {
+        get => _nodeContainer;
+        set
+        {
+            if (value is INodeContainer container)
+            {
+                _nodeContainer = container;
+            }
+            else
+            {
+                _nodeContainer = null;
+            }
+        }
+    }
+
+    private INodeContainer? _nodeContainer;
+
+    private void AddNode()
+    {
+        _nodeContainer.Nodes.Add(new Node());
+    }
+
+}

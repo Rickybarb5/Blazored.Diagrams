@@ -1,0 +1,127 @@
+@page "/reflection"
+@using System.Xml
+@inject HttpClient Client
+
+<PageTitle>Interface Methods</PageTitle>
+
+<MudPaper>
+    <MudTable Items="methodInfos" Hover="true">
+        <HeaderContent>
+            <MudTh>Method</MudTh>
+            <MudTh>Summary</MudTh>
+            <MudTh>Parameters</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Method">@context.MethodName</MudTd>
+            <MudTd DataLabel="Summary">@context.Summary</MudTd>
+            <MudTd DataLabel="Parameters">
+                @foreach (var parameter in context.Parameters)
+                {
+                    <div>@parameter</div>
+                }
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
+
+@code {
+    private List<MethodInfoWithComments> methodInfos;
+    [Parameter] public Type TargetType { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var type = TargetType; // Replace with your actual interface type
+        var methods = type.GetMethods();
+
+        methodInfos = (await Parse()).Where(Filter).ToList();
+    }
+
+    private async Task<XmlDocument> GetXmlDocumentationAsync()
+    {
+        var xmlPath = "_content/Blazored.Diagrams/Blazored.Diagrams.xml"; // The correct path
+        var httpResponseMessage = await Client.GetAsync(xmlPath);
+        if (!httpResponseMessage.IsSuccessStatusCode)
+        {
+            throw new InvalidOperationException($"Could not load XML documentation from '{xmlPath}'. Status code: {httpResponseMessage.StatusCode}");
+        }
+
+        var text = await httpResponseMessage.Content.ReadAsStringAsync();
+        var doc = new XmlDocument();
+        doc.LoadXml(text);
+        return doc;
+    }
+
+    private bool Filter(MethodInfoWithComments method)
+    {
+        // Implement filtering logic based on type
+        // For example, check if the method parameters contain the target type
+        foreach (var param in method.Parameters)
+        {
+            if (param.Contains(TargetType.Name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private async Task<List<MethodInfoWithComments>> Parse()
+    {
+        var methods = new List<MethodInfoWithComments>();
+        var doc = await GetXmlDocumentationAsync();
+
+        var memberNodes = doc.SelectNodes("//member");
+        foreach (XmlNode memberNode in memberNodes)
+        {
+            if (memberNode is null)
+            {
+                continue;
+            }
+
+            var name = memberNode!.Attributes?["name"]?.InnerText;
+            var summary = memberNode!.SelectSingleNode("summary")?.InnerText.Trim();
+            var paramNodes = memberNode!.SelectNodes(".//param");
+            var parameters = new List<string>();
+            if (paramNodes is not null)
+            {
+                foreach (XmlNode paramNode in paramNodes)
+                {
+                    parameters.Add(paramNode.InnerText.Trim());
+                }
+            }
+
+
+            var commentsNode = memberNode.SelectSingleNode("comments");
+            if (commentsNode != null)
+            {
+                var seeNodes = commentsNode.SelectNodes(".//see");
+                foreach (XmlNode seeNode in seeNodes)
+                {
+                    summary = summary.Replace(seeNode.InnerText.Trim(), seeNode.Attributes["cref"].Value.Split('.').Length > 0 ? seeNode.Attributes["cref"].Value.Split('.')[^1] : "");
+                }
+
+                summary = summary.Trim();
+            }
+
+            var method = new MethodInfoWithComments
+            {
+                MethodName = name,
+                Summary = summary,
+                Parameters = parameters
+            };
+            methods.Add(method);
+        }
+
+        return methods;
+    }
+
+
+    public class MethodInfoWithComments
+    {
+        public string? MethodName { get; set; }
+        public string? Summary { get; set; }
+        public List<string> Parameters { get; set; }
+    }
+
+}

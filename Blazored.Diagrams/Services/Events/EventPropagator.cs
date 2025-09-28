@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Extensions;
+using Blazored.Diagrams.Services.Diagrams;
 
 namespace Blazored.Diagrams.Services.Events;
 

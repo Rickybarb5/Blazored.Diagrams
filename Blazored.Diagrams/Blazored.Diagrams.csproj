@@ -23,12 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Services\DiagramService.Create.cs">
-            <DependentUpon>DiagramService.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\DiagramService.Delete.cs">
-            <DependentUpon>DiagramService.cs</DependentUpon>
-        </Compile>
         <Compile Update="Ports\Port.Features.cs">
             <DependentUpon>Port.cs</DependentUpon>
         </Compile>
@@ -37,9 +31,6 @@
         </Compile>
         <Compile Update="Diagrams\Diagram.Features.cs">
             <DependentUpon>Diagram.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\DiagramService.Behaviours.cs">
-            <DependentUpon>DiagramService.cs</DependentUpon>
         </Compile>
         <Compile Update="Services\Events\EventPropagator.Diagram.cs">
           <DependentUpon>EventPropagator.cs</DependentUpon>
@@ -80,11 +71,19 @@
         <Compile Update="Services\Events\Events.Ports.cs">
           <DependentUpon>Events.cs</DependentUpon>
         </Compile>
+        <Compile Update="Options\Behaviours\DefaultLinkOptions.cs">
+          <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>$(MSBuildProjectName).Test</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Components\Renderers\GroupRenderer.razor" />
+      <UpToDateCheckInput Remove="Components\Renderers\NodeRenderer.razor" />
+      <UpToDateCheckInput Remove="Components\Renderers\PortRenderer.razor" />
     </ItemGroup>
 
 </Project>

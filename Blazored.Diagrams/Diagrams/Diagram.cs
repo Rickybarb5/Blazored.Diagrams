@@ -5,7 +5,7 @@ using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
-using Blazored.Diagrams.Options;
+using Blazored.Diagrams.Options.Diagram;
 using Blazored.Diagrams.Ports;
 
 namespace Blazored.Diagrams.Diagrams;
@@ -50,9 +50,6 @@ public partial class Diagram : IDiagram
     {
         OnLayerAdded?.Invoke(this, obj);
     }
-
-    /// <inheritdoc />
-    public virtual DiagramOptions Options { get; set; } = new();
 
     /// <inheritdoc />
     public virtual double Zoom
@@ -189,6 +186,9 @@ public partial class Diagram : IDiagram
     }
 
     /// <inheritdoc />
+    public virtual DiagramOptions Options { get; init; } = new();
+
+    /// <inheritdoc />
     public void Add(INode node)
     {
         CurrentLayer.Nodes.Add(node);
@@ -199,8 +199,7 @@ public partial class Diagram : IDiagram
     {
         CurrentLayer.Groups.Add(group);
     }
-
-
+    
     /// <inheritdoc />
     public event Action<IDiagram, double, double>? OnZoomChanged;
 

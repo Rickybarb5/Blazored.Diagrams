@@ -1,0 +1,49 @@
+@if (SelectedItem is not null)
+{
+    <MudCard>
+        <MudCardHeader>
+
+            <MudText>Edit Link</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudSelect T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Curved)" ValueChanged="ctx => OnSelectChanged(SelectedItem, ctx)">
+                <MudSelectItem T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Line)">Line</MudSelectItem>
+                <MudSelectItem T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Curved)">Curve</MudSelectItem>
+                <MudSelectItem T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Orthogonal)">Orthogonal</MudSelectItem>
+            </MudSelect>
+        </MudCardContent>
+
+    </MudCard>
+}
+
+@code {
+
+    [CascadingParameter] public IDiagramService Service { get; set; }
+
+    [Parameter] public ILink? SelectedItem { get; set; }
+
+
+    private void Select(ILink link)
+    {
+        link.IsSelected = true;
+    }
+
+    private void OnSelectChanged(ILink link, DefaultLinkComponentPathType ctx)
+    {
+        switch (ctx)
+        {
+            case DefaultLinkComponentPathType.Line:
+                Service.Add.AddLinkTo(link.SourcePort, link.TargetPort, new Link());
+                break;
+            case DefaultLinkComponentPathType.Curved:
+                Service.Add.AddLinkTo(link.SourcePort, link.TargetPort, new Link());
+                break;
+            case DefaultLinkComponentPathType.Orthogonal:
+                Service.Add.AddLinkTo(link.SourcePort, link.TargetPort, new Link());
+                break;
+        }
+
+        Service.Remove.Link(link);
+    }
+
+}

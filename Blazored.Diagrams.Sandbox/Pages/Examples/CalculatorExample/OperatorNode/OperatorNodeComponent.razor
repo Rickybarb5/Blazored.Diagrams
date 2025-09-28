@@ -1,0 +1,78 @@
+@implements IDisposable
+<MudCard Style="min-width:250px;-webkit-user-select: none;-ms-user-select: none;user-select: none;-webkit-user-drag: none;">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Operation</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudSelect T="Operator" Value="Node.Operator" ValueChanged="OnValueChanged" Label="Select an operator" Immediate="true" Variant="Variant.Outlined">
+            @foreach (var value in Enum.GetValues<Operator>())
+            {
+                <MudSelectItem T="Operator" Value="@value">@Enum.GetName(value)</MudSelectItem>
+            }
+        </MudSelect>
+    </MudCardContent>
+    <MudCardActions>
+        @if (Node.InputPort.IncomingLinks.Count < 2)
+        {
+            <MudText Typo="Typo.caption" Color="Color.Error">Link two number nodes to this node!</MudText>
+        }
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [CascadingParameter] public IDiagramService Service { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; }
+    [Parameter] public OperatorNode Node { get; set; }
+
+    private List<IDisposable> _subscriptions;
+
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _subscriptions =
+            [
+                Service.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == Node.Id, OnRedraw),
+            ];
+            Node.OnError += DisplayError;
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnRedraw(NodeRedrawEvent obj)
+    {
+        StateHasChanged();
+    }
+
+    private string GetOperatorString()
+    {
+        return Node.Operator switch
+        {
+            Operator.Add => "+",
+            Operator.Subtract => "-",
+            Operator.Multiply => "*",
+            Operator.Divide => "/",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    public void Dispose()
+    {
+        _subscriptions.DisposeAll();
+        Node.OnError -= DisplayError;
+    }
+
+    private void DisplayError(string obj)
+    {
+        Snackbar.Add(obj, Severity.Error);
+    }
+
+    private Task OnValueChanged(Operator arg)
+    {
+        Node.Operator = arg;
+        return Task.CompletedTask;
+    }
+
+}

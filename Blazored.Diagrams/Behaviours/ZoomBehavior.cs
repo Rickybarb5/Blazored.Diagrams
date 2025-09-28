@@ -1,6 +1,7 @@
 ﻿using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -9,11 +10,10 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 ///     Behaviour for zooming the diagram using the pointer wheel.
 /// </summary>
-public class ZoomBehavior : IBehaviour
+public class ZoomBehavior : BaseBehaviour
 {
     private readonly IDiagramService _diagramService;
-    private readonly ZoomOptions _options;
-    private IDisposable _eventSubscription;
+    private readonly ZoomBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="ZoomBehavior"/>
@@ -22,9 +22,9 @@ public class ZoomBehavior : IBehaviour
     public ZoomBehavior(IDiagramService diagramService)
     {
         _diagramService = diagramService;
-        _options = _diagramService.Diagram.Options.Get<ZoomOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _diagramService.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -39,35 +39,49 @@ public class ZoomBehavior : IBehaviour
         }
     }
 
-    /// <inheritdoc />
-    public void Dispose()
+    private new void DisposeSubscriptions()
     {
-        DisposeSubscriptions();
-    }
-
-    private void DisposeSubscriptions()
-    {
-        _eventSubscription.Dispose();
+        Subscriptions.DisposeAll();
     }
 
     private void SubscribeToEvents()
     {
-        _eventSubscription =
-            _diagramService.Events.SubscribeTo<DiagramWheelEvent>(e => Events_OnWheel(e.Model, e.Args));
+        Subscriptions =
+        [
+            _diagramService.Events.SubscribeTo<DiagramWheelEvent>(e => StepZoom(e.Model, e.Args)),
+            _diagramService.Events.SubscribeTo<DiagramZoomChangedEvent>(e => SetZoom(e.Model.Zoom))
+            
+        ];
     }
 
-    private void Events_OnWheel(IDiagram diagram, WheelEventArgs args)
+    private void StepZoom(IDiagram diagram, WheelEventArgs args)
     {
-        if (!_options.IsEnabled) return;
+        if (!_behaviourOptions.IsEnabled) return;
         var wheelDeltaY = args.DeltaY;
         switch (wheelDeltaY)
         {
             case > 0:
-                _diagramService.Diagram.StepZoomDown();
+                SetZoom(diagram.Zoom - _behaviourOptions.ZoomStep);
                 break;
             case < 0:
-                _diagramService.Diagram.StepZoomUp();
+                SetZoom(diagram.Zoom + _behaviourOptions.ZoomStep);
                 break;
         }
+    }
+    
+    private void SetZoom(double zoom)
+    {
+        if (zoom == _diagramService.Diagram.Zoom) return;
+        
+        if (zoom > _behaviourOptions.MaxZoom)
+        {
+            zoom = _behaviourOptions.MaxZoom;
+        }
+        else if (zoom < _behaviourOptions.MinZoom)
+        {
+            zoom = _behaviourOptions.MinZoom;
+        }
+
+        _diagramService.Diagram.Zoom = zoom;
     }
 }

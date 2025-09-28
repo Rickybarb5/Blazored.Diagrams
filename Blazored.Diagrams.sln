@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazored.Diagrams", "Blazor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazored.Diagrams.Test", "Blazored.Diagrams.Test\Blazored.Diagrams.Test.csproj", "{69BCD6D0-D1EB-4B40-9CED-B32086FCCF13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazored.Diagrams.Sandbox", "Blazored.Diagrams.Sandbox\Blazored.Diagrams.Sandbox.csproj", "{70618FF5-EDF6-4B5C-B29D-0F5FACA69D2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{69BCD6D0-D1EB-4B40-9CED-B32086FCCF13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69BCD6D0-D1EB-4B40-9CED-B32086FCCF13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69BCD6D0-D1EB-4B40-9CED-B32086FCCF13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70618FF5-EDF6-4B5C-B29D-0F5FACA69D2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70618FF5-EDF6-4B5C-B29D-0F5FACA69D2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70618FF5-EDF6-4B5C-B29D-0F5FACA69D2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70618FF5-EDF6-4B5C-B29D-0F5FACA69D2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

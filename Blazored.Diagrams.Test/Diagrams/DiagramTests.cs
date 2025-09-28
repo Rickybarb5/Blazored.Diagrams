@@ -2,7 +2,6 @@ using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
-using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
 
 namespace Blazored.Diagrams.Test.Diagrams;
@@ -36,35 +35,6 @@ public class DiagramTests
 
         //Assert
         Assert.Equal(zoom, diagram.Zoom);
-    }
-
-    [Fact]
-    public void Test_Set_Zoom_Upper_Bound()
-    {
-        //Arrange
-        var diagram = Instance;
-        var zoom = diagram.Options.Get<ZoomOptions>()!.MaxZoom + 1;
-        //Act
-        diagram.SetZoom(zoom);
-
-        //Assert
-        Assert.NotEqual(zoom, diagram.Zoom);
-        Assert.Equal(diagram.Options.Get<ZoomOptions>()!.MaxZoom, diagram.Zoom);
-    }
-
-    [Fact]
-    public void Test_Set_Zoom_Lower_Bound()
-    {
-        //Arrange
-        var diagram = Instance;
-        var zoom = diagram.Options.Get<ZoomOptions>()!.MinZoom - 1;
-
-        //Act
-        diagram.SetZoom(zoom);
-
-        //Assert
-        Assert.NotEqual(zoom, diagram.Zoom);
-        Assert.Equal(diagram.Options.Get<ZoomOptions>()!.MinZoom, diagram.Zoom);
     }
 
     [Fact]

@@ -1,12 +1,14 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Links;
 
 /// <summary>
 /// Default link implementation.
 /// </summary>
-public partial class Link : ILink
+public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
 {
     private bool _isSelected;
     private bool _isVisible = true;

@@ -1,0 +1,10 @@
+.circular-node{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background-color: whitesmoke;
+    border-color: black;
+    border-style: solid;
+    border-width: 2px;
+    -webkit-user-drag: none;
+}

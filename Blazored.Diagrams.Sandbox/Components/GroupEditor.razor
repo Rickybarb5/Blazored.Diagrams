@@ -1,0 +1,53 @@
+<MudCard>
+    <MudCardHeader>
+        <MudText>Edit Group</MudText>
+        <MudSpacer></MudSpacer>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText>ID: @Group.Id</MudText>
+        <MudButton OnClick="AddPort" Variant="Variant.Filled">Add Port</MudButton>
+        <MudButton OnClick="AddNode" Variant="Variant.Filled">Add Node</MudButton>
+        <MudButton OnClick="AddGroup" Variant="Variant.Filled">Add Group</MudButton>
+        <MudNumericField T="int" @bind-Value="@Group.Padding" Label="Group padding" Immediate="true"></MudNumericField>
+        <MudSpacer></MudSpacer>
+        <MudButton OnClick="DeleteGroup" Color="Color.Error" Variant="Variant.Filled">Delete Group</MudButton>
+    </MudCardContent>
+
+</MudCard>
+
+@code {
+    [Parameter] public IGroup Group { get; set; } = null!;
+    [CascadingParameter] IDiagramService Service { get; set; } = null!;
+
+    private void AddPort(MouseEventArgs obj)
+    {
+        foreach (var position in Enum.GetValues<PortAlignment>())
+        {
+            foreach (var alignment in Enum.GetValues<PortJustification>())
+            {
+                if (Group.Ports.Any(x => x.Alignment == position && x.Justification == alignment) || position == PortAlignment.Custom) continue;
+                var port = new Port();
+                port.Justification = alignment;
+                port.Alignment = position;
+                Group.Ports.Add(port);
+                return;
+            }
+        }
+    }
+
+    private void DeleteGroup(MouseEventArgs obj)
+    {
+        Service.Remove.Group(Group);
+    }
+
+    private void AddNode(MouseEventArgs arg)
+    {
+        Group.Nodes.Add(new Node());
+    }
+
+    private void AddGroup(MouseEventArgs obj)
+    {
+        Group.Groups.Add(new Group());
+    }
+
+}

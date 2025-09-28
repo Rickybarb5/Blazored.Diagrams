@@ -1,0 +1,108 @@
+@page "/diagram-behaviours"
+@using Blazored.Diagrams.Options.Behaviours
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%">
+    <div style="display:flex;flex-direction: row;height:100%">
+        <div style="height:100%;overflow:auto">
+            <MudExpansionPanels MultiExpansion="true">
+                <MudExpansionPanel Text="Default Diagram Behaviours" IsInitiallyExpanded="true">
+                    <MudList>
+                        <MudListItem >
+                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
+                                <MudText>Zoom behaviour - Scroll to zoom in and out.</MudText>
+                                <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled"
+                                           Color="Color.Primary"
+                                           Label="Zooming enabled"
+                                           LabelPosition="LabelPosition.Start"/>
+                            </div>
+                        </MudListItem>
+                        <MudDivider/>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
+                                <MudText> Panning - Drag the diagram to pan.</MudText>
+                                <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<PanBehaviourOptions>()!.IsEnabled"
+                                           Color="Color.Primary"
+                                           Label="Panning enabled"
+                                           LabelPosition="LabelPosition.Start"/>
+                            </div>
+
+                        </MudListItem>
+                        <MudDivider/>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
+                                <MudText>Moving models - Click and drag a model within the diagram to move it.</MudText>
+
+                                <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled"
+                                           Color="Color.Primary"
+                                           Label="Moving enabled"
+                                           LabelPosition="LabelPosition.Start"/>
+                            </div>
+
+                        </MudListItem>
+                        <MudDivider/>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
+                                <MudText>Select models - Click on a model to set it to the selected state. <br/>Use <b>Ctrl+click</b> to select multiple models.</MudText>
+                                <div style="display: flex;flex-direction: column;justify-content: space-between">
+                                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().SelectionEnabled"
+                                               Color="Color.Primary"
+                                               Label="Selection enabled"
+                                               LabelPosition="LabelPosition.Start"/>
+                                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().MultiSelectEnabled"
+                                               Color="Color.Primary"
+                                               Label="Multiselect enabled"
+                                               LabelPosition="LabelPosition.Start"/>
+                                </div>
+                            </div>
+
+                        </MudListItem>
+                        <MudDivider/>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
+                                <MudText>Drawing links - Drag from one port to another to create a link.</MudText>
+                                <div style="display: flex;flex-direction: column;justify-content: space-between">
+                                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().IsEnabled"
+                                               Color="Color.Primary"
+                                               Label="Link creation enabled"
+                                               LabelPosition="LabelPosition.Start"/>
+                                    <MudSelect T="DefaultLinkComponentPathType" Label="Link type" @bind-Value="@(Service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().DefaultLinkComponentOptions.PathType)">
+                                        <MudSelectItem T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Line)">Line</MudSelectItem>
+                                        <MudSelectItem T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Curved)">Curve</MudSelectItem>
+                                        <MudSelectItem T="DefaultLinkComponentPathType" Value="@(DefaultLinkComponentPathType.Orthogonal)">Orthogonal</MudSelectItem>
+                                    </MudSelect>
+                                </div>
+                            </div>
+                        </MudListItem>
+                        <MudDivider/>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
+                                <MudText>Delete models - Select a model and click the Delete key</MudText>
+                                <div style="display: flex;flex-direction: column;justify-content: space-between">
+                                    <MudTextField Style="max-width: 150px" Immediate="true" Label="Delete key code" @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().DeleteKeyCode"></MudTextField>
+                                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled"
+                                               Color="Color.Primary"
+                                               Label="Delete enabled"
+                                               LabelPosition="LabelPosition.Start"/>
+                                </div>
+                            </div>
+                        </MudListItem>
+                    </MudList>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </div>
+
+        <DiagramShowcase Service="Service"></DiagramShowcase>
+    </div>
+</MudContainer>
+
+@code {
+
+    [Inject] public IDiagramServiceProvider Provider { get; set; }
+    private IDiagramService Service;
+
+    protected override Task OnInitializedAsync()
+    {
+        Service = Provider.GetDiagramService(new Diagram());
+        return base.OnInitializedAsync();
+    }
+
+}

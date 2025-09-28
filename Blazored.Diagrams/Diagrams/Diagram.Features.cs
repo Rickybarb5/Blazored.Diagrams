@@ -1,6 +1,5 @@
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Layers;
-using Blazored.Diagrams.Options.Behaviours;
 
 namespace Blazored.Diagrams.Diagrams;
 
@@ -34,27 +33,18 @@ public partial class Diagram
     /// <inheritdoc />
     public virtual void StepZoomUp()
     {
-        SetZoom(Zoom + Options.Get<ZoomOptions>()!.ZoomStep);
+        SetZoom(Zoom /*TODO:Get step from options*/);
     }
 
     /// <inheritdoc />
     public virtual void StepZoomDown()
     {
-        SetZoom(Zoom - Options.Get<ZoomOptions>()!.ZoomStep);
+        SetZoom(Zoom /*TODO:Get step from options*/);
     }
 
     /// <inheritdoc />
     public virtual void SetZoom(double zoom)
     {
-        if (zoom > Options.Get<ZoomOptions>()!.MaxZoom)
-        {
-            zoom = Options.Get<ZoomOptions>()!.MaxZoom;
-        }
-        else if (zoom < Options.Get<ZoomOptions>()!.MinZoom)
-        {
-            zoom = Options.Get<ZoomOptions>()!.MinZoom;
-        }
-
         if (zoom != _zoom)
         {
             var oldZoom = _zoom;

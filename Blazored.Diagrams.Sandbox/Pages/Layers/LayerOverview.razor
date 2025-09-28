@@ -1,0 +1,62 @@
+@page "/layer-overview"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%">
+    <div style="display:flex;flex-direction: row;height:100%">
+        <div style="height:100%;overflow:auto">
+            <MudExpansionPanels MultiExpansion="true">
+                <MudExpansionPanel Text=@("Layer overview") IsInitiallyExpanded="true">
+                    <MudText Typo="Typo.body1">
+                        Layers serve as containers for diagram models(nodes, groups,etc). They allow you to receive events from models within it, as well as some general operations:
+                    </MudText>
+                    <MudContainer>
+                        <MudText Typo="Typo.h6">Toggle layer visibility: Show/Hide multiple models at once.</MudText>
+                        <CodeHighlighter Language="csharp" Code=@($"layer.{nameof(Layer.IsVisible)}")></CodeHighlighter>
+                    </MudContainer>
+                    <MudContainer>
+                        <MudSwitch Color="Color.Primary" T="bool" Label="Layer 1 visible" Value="@Service.Diagram.Layers[0].IsVisible" ValueChanged="ctx => Service.Diagram.Layers[0].IsVisible = ctx"></MudSwitch>
+                        <MudSwitch Color="Color.Primary" T="bool" Label="Layer 2 visible" Value="@Service.Diagram.Layers[1].IsVisible" ValueChanged="ctx => Service.Diagram.Layers[1].IsVisible = ctx"></MudSwitch>
+                    </MudContainer>
+
+                </MudExpansionPanel>
+
+            </MudExpansionPanels>
+        </div>
+
+        <div style="width:100%;height:100%">
+            <DiagramContainer DiagramService="Service"></DiagramContainer>
+        </div>
+    </div>
+</MudContainer>
+
+
+@code {
+
+    [Inject] public IDiagramServiceProvider Provider { get; set; } = null!;
+    private IDiagramService Service;
+
+    protected override Task OnInitializedAsync()
+    {
+        Service = Provider.GetDiagramService(new Diagram());
+        var layer2 = new Layer();
+        Service.Add.Layer(layer2);
+        foreach (var index in Enumerable.Range(1, 4))
+        {
+            var node = new NamedNode(){ Name = "Im on layer 1!"};
+            node.SetPosition(200 * index, 100);
+            Service.Add.Node(node);
+        }
+
+        Service.Diagram.UseLayer(layer2);
+        var group = new Group();
+        foreach (var index in Enumerable.Range(1, 4))
+        {
+            var node = new NamedNode(){ Name = "Im on layer 2!"};
+            node.SetPosition(200 * index, 300);
+            Service.Add.Node(node);
+        }
+
+        Service.Diagram.UseLayer(Service.Diagram.Layers[0]);
+        return base.OnInitializedAsync();
+    }
+
+}

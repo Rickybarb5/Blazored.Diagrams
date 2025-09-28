@@ -4,8 +4,9 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Test.Behaviours;
@@ -14,9 +15,8 @@ public class DeleteWithKeyBehaviourTests
 {
     private IDiagramService CreateService()
     {
-        var service = new DiagramService();
-        service.Create<Diagram>();
-
+        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
+        var service = diagramServiceProvider.GetDiagramService(new Diagram());
         return service;
     }
 
@@ -28,8 +28,8 @@ public class DeleteWithKeyBehaviourTests
 
         var node1 = new Node { IsSelected = true };
         var node2 = new Node { IsSelected = false };
-        service.AddNode(node1);
-        service.AddNode(node2);
+        service.Add.Node(node1);
+        service.Add.Node(node2);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -49,8 +49,8 @@ public class DeleteWithKeyBehaviourTests
 
         var group1 = new Group { IsSelected = true };
         var group2 = new Group { IsSelected = false };
-        service.AddGroup(group1);
-        service.AddGroup(group2);
+        service.Add.Group(group1);
+        service.Add.Group(group2);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -75,8 +75,8 @@ public class DeleteWithKeyBehaviourTests
         group1.Ports.Add(sourcePort);
         group2.Ports.Add(targetPort);
         var link1 = new Link() { IsSelected = true, SourcePort = sourcePort, TargetPort = targetPort };
-        service.AddGroup(group1);
-        service.AddGroup(group2);
+        service.Add.Group(group1);
+        service.Add.Group(group2);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -96,14 +96,14 @@ public class DeleteWithKeyBehaviourTests
         var node = new Node { IsSelected = true };
         var group = new Group { IsSelected = true };
         
-        service.AddNode(node);
-        service.AddGroup(group);
+        service.Add.Node(node);
+        service.Add.Group(group);
         var sourcePort = new Port();
         var targetPort = new Port();
         node.Ports.Add(sourcePort);
         group.Ports.Add(targetPort);
         var link = new Link();
-        service.AddLinkTo(sourcePort, targetPort, link);
+        service.Add.AddLinkTo(sourcePort, targetPort, link);
         link.IsSelected = true;
 
         var args = new KeyboardEventArgs { Code = "Backspace" };
@@ -122,10 +122,10 @@ public class DeleteWithKeyBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<DeleteWithKeyOptions>().DeleteKeyCode = "Backspace";
+        service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().DeleteKeyCode = "Backspace";
 
         var node = new Node { IsSelected = true };
-        service.AddNode(node);
+        service.Add.Node(node);
 
         var args = new KeyboardEventArgs { Code = "Backspace" };
 
@@ -141,11 +141,11 @@ public class DeleteWithKeyBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<DeleteWithKeyOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled = false;
 
 
         var node = new Node { IsSelected = true };
-        service.AddNode(node);
+        service.Add.Node(node);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -161,12 +161,12 @@ public class DeleteWithKeyBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<DeleteWithKeyOptions>().IsEnabled = false;
-        service.Diagram.Options.Get<DeleteWithKeyOptions>().IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled = true;
 
 
         var node = new Node { IsSelected = true };
-        service.AddNode(node);
+        service.Add.Node(node);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -184,7 +184,7 @@ public class DeleteWithKeyBehaviourTests
         using var service = CreateService();
 
         var node = new Node { IsSelected = true };
-        service.AddNode(node);
+        service.Add.Node(node);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -193,7 +193,7 @@ public class DeleteWithKeyBehaviourTests
         Assert.DoesNotContain(node, service.Diagram.AllNodes);
 
         // Reset and dispose
-        service.AddNode(node);
+        service.Add.Node(node);
         service.Dispose();
 
         // Act

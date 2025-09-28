@@ -1,0 +1,38 @@
+@page "/diagram-events"
+<div style="display:flex;flex-direction: row;height:100%">
+    <MudContainer MaxWidth="MaxWidth.False" Style="height:100%">
+        <MudExpansionPanel Text="Diagram Events" IsInitiallyExpanded="true">
+            <EventCollectionComponent T="IDiagram"></EventCollectionComponent>
+        </MudExpansionPanel>
+    </MudContainer>
+
+</div>
+
+@code {
+
+    private const string EventSubscription = @"
+        Node1.OnClick += HandleClickEvent;
+        Node2.OnDoubleClick += HandleDoubleClickEvent;
+        Diagram.OnNodeClicked += HandleDiagramNodeClickEvent;";
+
+    private const string EventManagement = @"
+    private void HandleDiagramNodeClickEvent(INode n, MouseEventArgs arg2)
+    {
+        if (n is NamedNode namedNode)
+            Snackbar.Add($""[Diagram event] - {namedNode.Name} triggered a click event event."", Severity.Info);
+    }
+
+    private void HandleClickEvent(INode n, MouseEventArgs arg2)
+    {
+        if (n is NamedNode namedNode)
+            Snackbar.Add($""[Node event] -  {namedNode.Name} triggered a click event."", Severity.Success);
+    }
+
+    private void HandleDoubleClickEvent(INode n, MouseEventArgs arg2)
+    {
+        if (n is NamedNode namedNode)
+            Snackbar.Add($""[Node event] -  {namedNode.Name} triggered the db click event."", Severity.Warning);
+    }
+";
+
+}

@@ -61,12 +61,13 @@ public class EventAggregator : IEventAggregator
     }
 
     private void PublishToGeneralSubscriptions<TEvent>(TEvent eventData, Type eventType)
+    where TEvent : notnull
     {
         if (!_subscriptions.TryGetValue(eventType, out var subs)) return;
 
         subs.ForEach(sub =>
         {
-            if (sub.Predicate == null || sub.Predicate(eventData!))
+            if (sub.Predicate == null || sub.Predicate(eventData))
             {
                 ((Action<TEvent>)sub.Handler)(eventData);
             } 

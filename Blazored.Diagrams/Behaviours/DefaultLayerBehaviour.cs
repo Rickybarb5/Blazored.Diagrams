@@ -1,7 +1,7 @@
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -12,11 +12,10 @@ namespace Blazored.Diagrams.Behaviours;
 /// <see cref="HandleLayerSwitch"/>
 /// <see cref="HandleLayerAdded"/>
 /// </summary>
-public class DefaultLayerBehaviour : IBehaviour
+public class DefaultLayerBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly DefaultLayerOptions _options;
-    private List<IDisposable> _subscriptions;
+    private readonly DefaultLayerBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="DefaultLayerBehaviour"/>
@@ -25,9 +24,9 @@ public class DefaultLayerBehaviour : IBehaviour
     public DefaultLayerBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<DefaultLayerOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<DefaultLayerBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -41,27 +40,13 @@ public class DefaultLayerBehaviour : IBehaviour
             DisposeSubscriptions();
         }
     }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        DisposeSubscriptions();
-    }
-
-    /// <summary>
-    /// Disposes of all subscriptions.
-    /// </summary>
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
+    
     /// <summary>
     /// Subscribe to mLayer relevant events.
     /// </summary>
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<LayerRemovedEvent>(HandleLayerRemoved),
             _service.Events.SubscribeTo<LayerAddedEvent>(HandleLayerAdded),

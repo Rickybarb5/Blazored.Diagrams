@@ -1,7 +1,7 @@
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -9,11 +9,10 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 ///     Standard link behaviour.
 /// </summary>
-public class DefaultLinkBehaviour : IBehaviour
+public class DefaultLinkBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly DefaultLinkOptions _options;
-    private List<IDisposable> _subscriptions;
+    private readonly DefaultLinkBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="DefaultLinkBehaviour"/>
@@ -22,9 +21,9 @@ public class DefaultLinkBehaviour : IBehaviour
     public DefaultLinkBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<DefaultLinkOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<DefaultLinkBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -39,20 +38,9 @@ public class DefaultLinkBehaviour : IBehaviour
         }
     }
 
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        DisposeSubscriptions();
-    }
-
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<LinkTargetPortChangedEvent>(HandleTargetPortChanged),
             _service.Events.SubscribeTo<LinkSourcePortChangedEvent>(HandleSourcePortConnected),

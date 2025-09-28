@@ -1,9 +1,10 @@
-﻿using Blazored.Diagrams.Groups;
+﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
-using Blazored.Diagrams.Options;
+using Blazored.Diagrams.Options.Diagram;
 using Blazored.Diagrams.Ports;
 
 namespace Blazored.Diagrams.Diagrams;
@@ -27,11 +28,6 @@ public interface IDiagram :
     ///     Current height of the diagram.
     /// </summary>
     int Height { get; set; }
-
-    /// <summary>
-    /// General options for the diagram.
-    /// </summary>
-    DiagramOptions Options { get; set; }
 
     /// <summary>
     ///     Gets all the nodes from all layers.
@@ -67,6 +63,11 @@ public interface IDiagram :
     /// Top right position of the diagram.
     /// </summary>
     int PositionY { get; set; }
+
+    /// <summary>
+    /// Virtualization options.
+    /// </summary>
+    DiagramOptions Options { get; init; }
 
     /// <summary>
     /// Sets the size of the diagram.

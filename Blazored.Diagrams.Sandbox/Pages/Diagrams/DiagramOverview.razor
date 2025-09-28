@@ -1,0 +1,75 @@
+@page "/diagram-overview"
+@using Blazored.Diagrams.Options.Behaviours
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%">
+    <div style="display:flex;flex-direction: row;height:100%">
+        <div style="height:100%;overflow:auto">
+            <MudExpansionPanels MultiExpansion="true">
+                <MudExpansionPanel Text=@($"{nameof(DiagramContainer)} Component") IsInitiallyExpanded="true">
+                    <CodeHighlighter Code="@diagramContainerCode" Language="markup"></CodeHighlighter>
+                    <MudText Typo="Typo.body1">
+                        The <b>@($"{nameof(DiagramContainer)}")</b> component takes up all of the available space of the parent component and it's responsible for drawing the diagram elements to the webpage.
+                        It contains the <b>@($"{nameof(Diagram.Options)}")</b> object, which controls styles and behaviours.
+                    </MudText>
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Diagram Options" IsInitiallyExpanded="true">
+                    <MudList>
+                        <MudListSubheader>Style Options - Allows you to override diagram container style and the grid style.</MudListSubheader>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: column;justify-content: space-between">
+                                <MudTextField Immediate="true" Lines="3" Label="Diagram container style" @bind-Value="Service.Diagram.Options.Style.ContainerStyle"></MudTextField>
+                                <MudTextField Immediate="true" Lines="3" Label="Diagram grid style" @bind-Value="Service.Diagram.Options.Style.GridStyle"></MudTextField>
+                                <MudNumericField T="int" Immediate="true" Label="Grid cell size" @bind-Value="Service.Diagram.Options.Style.CellSize"></MudNumericField>
+                                <MudSwitch @bind-Value="@Service.Diagram.Options.Style.GridEnabled"
+                                           Color="Color.Primary"
+                                           Label="Show/Hide Grid"
+                                           LabelPosition="LabelPosition.Start"/>
+                            </div>
+                        </MudListItem>
+                        <MudDivider></MudDivider>
+                        <MudListSubheader>Zoom Options - Allows you to customize zoom levels</MudListSubheader>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: column;justify-content: space-between">
+                                <MudNumericField T="double" Immediate="true" Label="Max zoom value" @bind-Value="Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.MaxZoom"></MudNumericField>
+                                <MudNumericField T="double" Immediate="true" HelperText="Must be bigger than 0" Label="Min zoom value" @bind-Value="Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.MinZoom"></MudNumericField>
+                                <MudNumericField T="double" Immediate="true" Label="Zoom step" @bind-Value="Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.ZoomStep"></MudNumericField>
+                            </div>
+                        </MudListItem>
+                        <MudDivider></MudDivider>
+                        <MudListSubheader>Virtualization Options - Allows you to enable/disable virtualization.</MudListSubheader>
+                        <MudListItem>
+                            <div style="display: flex;flex-direction: column;justify-content: space-between">
+                                <MudSwitch Immediate="true" Label="Enable virtualization" @bind-Value="Service.Diagram.Options.Virtualization.IsEnabled" Color="Color.Primary"></MudSwitch>
+                                <MudNumericField T="int" Immediate="true" Label="Buffer size" HelperText="Bigger allows more items further offscreen." @bind-Value="Service.Diagram.Options.Virtualization.BufferSize"></MudNumericField>
+                            </div>
+                        </MudListItem>
+                    </MudList>
+                </MudExpansionPanel>
+
+            </MudExpansionPanels>
+        </div>
+        <DiagramShowcase Service="Service"></DiagramShowcase>
+    </div>
+</MudContainer>
+
+@code {
+
+    readonly string diagramContainerCode =
+        @"<div style=""display:flex;flex-direction:row;justify-content:center;width:100%; height:100%"">
+    <DiagramContainer DiagramService=""Service""></DiagramContainer>
+</div>
+@code
+{
+    Diagram diagram = new();
+}
+";
+
+    [Inject] public IDiagramServiceProvider Provider { get; set; } = null!;
+    private IDiagramService Service;
+
+    protected override Task OnInitializedAsync()
+    {
+        Service = Provider.GetDiagramService(new Diagram());
+        return base.OnInitializedAsync();
+    }
+}

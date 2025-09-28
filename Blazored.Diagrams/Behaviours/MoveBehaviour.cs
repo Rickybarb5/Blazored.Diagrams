@@ -1,7 +1,7 @@
 ﻿using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -10,14 +10,13 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 ///     Allows the user to move selected nodes and groups.
 /// </summary>
-public class MoveBehaviour : IBehaviour
+public class MoveBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly MoveOptions _options;
+    private readonly MoveBehaviourOptions _behaviourOptions;
     private bool _isDragging;
     private double _lastPointerX;
     private double _lastPointerY;
-    private List<IDisposable> _subscriptions = [];
 
     /// <summary>
     /// Instantiates a new <see cref="MoveBehaviour"/>
@@ -26,9 +25,15 @@ public class MoveBehaviour : IBehaviour
     public MoveBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<MoveOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
+    }
+
+    public new void Dispose()
+    {
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        DisposeSubscriptions();
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -50,21 +55,9 @@ public class MoveBehaviour : IBehaviour
                 .Cast<IPosition>()
                 .Concat(l.AllGroups.Where(g => g.IsSelected)));
 
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        DisposeSubscriptions();
-        _options.OnEnabledChanged -= OnEnabledChanged;
-    }
-
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
-    }
-
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<NodePointerDownEvent>(OnPointerDown),
             _service.Events.SubscribeTo<GroupPointerDownEvent>(OnPointerDown),

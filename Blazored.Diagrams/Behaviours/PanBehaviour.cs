@@ -1,6 +1,5 @@
-﻿using Blazored.Diagrams.Extensions;
-using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+﻿using Blazored.Diagrams.Options.Behaviours;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -8,11 +7,10 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 ///     Behaviour for panning the diagram using pointer click and drag.
 /// </summary>
-public class PanBehaviour : IBehaviour
+public class PanBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly PanOptions _options;
-    private List<IDisposable> _subscriptions = [];
+    private readonly PanBehaviourOptions _behaviourOptions;
     private bool _isPanning;
     private double _lastPointerX;
     private double _lastPointerY;
@@ -24,9 +22,9 @@ public class PanBehaviour : IBehaviour
     public PanBehaviour(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<PanOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<PanBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -42,20 +40,15 @@ public class PanBehaviour : IBehaviour
     }
 
     /// <inheritdoc />
-    public void Dispose()
+    public new void Dispose()
     {
         DisposeSubscriptions();
-        _options.OnEnabledChanged -= OnEnabledChanged;
-    }
-
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
+        _behaviourOptions.OnEnabledChanged -= OnEnabledChanged;
     }
 
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<DiagramPointerDownEvent>(OnPanStart),
             _service.Events.SubscribeTo<DiagramPointerMoveEvent>(OnPan),
@@ -78,7 +71,7 @@ public class PanBehaviour : IBehaviour
 
     private void OnPan(DiagramPointerMoveEvent ev)
     {
-        if (_isPanning && _options.IsEnabled)
+        if (_isPanning && _behaviourOptions.IsEnabled)
         {
             // Calculate the pointer movement delta
             var deltaX = ev.Args.ClientX - _lastPointerX;

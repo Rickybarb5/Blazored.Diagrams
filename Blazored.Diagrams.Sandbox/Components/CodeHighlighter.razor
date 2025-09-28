@@ -1,0 +1,28 @@
+<pre style="@Style">
+    <code class=@($"language-{Language}")>@Code</code>
+    </pre>
+
+@code {
+    [Inject] IJSRuntime Js { get; set; }
+
+    [Parameter] public string Code { get; set; }
+    [Parameter] public string Style { get; set; }
+    [Parameter] public string Language { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await ShowPrism();
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async ValueTask ShowPrism()
+    {
+        await Js.InvokeVoidAsync("Prism.highlightAll");
+    }
+
+}

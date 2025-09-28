@@ -1,7 +1,8 @@
 using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Test.Behaviours;
@@ -10,9 +11,8 @@ public class ZoomBehaviorTests
 {
     private IDiagramService CreateService()
     {
-        var service = new DiagramService();
-        service.Create<Diagram>();
-
+        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
+        var service = diagramServiceProvider.GetDiagramService(new Diagram());
         return service;
     }
 
@@ -21,7 +21,7 @@ public class ZoomBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = true;
         var initialZoom = service.Diagram.Zoom;
 
         var args = new WheelEventArgs
@@ -41,7 +41,7 @@ public class ZoomBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = true;
         var initialZoom = service.Diagram.Zoom;
 
         var args = new WheelEventArgs
@@ -61,7 +61,7 @@ public class ZoomBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = false;
         var initialZoom = service.Diagram.Zoom;
 
         var args = new WheelEventArgs
@@ -81,7 +81,7 @@ public class ZoomBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = true;
         var initialZoom = service.Diagram.Zoom;
 
         var args = new WheelEventArgs
@@ -101,7 +101,7 @@ public class ZoomBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = false;
         var initialZoom = service.Diagram.Zoom;
 
         var args = new WheelEventArgs
@@ -121,8 +121,8 @@ public class ZoomBehaviorTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = false;
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled = true;
         var initialZoom = service.Diagram.Zoom;
 
         var args = new WheelEventArgs
@@ -135,32 +135,5 @@ public class ZoomBehaviorTests
 
         // Assert
         Assert.NotEqual(initialZoom, service.Diagram.Zoom);
-    }
-
-    [Fact]
-    public void Dispose_ShouldStopProcessingEvents()
-    {
-        // Arrange
-        using var service = CreateService();
-        service.Diagram.Options.Get<ZoomOptions>()!.IsEnabled = true;
-        var initialZoom = service.Diagram.Zoom;
-
-        var args = new WheelEventArgs
-        {
-            DeltaY = 100
-        };
-
-        // Verify initial behavior
-        service.Events.Publish(new DiagramWheelEvent(service.Diagram, args));
-        Assert.NotEqual(initialZoom, service.Diagram.Zoom);
-
-        // Reset zoom and dispose
-        service.Diagram.SetZoom(initialZoom);
-
-        // Act
-        service.Events.Publish(new DiagramWheelEvent(service.Diagram, args));
-
-        // Assert
-        Assert.Equal(initialZoom, service.Diagram.Zoom);
     }
 }

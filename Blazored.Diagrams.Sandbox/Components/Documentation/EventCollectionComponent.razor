@@ -1,0 +1,97 @@
+﻿@typeparam T
+<MudContainer>
+    @* <MudExpansionPanels> *@
+    @*     @if (ImplementsInterface<T>(typeof(IPointerEvents<>))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Pointer events"> *@
+    @*             <MudText Typo="Typo.body1">Pointer events are trigerred when a pointer interacts with the container:</MudText> *@
+    @*             <PointerEventsDocumentation></PointerEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* *@
+    @*     @if (ImplementsInterface<T>(typeof(IPositionEvents<>))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Position events"> *@
+    @*             <MudText Typo="Typo.body1">Position events are triggered when the position changes:</MudText> *@
+    @*             <PositionEventsDocumentation></PositionEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* *@
+    @*     @if (ImplementsInterface<T>(typeof(ISizeEvents<>))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Size events"> *@
+    @*             <MudText Typo="Typo.body1">Size events are triggered when the size changes:</MudText> *@
+    @*             <SizeEventsDocumentation></SizeEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* *@
+    @*     @if (ImplementsInterface<T>(typeof(IVisibilityEvents<>))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Visibility Events"> *@
+    @*             <MudText Typo="Typo.body1">Visibility events are triggered when the visibility is toggled:</MudText> *@
+    @*             <VisibilityEventsDocumentation></VisibilityEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* *@
+    @*     @if (ImplementsInterface<T>(typeof(IKeyboardEvents))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Keyboard Events"> *@
+    @*             <MudText Typo="Typo.body1">Keyboard events are triggered when a key is pressed:</MudText> *@
+    @*             <KeyboardEventsDocumentation></KeyboardEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @*     @if (ImplementsInterface<T>(typeof(ILayerContainerEvents))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Layer container events"> *@
+    @*             <MudText Typo="Typo.body1">Layer container events are available when a models has layers.</MudText> *@
+    @*             <LayerContainerEventsDocumentation></LayerContainerEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @*     @if (ImplementsInterface<T>(typeof(INodeContainerEvents))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Node Container Events"> *@
+    @*             <MudText Typo="Typo.body1">Node container events are available when a model contains nodes.</MudText> *@
+    @*             <NodeContainerEventsDocumentation></NodeContainerEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @*     @if (ImplementsInterface<T>(typeof(IGroupContainerEvents))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Group Container Events"> *@
+    @*             <MudText Typo="Typo.body1">Group container events are available when a model contains groups.</MudText> *@
+    @*             <GroupContainerEventsDocumentation></GroupContainerEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* *@
+    @*     @if (ImplementsInterface<T>(typeof(IPortContainerEvents))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Port Container Events"> *@
+    @*             <MudText Typo="Typo.body1">Port container events are available when a model contains ports.</MudText> *@
+    @*             <PortContainerEventsDocumentation></PortContainerEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* *@
+    @*     @if (ImplementsInterface<T>(typeof(ILinkContainerEvents))) *@
+    @*     { *@
+    @*         <MudExpansionPanel Text="Link Container Events"> *@
+    @*             <MudText Typo="Typo.body1">Link container events are available when the models contains links.</MudText> *@
+    @*             <LinkContainerEventsDocumentation></LinkContainerEventsDocumentation> *@
+    @*         </MudExpansionPanel> *@
+    @*     } *@
+    @* </MudExpansionPanels> *@
+    TBD
+</MudContainer>
+
+@code {
+
+    private static bool ImplementsInterface<T>(Type interfaceType)
+    {
+        if (interfaceType.IsGenericType)
+        {
+            return typeof(T).GetInterfaces()
+                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == interfaceType);
+        }
+
+        return typeof(T).GetInterfaces().Contains(interfaceType);
+    }
+
+}

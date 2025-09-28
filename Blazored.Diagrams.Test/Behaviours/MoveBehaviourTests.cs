@@ -3,8 +3,9 @@ using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Test.Behaviours;
@@ -13,9 +14,8 @@ public class MoveBehaviourTests
 {
     private IDiagramService CreateService()
     {
-        var service = new DiagramService();
-        service.Create<Diagram>();
-
+        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
+        var service = diagramServiceProvider.GetDiagramService(new Diagram());
         return service;
     }
 
@@ -248,7 +248,7 @@ public class MoveBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<MoveOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled = false;
 
         var node = new Node { IsSelected = true };
         var layer = new Layer();
@@ -280,8 +280,8 @@ public class MoveBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<MoveOptions>().IsEnabled = false;
-        service.Diagram.Options.Get<MoveOptions>().IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled = true;
 
         var node = new Node { IsSelected = true };
         var layer = new Layer();

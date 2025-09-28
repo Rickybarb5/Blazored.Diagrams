@@ -30,6 +30,11 @@ public interface IPort :
     ///     Parent of the port.
     /// </summary>
     IPortContainer Parent { get; set; }
+    
+    /// <summary>
+    /// The port's position anchor
+    /// </summary>
+    IPortAnchor Anchor { get; set; }
 
     /// <summary>
     ///     Indicates if the port has one or more links attached.

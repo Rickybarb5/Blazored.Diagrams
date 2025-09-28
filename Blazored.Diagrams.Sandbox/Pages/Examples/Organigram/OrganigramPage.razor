@@ -1,0 +1,59 @@
+@page "/organogram-example"
+@using Blazored.Diagrams.Options.Behaviours
+<DiagramContainer DiagramService="Service">
+    <SaveButton></SaveButton>
+</DiagramContainer>
+
+@code {
+
+    [Inject] public IDiagramServiceProvider Provider { get; set; } = null!;
+    private IDiagramService Service;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        Service =Provider.GetDiagramService(new Diagram());
+        return base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().DefaultLinkComponentOptions.PathType = DefaultLinkComponentPathType.Orthogonal;
+            string[] jobs =
+            [
+                "Mark - CEO",
+                "Alex - CFO",
+                "Henry - CTO",
+                "Samantha - Project Manager",
+                "Brody - Product Owner - Project X",
+                "Richard - Product Owner - Project Y",
+                "Developer",
+                "Developer",
+                "Developer",
+                "Developer"
+            ];
+            foreach (var job in jobs)
+            {
+                var node = new OrganigramNode { Job = job };
+                var port = new Port
+                {
+                    Alignment = PortAlignment.Bottom,
+                    Justification = PortJustification.Center,
+                };
+                var port2 = new Port
+                {
+                    Alignment = PortAlignment.Top,
+                    Justification = PortJustification.Center,
+                };
+                node.Ports.Add(port);
+                node.Ports.Add(port2);
+                Service.Add.Node(node);
+            }
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+}

@@ -1,15 +1,17 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Groups;
 
 /// <summary>
 ///     Base implementation of a group.
 /// </summary>
-public partial class Group : IGroup
+public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
 {
     private readonly ObservableList<IGroup> _groups = [];
     private readonly ObservableList<INode> _nodes = [];

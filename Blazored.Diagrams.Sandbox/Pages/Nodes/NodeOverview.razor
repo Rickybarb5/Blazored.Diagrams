@@ -1,0 +1,266 @@
+@page "/node-overview"
+@implements IDisposable
+<MudContainer>
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h6">Overview</MudText>
+            <MudText Typo="Typo.body1">
+                <p>
+                    Nodes serve as the building blocks of your visual representations, representing various components, entities, or steps within a process or system. By connecting nodes, you can illustrate relationships, workflows, and hierarchies, making complex information more understandable.
+                </p>
+            </MudText>
+            <MudText Typo="Typo.body1">Below you can see different types of nodes(click them to view their code).</MudText>
+            <div style="display:flex;flex-direction:row;width:100%; height:500px">
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
+            </div>
+            <MudContainer>
+                <MudText Typo="Typo.body1">
+                    <p>
+                        To initialize a node:
+                        <CodeHighlighter Language="csharp" Code="public class YourNode : Node<YourNodeComponent>{}"></CodeHighlighter>
+                        <CodeHighlighter Language="csharp" Code=@(@"var node = new YourNode();
+diagram.AddNode(node);")>
+                        </CodeHighlighter>
+                    </p>
+
+                </MudText>
+            </MudContainer>
+            <MudContainer>
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Filled">When you implement your own components, it is mandatory to receive a INode instance(or something that implements it) as a parameter with the name "Node"</MudAlert>
+                <p>Example:</p>
+                <CodeHighlighter Language="cshtml" Code="@($@"
+<label>This is my custom node!</label>
+@code{{
+[Parameter]
+public required YourNodeClass Node;
+}}
+")">
+                </CodeHighlighter>
+            </MudContainer>
+
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+<MudContainer>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">Events</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <EventCollectionComponent T=INode></EventCollectionComponent>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+<MudDrawer @bind-Open="@_open" Width="25%" Anchor="@Anchor.Right" Elevation="1" Variant="@DrawerVariant.Temporary" OverlayAutoClose="true">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">Node code</MudText>
+    </MudDrawerHeader>
+    @if (!string.IsNullOrWhiteSpace(_cssCode) && _open)
+    {
+        <MudContainer>
+            <MudText>
+                @_cssHeader
+            </MudText>
+            <CodeHighlighter Code="@_cssCode" Language="css"></CodeHighlighter>
+
+        </MudContainer>
+    }
+    @if (!string.IsNullOrWhiteSpace(_componentCode) && _open)
+    {
+        <MudContainer>
+            <MudText>
+                @_componentHeader
+            </MudText>
+
+            <CodeHighlighter Code="@_componentCode" Language="cshtml"></CodeHighlighter>
+
+        </MudContainer>
+    }
+    @if (!string.IsNullOrWhiteSpace(_classCode) && _open)
+    {
+        <MudContainer>
+            <MudText>
+                @_classHeader
+            </MudText>
+            <CodeHighlighter Code="@_classCode" Language="csharp"></CodeHighlighter>
+
+        </MudContainer>
+    }
+</MudDrawer>
+
+
+@code {
+    [Inject] public IDiagramServiceProvider Provider { get; set; }
+    private bool _open;
+    private string? _cssCode;
+    private string? _componentCode;
+    private string? _classCode;
+    private string? _cssHeader;
+    private string? _componentHeader;
+    private string? _classHeader;
+    private List<IDisposable> _subscriptions;
+    readonly CircularNode _circularNode = new();
+    readonly Node _node = new();
+    readonly NamedNode _namedNode = new();
+    IDiagramService Service;
+    protected override Task OnInitializedAsync()
+    {
+        Service = Provider.GetDiagramService(new Diagram());
+        _circularNode.SetPosition(100, 100);
+
+        _node.SetPosition(300, 100);
+
+        _namedNode.SetPosition(500, 100);
+        _namedNode.Color = "red";
+        _namedNode.Message = "I'm a node with text!";
+        Service.Add.Node(_circularNode);
+        Service.Add.Node(_node);
+        Service.Add.Node(_namedNode);
+        _subscriptions =
+        [
+            Service.Events.SubscribeWhere<NodeClickedEvent>(p => p.Model.Id == _circularNode.Id, OnCircularClick),
+            Service.Events.SubscribeWhere<NodeClickedEvent>(p => p.Model.Id == _namedNode.Id, OnNamedClick),
+            Service.Events.SubscribeWhere<NodeClickedEvent>(p => p.Model.Id == _node.Id, OnNodeClick),
+        ];
+        return base.OnInitializedAsync();
+    }
+
+    private void OnCircularClick(NodeClickedEvent e)
+    {
+        _cssCode = @"
+.circular-node{
+height: 200px;
+width: 200px;
+border-radius: 50%;
+background-color: whitesmoke;
+border-color: black;
+border-style: solid;
+border-width: 2px;
+-webkit-user-drag: none;
+}
+";
+        _componentCode = @"
+<div class=""circular-node""></div>
+@code {
+[Parameter]
+public INode Node { get; set; }
+}
+";
+        _cssHeader = "CircularNodeComponent.razor.css";
+        _classCode = string.Empty;
+        _componentHeader = "CircularNodeComponent.razor";
+        _open = true;
+        StateHasChanged();
+    }
+
+    private void OnNamedClick(NodeClickedEvent e)
+    {
+        _cssCode = string.Empty;
+        _componentCode = @"
+<MudCard Style=@($""background:{Node.Color}"")>
+    <MudCardHeader>
+        <MudText>@Node.Name</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText>@Node.Message</MudText>
+    </MudCardContent>
+</MudCard>
+@code {
+[Parameter] public required NamedNode Node { get; set; }  
+}
+";
+        _cssHeader = "NamedNodeComponent.razor.css";
+        _classCode = @"
+using Blazored.Diagrams.Nodes;
+using Blazored.Diagrams.Sandbox.Components;
+namespace Blazored.Diagrams.Sandbox.Models;
+
+ public class NamedNode : Node<NamedNodeComponent>
+{
+public string Name { get; set; }
+public string Color { get; set; }
+public string Message { get; set; }
+}
+";
+        _componentHeader = "NamedNodeComponent.razor";
+        _classHeader = "NamedNode.cs";
+        _open = true;
+        StateHasChanged();
+    }
+
+    private void OnNodeClick(NodeClickedEvent e)
+    {
+        _cssCode = @"
+.default-node {
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+transition: 0.3s;
+min-width: 100px;
+min-height: 100px;
+background: whitesmoke;
+}
+
+.selected {
+background: #696969;
+}
+
+.default-node:hover {
+ box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
+}
+";
+        _componentCode = @"
+@using System.Text
+@implements IDisposable
+<div class=""@_class""></div>
+
+ @code {
+    [Parameter] public required Node<DefaultNodeComponent> Node { get; set; }
+
+    private const string NodeCssClass = ""default-node"";
+    private string _class = NodeCssClass;
+    private readonly StringBuilder _builder = new();
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+     {
+    await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            Node.OnSelectionChanged += SetNodeCssClass;
+        }
+    }
+
+    private void SetNodeCssClass(INode node, bool isSelected)
+    {
+        _builder.Clear();
+        _builder.Append(NodeCssClass);
+        if (isSelected)
+        {
+            _builder.Append("" selected"");
+        }
+
+        _class = _builder.ToString();
+    }
+
+     public void Dispose()
+    {
+        Node.OnSelectionChanged -= SetNodeCssClass;
+    }
+}
+";
+        _cssHeader = "DefaultNodeComponent.razor.css";
+        _classCode = string.Empty;
+        _componentHeader = "DefaultNodeComponent.razor";
+        _open = true;
+        StateHasChanged();
+    }
+
+}
+
+@code {
+
+    public void Dispose()
+    {
+        _subscriptions.DisposeAll();
+    }
+
+}

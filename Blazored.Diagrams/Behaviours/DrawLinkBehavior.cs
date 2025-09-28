@@ -2,7 +2,7 @@
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
@@ -10,17 +10,16 @@ namespace Blazored.Diagrams.Behaviours;
 /// <summary>
 ///     Behaviour for creating a link when a port is clicked.
 /// </summary>
-public class DrawLinkBehavior : IBehaviour
+public class DrawLinkBehavior : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly DrawLinkOptions _options;
+    private readonly DrawLinkBehaviourOptions _behaviourOptions;
     private int _initialClickX;
     private int _initialClickY;
     private bool _isCreatingLink;
 
     private IPort? _sourcePort;
     private IPort? _targetPort;
-    private List<IDisposable> _subscriptions = [];
 
     /// <summary>
     ///     Initializes a new instance of <see cref="DrawLinkBehavior"/>
@@ -29,9 +28,9 @@ public class DrawLinkBehavior : IBehaviour
     public DrawLinkBehavior(IDiagramService service)
     {
         _service = service;
-        _options = _service.Diagram.Options.Get<DrawLinkOptions>()!;
-        _options.OnEnabledChanged += OnEnabledChanged;
-        OnEnabledChanged(_options.IsEnabled);
+        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>()!;
+        _behaviourOptions.OnEnabledChanged += OnEnabledChanged;
+        OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(bool enabled)
@@ -49,21 +48,15 @@ public class DrawLinkBehavior : IBehaviour
     private ILink? Link { get; set; }
 
     /// <inheritdoc />
-    public void Dispose()
+    public new void Dispose()
     {
         DisposeSubscriptions();
-        _options.OnEnabledChanged -= OnEnabledChanged;
-    }
-
-
-    private void DisposeSubscriptions()
-    {
-        _subscriptions.DisposeAll();
+        _behaviourOptions.OnEnabledChanged -= OnEnabledChanged;
     }
 
     private void SubscribeToEvents()
     {
-        _subscriptions =
+        Subscriptions =
         [
             _service.Events.SubscribeTo<PortPointerDownEvent>(StartLinkCreation),
             _service.Events.SubscribeTo<PortPointerUpEvent>(CreateLink),
@@ -85,18 +78,18 @@ public class DrawLinkBehavior : IBehaviour
         _initialClickX = 0;
         _initialClickY = 0;
         ClearUnboundedLinks();
-        if (!_options.IsEnabled || !e.Model.CanCreateLink()) return;
+        if (!_behaviourOptions.IsEnabled || !e.Model.CanCreateLink()) return;
         _isCreatingLink = true;
         _sourcePort = e.Model;
         _initialClickX = (int)e.Args.ClientX;
         _initialClickY = (int)e.Args.ClientY;
 
-        Link = AddLink(_sourcePort, null, _options.LinkType);
+        Link = AddLink(_sourcePort, null, _behaviourOptions.LinkType);
         _service.Events.Publish(new DrawLinkStartEvent(Link));
         var startCoordinates = _sourcePort.GetCenterCoordinates();
         Link.SetTargetPosition(startCoordinates.CenterX, startCoordinates.CenterY);
     }
-    
+
     private ILink AddLink(IPort sourcePort, IPort? targetPort, Type linkType)
     {
         // Ensure the provided type implements ILink
@@ -110,8 +103,7 @@ public class DrawLinkBehavior : IBehaviour
         var link = (ILink?)Activator.CreateInstance(linkType);
         if (link is null)
         {
-            throw new InvalidOperationException(
-                $"Link couldn't be created with component type: {linkType.Name}");
+            throw new InvalidOperationException($"Link couldn't be created with component type: {linkType.Name}");
         }
 
         if (targetPort is not null)
@@ -123,7 +115,7 @@ public class DrawLinkBehavior : IBehaviour
         targetPort?.IncomingLinks.Add(link);
         return link;
     }
-    
+
     /// <summary>
     /// Checks if a link can be created between two ports.
     /// </summary>
@@ -226,6 +218,6 @@ public class DrawLinkBehavior : IBehaviour
     {
         _service.Diagram.AllLinks
             .Where(x => x.TargetPort is null)
-            .ForEach(l=>l.Dispose());
+            .ForEach(l => l.Dispose());
     }
 }

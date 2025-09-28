@@ -1,10 +1,9 @@
-using Blazored.Diagrams.Behaviours;
+using Blazored.Diagrams.Components.Models;
 
 namespace Blazored.Diagrams.Options.Behaviours;
 
-/// <summary>
-///  Options for <see cref="DefaultLinkBehaviour"/>
-/// </summary>
-public class DefaultLinkOptions : BehaviourOptionsBase
+public class DefaultLinkComponentOptions
 {
+    public DefaultLinkComponentPathType PathType { get; set; } = DefaultLinkComponentPathType.Curved;
+    
 }

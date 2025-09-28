@@ -5,8 +5,9 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Services.Providers;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Test.Behaviours;
@@ -15,9 +16,8 @@ public class SelectBehaviourTests
 {
     private IDiagramService CreateService()
     {
-        var service = new DiagramService();
-        service.Create<Diagram>();
-
+        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
+        var service = diagramServiceProvider.GetDiagramService(new Diagram());
         return service;
     }
 
@@ -94,7 +94,7 @@ public class SelectBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<SelectOptions>().MultiSelectEnabled = false;
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().MultiSelectEnabled = false;
 
         var node1 = new Node();
         var node2 = new Node();
@@ -163,7 +163,7 @@ public class SelectBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<SelectOptions>().SelectionEnabled = false;
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().SelectionEnabled = false;
 
         var node = new Node();
         var layer = new Layer();
@@ -217,7 +217,7 @@ public class SelectBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<SelectOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().IsEnabled = false;
 
         var node = new Node();
         var layer = new Layer();
@@ -238,8 +238,8 @@ public class SelectBehaviourTests
     {
         // Arrange
         using var service = CreateService();
-        service.Diagram.Options.Get<SelectOptions>().IsEnabled = false;
-        service.Diagram.Options.Get<SelectOptions>().IsEnabled = true;
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().IsEnabled = true;
 
         var node = new Node();
         var layer = new Layer();

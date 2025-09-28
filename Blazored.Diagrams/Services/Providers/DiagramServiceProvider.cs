@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Services.Providers;

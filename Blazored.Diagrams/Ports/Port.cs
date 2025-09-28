@@ -1,15 +1,17 @@
 ﻿using System.Text.Json.Serialization;
+using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
+using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Ports;
 
 /// <summary>
 ///     Base class for a port.
 /// </summary>
-public partial class Port : IPort
+public partial class Port : IPort, IHasComponent<DefaultPortComponent>
 {
     private readonly ObservableList<ILink> _incomingLinks = [];
     private readonly ObservableList<ILink> _outgoingLinks = [];
@@ -18,8 +20,6 @@ public partial class Port : IPort
     private bool _isVisible = true;
     private IPortContainer _parent;
     private PortAlignment _alignment = PortAlignment.Left;
-    private int _positionX;
-    private int _positionY;
     private int _width;
 
     /// <summary>
@@ -27,6 +27,11 @@ public partial class Port : IPort
     /// </summary>
     public Port()
     {
+        Anchor = new PortAnchor
+        {
+            Port = this,
+        };
+        
         _incomingLinks.OnItemAdded += HandleIncomingLinkAdded;
         _incomingLinks.OnItemRemoved += HandleIncomingLinkRemoved;
         _outgoingLinks.OnItemAdded += HandleOutgoingLinkAdded;
@@ -35,6 +40,8 @@ public partial class Port : IPort
 
     /// <inheritdoc />
     public virtual Guid Id { get; init; } = Guid.NewGuid();
+
+    public IPortAnchor Anchor { get; set; }
 
     /// <inheritdoc />
     [JsonIgnore]
@@ -82,14 +89,14 @@ public partial class Port : IPort
     /// <inheritdoc />
     public virtual int PositionX
     {
-        get => _positionX;
+        get => Anchor.PositionX + Anchor.OffsetX - Width/2 ;
         set
         {
-            if (_positionX != value)
+            if (Anchor.PositionX != value)
             {
-                var oldX = _positionX;
-                _positionX = value;
-                OnPositionChanged?.Invoke(this, oldX, _positionY, _positionX, _positionY);
+                var oldX = Anchor.PositionX;
+                Anchor.PositionX = value;
+                OnPositionChanged?.Invoke(this, oldX, Anchor.PositionY, Anchor.PositionX, Anchor.PositionY);
             }
         }
     }
@@ -97,14 +104,14 @@ public partial class Port : IPort
     /// <inheritdoc />
     public virtual int PositionY
     {
-        get => _positionY;
+        get => Anchor.PositionY + Anchor.OffsetY - Height/2;
         set
         {
-            if (_positionY != value)
+            if (Anchor.PositionY != value)
             {
-                var oldY = _positionY;
-                _positionY = value;
-                OnPositionChanged?.Invoke(this, _positionX, oldY, _positionX, _positionY);
+                var oldY = Anchor.PositionY;
+                Anchor.PositionY = value;
+                OnPositionChanged?.Invoke(this, Anchor.PositionX, oldY, Anchor.PositionX, Anchor.PositionY);
             }
         }
     }
@@ -204,8 +211,7 @@ public partial class Port : IPort
             }
         }
     }
-
-
+    
     /// <inheritdoc />
     public event Action<IPort>? OnVisibilityChanged;
 

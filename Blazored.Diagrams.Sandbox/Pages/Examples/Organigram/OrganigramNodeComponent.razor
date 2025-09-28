@@ -1,0 +1,28 @@
+<div Style="height:150px; width:150px; font-size:2rem;display: flex;align-items: center;justify-content: center;flex-direction: column">
+
+
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderAvatar>
+                <MudAvatar Style="height:100px; width:100px; font-size:2rem;">
+                    <MudImage
+                        Style="-webkit-user-drag: none"
+                        Width="100"
+
+                        Height="100"
+                        Fluid="true"
+                        Src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
+                        Color="Color.Primary">
+                    </MudImage>
+                </MudAvatar>
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <MudText Style="user-select: none" Align="Align.Center">@Node.Job</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+    </MudCard>
+</div>
+
+@code {
+    [Parameter] public OrganigramNode Node { get; set; }
+}
