@@ -15,6 +15,16 @@ public interface IPort :
     IDisposable
 {
     /// <summary>
+    /// Offset of the port position on the X axis in pixels.
+    /// </summary>
+    int OffSetX { get; set; }
+    
+    /// <summary>
+    /// Offset of the port position on the Y axis in pixels.
+    /// </summary>
+    int OffsetY { get; set; }
+    
+    /// <summary>
     ///     Where the port will be aligned
     /// </summary>
     PortJustification Justification { get; set; }

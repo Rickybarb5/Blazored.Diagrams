@@ -1,48 +1,74 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Blazored.Diagrams.Options.Diagram;
+﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 /// <summary>
-///     Style options for the diagram.
+/// Style options for the diagram.
 /// </summary>
-public class DiagramStyleOptions
+public partial class DiagramStyleOptions
 {
+    readonly NumberFormatInfo _nfi = new();
     /// <summary>
-    /// Gets the default style for the diagram container.
-    /// </summary>
-    public static string DefaultDiagramContainerStyle { get; } =
-        "width:100%;height:100%;overflow:hidden;";
-
-    private int _cellSize = 20;
-
-    private string _gridStyle = string.Empty;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public DiagramStyleOptions()
-    {
-        SetDefaultGridStyle(_cellSize);
-    }
-
-    /// <summary>
-    /// Gets the default grid style.
+    /// Default diagram container style.
     /// </summary>
     [JsonIgnore]
-    public string DefaultGridStyle { get; private set; }
+    public const string DefaultContainerStyle = "width:100%;height:100%;overflow:hidden;";
 
     /// <summary>
-    /// Gets or sets the container style.
+    /// Default cell size.
     /// </summary>
-    public string ContainerStyle { get; set; } = DefaultDiagramContainerStyle;
+    [JsonIgnore]
+    public const int DefaultCellSize = 20;
 
     /// <summary>
-    /// Enables drawing of the grid.
+    /// Default grid line color in RGB values.
+    /// </summary>
+    [JsonIgnore]
+    public const string DefaultGridLineColor = "0, 0, 0"; // RGB
+
+    /// <summary>
+    /// Default grid line opacity.
+    /// </summary>
+    private const double DefaultGridLineOpacity = 0.1;
+    
+    /// <summary>
+    /// Default grid line thickness in pixels.
+    /// </summary>
+    private const int DefaultGridLineThickness = 1;
+    
+    private int _cellSize;
+    private string? _gridStyle;
+    private string _gridLineColor;
+    private double _gridLineOpacity;
+    private int _gridLineThickness;
+
+    public DiagramStyleOptions()
+    {
+        _nfi.NumberDecimalSeparator = ".";
+        _nfi.NumberDecimalDigits = 3;
+        _cellSize = DefaultCellSize;
+        ContainerStyle = DefaultContainerStyle;
+        _gridLineColor = DefaultGridLineColor;
+        _gridLineOpacity = DefaultGridLineOpacity;
+        _gridLineThickness = DefaultGridLineThickness;
+        DefaultGridStyle = BuildDefaultGridStyle();
+    }
+
+    [JsonIgnore] 
+    private string DefaultGridStyle { get; set; }
+
+    /// <summary>
+    /// Style of the diagram Container.
+    /// </summary>
+    public string ContainerStyle { get; set; }
+    
+
+    /// <summary>
+    /// Shows/Hides the grid.
     /// </summary>
     public bool GridEnabled { get; set; } = true;
 
     /// <summary>
-    /// Size of the Grid cells.
+    /// Size of the grid cells.
     /// </summary>
     public int CellSize
     {
@@ -50,12 +76,51 @@ public class DiagramStyleOptions
         set
         {
             _cellSize = value;
-            SetDefaultGridStyle(_cellSize);
+            DefaultGridStyle = BuildDefaultGridStyle();
         }
     }
 
     /// <summary>
-    /// Gets or sets the grid style.
+    /// RGB color used for the grid lines. Default: <see cref="DefaultGridLineColor"/>.
+    /// </summary>
+    public string GridLineColor
+    {
+        get => _gridLineColor;
+        set
+        {
+            _gridLineColor = value;
+            DefaultGridStyle = BuildDefaultGridStyle();
+        }
+    }
+
+    /// <summary>
+    /// Opacity of the grid lines (0–1). Default: <see cref="DefaultGridLineOpacity"/>.
+    /// </summary>
+    public double GridLineOpacity
+    {
+        get => _gridLineOpacity;
+        set
+        {
+            _gridLineOpacity = value;
+            DefaultGridStyle = BuildDefaultGridStyle();
+        }
+    }
+
+    /// <summary>
+    /// Size of the grid lines in pixels. Default: <see cref="DefaultGridLineThickness"/>.
+    /// </summary>
+    public int GridLineThickness
+    {
+        get => _gridLineThickness;
+        set
+        {
+            _gridLineThickness = value;
+            DefaultGridStyle = BuildDefaultGridStyle();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the grid style. If unset, falls back to <see cref="DefaultGridStyle"/>.
     /// </summary>
     public string GridStyle
     {
@@ -63,9 +128,12 @@ public class DiagramStyleOptions
         set => _gridStyle = value;
     }
 
-    private void SetDefaultGridStyle(int cellSize)
+    private string BuildDefaultGridStyle()
     {
-        DefaultGridStyle =
-            $"background-image:linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px); background-size:{cellSize}px {cellSize}px;";
+        return
+            $"background-image:" +
+            $"linear-gradient(to right, rgba({GridLineColor}, {GridLineOpacity.ToString(_nfi)}) {GridLineThickness}px, transparent {GridLineThickness}px)," +
+            $"linear-gradient(to bottom, rgba({GridLineColor}, {GridLineOpacity.ToString(_nfi)}) {GridLineThickness}px, transparent {GridLineThickness}px);" +
+            $"background-size:{CellSize}px {CellSize}px;";
     }
 }

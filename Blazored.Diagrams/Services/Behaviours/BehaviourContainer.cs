@@ -10,6 +10,10 @@ public class BehaviourContainer : IBehaviourContainer
     private readonly List<IBehaviour> _behaviours = [];
     private readonly IDiagramService _service;
     
+    /// <summary>
+    /// Initializes a new <see cref="BehaviourContainer"/>.
+    /// </summary>
+    /// <param name="service"></param>
     public BehaviourContainer(IDiagramService service)
     {
         _service = service;
@@ -29,12 +33,25 @@ public class BehaviourContainer : IBehaviourContainer
         return this;
     }
 
-    public IBehaviourContainer RegisterBehaviour<TBehaviour, TBehaviourOptions>(TBehaviour behaviour, TBehaviourOptions options) 
+    /// <inheritdoc />
+    public IBehaviourContainer Register<TBehaviour, TBehaviourOptions>(TBehaviour behaviour, TBehaviourOptions options) 
         where TBehaviour : IBehaviour
         where TBehaviourOptions : IBehaviourOptions
     {
         RegisterBehaviourOptions(options);
         RegisterBehaviour(behaviour);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IBehaviourContainer Register<TBehaviour, TBehaviourOptions>(
+        Func<TBehaviour> behaviourConfiguration, 
+        Func<TBehaviourOptions> optionConfiguration) 
+        where TBehaviour : IBehaviour
+        where TBehaviourOptions : IBehaviourOptions
+    {
+        optionConfiguration();
+        behaviourConfiguration();
         return this;
     }
 

@@ -5,11 +5,23 @@ namespace Blazored.Diagrams.Services.Behaviours;
 
 public interface IBehaviourContainer : IDisposable
 {
+    /// <summary>
+    /// Register a behaviour.
+    /// </summary>
+    /// <param name="behaviour"></param>
+    /// <typeparam name="TBehaviour"></typeparam>
+    /// <returns></returns>
     IBehaviourContainer RegisterBehaviour<TBehaviour>(TBehaviour behaviour)
         where TBehaviour : IBehaviour;
 
-    IBehaviourContainer RegisterBehaviour<TBehaviour, TBehaviourOptions>(TBehaviour behaviour,
+    IBehaviourContainer Register<TBehaviour, TBehaviourOptions>(TBehaviour behaviour,
         TBehaviourOptions options)
+        where TBehaviour : IBehaviour
+        where TBehaviourOptions : IBehaviourOptions;
+
+    public IBehaviourContainer Register<TBehaviour, TBehaviourOptions>(
+        Func<TBehaviour> behaviourConfiguration,
+        Func<TBehaviourOptions> optionConfiguration)
         where TBehaviour : IBehaviour
         where TBehaviourOptions : IBehaviourOptions;
 

@@ -23,6 +23,8 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     private int _width;
     private int _positionX;
     private int _positionY;
+    private int _offsetX;
+    private int _offsetY;
 
     /// <summary>
     ///     Instantiates a new <see cref="Port" />
@@ -83,7 +85,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     /// <inheritdoc />
     public virtual int PositionX
     {
-        get => _positionX;
+        get => _positionX + OffSetX;
         set
         {
             if (value!= _positionX)
@@ -98,14 +100,45 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     /// <inheritdoc />
     public virtual int PositionY
     {
-        get => _positionY;
+        get => _positionY + OffsetY;
         set
         {
             if (value!= _positionY)
             {
-                var OldY = _positionY;
+                var oldY = _positionY;
                 _positionY = value;
-                OnPositionChanged?.Invoke(this, _positionX, OldY, _positionX, _positionY);
+                OnPositionChanged?.Invoke(this, _positionX, oldY, _positionX, _positionY);
+            }
+        }
+    }
+    
+
+    /// <inheritdoc />
+    public int OffSetX  
+    {
+        get => _offsetX;
+        set
+        {
+            if (value!= _offsetX)
+            {
+                var oldX = _positionX;
+                _offsetX = value;
+                OnPositionChanged?.Invoke(this, oldX, PositionY, PositionX, PositionY);
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public int OffsetY  
+    {
+        get => _offsetY;
+        set
+        {
+            if (value!= _positionY)
+            {
+                var oldY = _positionY;
+                _positionY = value;
+                OnPositionChanged?.Invoke(this, PositionX, oldY, PositionX, PositionY);
             }
         }
     }
