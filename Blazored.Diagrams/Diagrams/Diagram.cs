@@ -187,18 +187,6 @@ public partial class Diagram : IDiagram
 
     /// <inheritdoc />
     public virtual DiagramOptions Options { get; init; } = new();
-
-    /// <inheritdoc />
-    public void Add(INode node)
-    {
-        CurrentLayer.Nodes.Add(node);
-    }
-
-    /// <inheritdoc />
-    public void Add(IGroup group)
-    {
-        CurrentLayer.Groups.Add(group);
-    }
     
     /// <inheritdoc />
     public event Action<IDiagram, double, double>? OnZoomChanged;

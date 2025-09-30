@@ -7,7 +7,7 @@ namespace Blazored.Diagrams.Services.Diagrams;
 /// <inheritdoc />
 public class SerializationContainer : ISerializationContainer
 {
-    private readonly IDiagramSerializationService _diagramSerializationService;
+    private readonly ISerializationService _serializationService;
     private readonly IDiagramService _diagramService;
 
     /// <summary>
@@ -17,14 +17,14 @@ public class SerializationContainer : ISerializationContainer
     public SerializationContainer(IDiagramService service)
     {
         _diagramService = service;
-        _diagramSerializationService = new DiagramSerializationService();
+        _serializationService = new SerializationService();
     }
 
     /// <inheritdoc />
     public string Save<TDiagram>(TDiagram diagram)
         where TDiagram : IDiagram
     {
-        var json = _diagramSerializationService.ToJson(diagram);
+        var json = _serializationService.ToJson(diagram);
         return json;
     }
 
@@ -32,7 +32,7 @@ public class SerializationContainer : ISerializationContainer
     public TDiagram FromJson<TDiagram>(string json)
         where TDiagram : IDiagram
     {
-        var diagram = _diagramSerializationService.FromJson<TDiagram>(json);
+        var diagram = _serializationService.FromJson<TDiagram>(json);
         _diagramService.SwitchDiagram(diagram);
         return diagram;
     }

@@ -4,7 +4,7 @@
 @using Blazored.Diagrams.Services.Diagrams
 @using System.Text
 @implements IAsyncDisposable;
-@if (_port is not null)
+@if (_port is not null && _port.IsVisible)
 {
     <div style="@(Style)"
 

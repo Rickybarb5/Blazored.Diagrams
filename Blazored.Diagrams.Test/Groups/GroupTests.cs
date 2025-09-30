@@ -437,15 +437,22 @@ public class GroupTests
     public void Group_UnselectAll_ShouldUnselectAllNestedModels()
     {
         // Arrange
-        var diagram = new Diagram();
-        var parentGroup = new Group();
         var nestedGroup = new Group { IsSelected = true };
         var node = new Node { IsSelected = true };
-
+        var parentGroup = new Group()
+        {
+            Groups =
+            [
+                nestedGroup,
+            ],
+            Nodes =
+            [
+                node,
+            ]
+        };
+        
         parentGroup.Groups.Add(nestedGroup);
         parentGroup.Nodes.Add(node);
-        diagram.Add(parentGroup);
-
         // Act
         parentGroup.UnselectAll();
 
@@ -459,13 +466,22 @@ public class GroupTests
     {
         // Arrange
         var diagram = new Diagram();
-        var parentGroup = new Group();
         var nestedGroup = new Group { IsSelected = false };
         var node = new Node { IsSelected = false };
+        var parentGroup = new Group()
+        {
+            Groups =
+            [
+                nestedGroup,
+            ],
+            Nodes =
+            [
+                node,
+            ]
+        };
 
         parentGroup.Groups.Add(nestedGroup);
         parentGroup.Nodes.Add(node);
-        diagram.Add(parentGroup);
 
         // Act
         parentGroup.SelectAll();

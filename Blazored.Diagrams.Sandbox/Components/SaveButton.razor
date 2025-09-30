@@ -3,7 +3,7 @@
 @code {
     [CascadingParameter] public IDiagramService Service { get; set; }
     [Inject] IDialogService DialogService { get; set; }
-    [Inject] IDiagramSerializationService SerializationService { get; set; }
+    [Inject] ISerializationService SerializationService { get; set; }
 
     private void Save(MouseEventArgs obj)
     {

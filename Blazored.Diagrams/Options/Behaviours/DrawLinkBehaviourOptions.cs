@@ -18,11 +18,16 @@ public partial class DrawLinkBehaviourOptions : BaseBehaviourOptions
     [JsonIgnore]
     public Type LinkType
     {
-        get => System.Type.GetType(TypeName)!;
+        get
+        {
+            var type = Type.GetType(TypeName);
+            ArgumentNullException.ThrowIfNull(type);
+            return type;
+        }
         set
         {
             TypeName = value.FullName;
-        } 
+        }
     }
 
     public DefaultLinkComponentOptions DefaultLinkComponentOptions { get; set; } = new();

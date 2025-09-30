@@ -21,8 +21,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
 
     /// <inheritdoc />
     public virtual Guid Id { get; init; } = Guid.NewGuid();
-
-
+    
     /// <inheritdoc />
     /// TODO:Check if required feels good.
     [JsonIgnore]

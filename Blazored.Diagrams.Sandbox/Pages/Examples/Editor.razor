@@ -43,7 +43,7 @@
 
 @code {
     [Inject] public IDiagramServiceProvider Provider { get; set; }
-    [Inject] public IDiagramSerializationService SerializationService { get; set; }
+    [Inject] public ISerializationService SerializationService { get; set; }
     IPort? SelectedPort;
     ILink? selectedLink;
     INode? SelectedNode;

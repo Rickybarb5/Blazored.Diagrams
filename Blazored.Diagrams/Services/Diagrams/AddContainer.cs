@@ -37,7 +37,7 @@ public class AddContainer : IAddContainer
     /// <param name="node">Node to be added to the container.</param>
     /// <typeparam name="TNode">Node Type</typeparam>
     /// <returns></returns>
-    public IAddContainer AddNodeTo<TNode>(INodeContainer parentGroup, TNode node)
+    public IAddContainer NodeTo<TNode>(INodeContainer parentGroup, TNode node)
         where TNode : INode
     {
         parentGroup.Nodes.Add(node);
@@ -51,7 +51,7 @@ public class AddContainer : IAddContainer
     /// <param name="port">Port that will be added.</param>
     /// <typeparam name="TPort">Port Type</typeparam>
     /// <returns></returns> 
-    public IAddContainer AddPortTo<TPort>(IPortContainer parent, TPort port)
+    public IAddContainer PortTo<TPort>(IPortContainer parent, TPort port)
         where TPort : IPort
     {
         parent.Ports.Add(port);

@@ -123,18 +123,6 @@ public interface IDiagram :
     /// </summary>
     void SelectAll();
 
-    /// <summary>
-    /// Creates a node in the current layer.
-    /// </summary>
-    /// <returns></returns>
-    void Add(INode node);
-
-    /// <summary>
-    /// Creates a group in the current layer.
-    /// </summary>
-    /// <returns></returns>
-    void Add(IGroup group);
-
     /// <inheritdoc />
     void StepZoomUp();
 

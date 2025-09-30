@@ -26,7 +26,7 @@ public static class BlazoredDiagramsExtensions
             .AddSingleton<IResizeObserverService, ResizeObserverService>()
             .AddSingleton<IDiagramServiceProvider, DiagramServiceProvider>()
             .AddSingleton<IVirtualizationService, VirtualizationService>()
-            .AddSingleton<IDiagramSerializationService, DiagramSerializationService>()
+            .AddSingleton<ISerializationService, SerializationService>()
             .AddSingleton<IComponentRegistry, ComponentRegistry>();
         
         return services;

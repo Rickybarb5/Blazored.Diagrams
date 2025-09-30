@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.Json.Serialization;
 
+namespace Blazored.Diagrams.Options.Diagram;
 /// <summary>
 /// Style options for the diagram.
 /// </summary>

@@ -56,21 +56,6 @@ public class ComponentRegistry : IComponentRegistry
         return null;
     }
 
-    /// <summary>
-    /// Checks if an interface is directly implemented by the given type.
-    /// </summary>
-    /// <param name="type">The type to check.</param>
-    /// <param name="interfaceType">The interface to verify.</param>
-    /// <returns>True if the interface is directly implemented by the type; otherwise, false.</returns>
-    private bool IsDirectlyImplementedInterface(Type type, Type interfaceType)
-    {
-        // Get the directly implemented interfaces of the type
-        var directlyImplementedInterfaces = type.GetInterfaces()
-            .Except(type.BaseType?.GetInterfaces() ?? Enumerable.Empty<Type>());
-
-        return directlyImplementedInterfaces.Contains(interfaceType);
-    }
-
     private bool HasComponentInterface(Type type)
     {
         return type.GetInterfaces()

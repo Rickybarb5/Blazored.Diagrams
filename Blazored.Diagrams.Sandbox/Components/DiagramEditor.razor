@@ -15,7 +15,7 @@
 @code {
     [CascadingParameter] public IDiagramService DiagramService { get; set; }
     [Inject] IDialogService DialogService { get; set; }
-    [Inject] IDiagramSerializationService SerializationService { get; set; }
+    [Inject] ISerializationService SerializationService { get; set; }
 
     [Parameter] public EventCallback<string> OnDiagramLoaded { get; set; }
 

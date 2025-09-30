@@ -12,11 +12,11 @@ using Blazored.Diagrams.Ports;
 namespace Blazored.Diagrams.Services.Serialization;
 
 /// <inheritdoc />
-public class DiagramSerializationService : IDiagramSerializationService
+public class SerializationService : ISerializationService
 {
     private readonly JsonSerializerOptions _options;
 
-    public DiagramSerializationService()
+    public SerializationService()
     {
         _options = CreateOptions(Assembly.GetExecutingAssembly());
     }

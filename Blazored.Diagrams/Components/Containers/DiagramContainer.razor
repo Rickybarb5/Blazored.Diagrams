@@ -46,7 +46,6 @@
     
     
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
-    [Inject] private IDiagramServiceProvider DiagramServiceProvider { get; set; } = null!;
 
     /// <summary>
     /// <see cref="IJSRuntime"/>
@@ -86,7 +85,7 @@
     /// <summary>
     /// ID of the diagram container
     /// </summary>
-    public string ContainerId => $"diagram-container-{_diagramService.Diagram.Id}";
+    public string ContainerId => $"diagram-container-{_diagramService?.Diagram.Id}";
 
     /// <inheritdoc />
     protected override Task OnInitializedAsync()

@@ -5,8 +5,8 @@
 @implements IAsyncDisposable
 @if (_link is not null && _link.IsVisible && _link.SourcePort is not null)
 {
-    <CascadingValue Value=@(this) TValue="LinkContainer">
-        <div style="@ContainerStyle" id="@($"link-container-{_link.Id}")" @ref="_componentRef">
+    <CascadingValue Value=@(this) TValue="LinkContainer" >
+        <div style="@ContainerStyle" id="@(ContainerId)" @ref="_componentRef">
             <DynamicComponent Type=@(ComponentRegistry.GetComponentType(Link.GetType())) Parameters=@Parameters></DynamicComponent>
         </div>
     </CascadingValue>

@@ -3,12 +3,9 @@
 @using Blazored.Diagrams.Services.Virtualization
 @inject IVirtualizationService VirtualizationService
 @implements IDisposable
-@if (_layer is not null)
+@if (_layer is not null && _layer.IsVisible)
 {
-    <div>
-        @* Rendering order matters right now, consider using z-index in the future. *@
-        @if (_layer.IsVisible)
-        {
+    <div id="@(ContainerId)">
             @foreach (var node in VirtualizationService.Virtualize(DiagramService.Diagram, _layer.Nodes))
             {
                 <NodeContainer Node="node"></NodeContainer>
@@ -23,7 +20,6 @@
             {
                 <LinkContainer Link="link"></LinkContainer>
             }
-        }
     </div>
 }
 
@@ -48,6 +44,12 @@
         }
     }
 
+    
+    /// <summary>
+    /// ID of the node container
+    /// </summary>
+    public string ContainerId => $"layer-container-{_layer.Id}";
+    
     /// <inheritdoc />
     protected override Task OnAfterRenderAsync(bool firstRender)
     {

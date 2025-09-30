@@ -27,7 +27,7 @@ public interface IAddContainer
     /// <param name="parentGroup">Group to which the node will be added to.</param>
     /// <param name="node">Node to be added to the container.</param>
     /// <typeparam name="TNode">Node Type</typeparam>
-    IAddContainer AddNodeTo<TNode>(INodeContainer parentGroup, TNode node)
+    IAddContainer NodeTo<TNode>(INodeContainer parentGroup, TNode node)
         where TNode : INode;
 
     /// <summary>
@@ -36,7 +36,7 @@ public interface IAddContainer
     /// <param name="parent">Model to which the port will be added to.</param>
     /// <param name="port">Port that will be added.</param>
     /// <typeparam name="TPort">Port Type</typeparam>
-    IAddContainer AddPortTo<TPort>(IPortContainer parent, TPort port)
+    IAddContainer PortTo<TPort>(IPortContainer parent, TPort port)
         where TPort : IPort;
 
     /// <summary>
