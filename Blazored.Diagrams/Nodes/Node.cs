@@ -4,6 +4,7 @@ using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
+using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Nodes;
 
@@ -159,12 +160,15 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     }
 
     /// <inheritdoc />
-    public ITypedEvent<NodePositionChangedEvent> OnPositionChanged { get; init; } = new TypedEvent<NodePositionChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodePositionChangedEvent> OnPositionChanged { get; init; } = new TypedEvent<NodePositionChangedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<NodeSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<NodeSizeChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<NodeSizeChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<NodeSelectionChangedEvent> OnSelectionChanged { get; init; }  = new TypedEvent<NodeSelectionChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeSelectionChangedEvent> OnSelectionChanged { get; init; }  = new TypedEvent<NodeSelectionChangedEvent>();
 
     /// <inheritdoc />
     public  ITypedEvent<NodeVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<NodeVisibilityChangedEvent>();
@@ -173,11 +177,14 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     public  ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortAddedToNodeEvent> OnPortAddedToNode { get; init; } = new TypedEvent<PortAddedToNodeEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortAddedToNodeEvent> OnPortAddedToNode { get; init; } = new TypedEvent<PortAddedToNodeEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; } = new TypedEvent<PortRemovedFromNodeEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; } = new TypedEvent<PortRemovedFromNodeEvent>();
 }

@@ -44,48 +44,57 @@ public interface ILayer : IId,
     /// <summary>
     /// Event triggered when the visibility state changes.
     /// </summary>
-    public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when a node is added.
     /// </summary>
-    public ITypedEvent<NodeAddedToLayerEvent> OnNodeAddedToLayer { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeAddedToLayerEvent> OnNodeAddedToLayer { get; init; }
 
     /// <summary>
     ///     Event triggered when a node is removed.
     /// </summary>
-    public ITypedEvent<NodeRemovedFromLayerEvent> OnNodeRemovedFromLayer { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedFromLayerEvent> OnNodeRemovedFromLayer { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is added.
     /// </summary>
-    public ITypedEvent<GroupAddedToLayerEvent> OnGroupAddedToLayer { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupAddedToLayerEvent> OnGroupAddedToLayer { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is removed.
     /// </summary>
-    public ITypedEvent<GroupRemovedFromLayerEvent> OnGroupRemovedFromLayer { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedFromLayerEvent> OnGroupRemovedFromLayer { get; init; }
         
     /// <summary>
     ///     Event triggered when a node is added.
     /// </summary>
-    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } 
     
     /// <summary>
     ///     Event triggered when a node is removed.
     /// </summary>
-    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } 
     
         
     /// <summary>
     ///     Event triggered when a group is added.
     /// </summary>
-    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } 
     
     /// <summary>
     ///     Event triggered when a group is removed.
     /// </summary>
-    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } 
     
     
 

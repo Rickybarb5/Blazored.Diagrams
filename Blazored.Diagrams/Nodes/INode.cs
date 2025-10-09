@@ -1,6 +1,7 @@
 ﻿using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services.Events;
+using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Nodes;
 
@@ -33,40 +34,48 @@ public interface INode :
     /// <summary>
     /// Event triggered when the size changes.
     /// </summary>
-    public ITypedEvent<NodeSizeChangedEvent> OnSizeChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeSizeChangedEvent> OnSizeChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the position changes
     /// </summary>
-    public ITypedEvent<NodePositionChangedEvent> OnPositionChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodePositionChangedEvent> OnPositionChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the selection state changes.
     /// </summary>
-    public ITypedEvent<NodeSelectionChangedEvent> OnSelectionChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeSelectionChangedEvent> OnSelectionChanged { get; init; }
 
     /// <summary>
     /// EventTriggered when the visibility state changes
     /// </summary>
-    public ITypedEvent<NodeVisibilityChangedEvent> OnVisibilityChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeVisibilityChangedEvent> OnVisibilityChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when a port is added.
     /// </summary>
-    public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } 
     
     /// <summary>
     ///     Event triggered when a port is removed.
     /// </summary>
-    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } 
     
     /// <summary>
     ///     Event triggered when a port is added to this node.
     /// </summary>
-    public ITypedEvent<PortAddedToNodeEvent> OnPortAddedToNode { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<PortAddedToNodeEvent> OnPortAddedToNode { get; init; } 
 
     /// <summary>
     ///     Event triggered when a port is removed from this node
     /// </summary>
-    public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
+    [JsonIgnore]
+public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
 }

@@ -54,49 +54,61 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     public virtual bool HasOutGoingLinks => _outgoingLinks.Count != 0;
 
     /// <inheritdoc />
-    public ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; } =
         new TypedEvent<PortJustificationChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged { get; init; } =
         new TypedEvent<PortAlignmentChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortPositionChangedEvent> OnPositionChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<PortPositionChangedEvent> OnPositionChanged { get; init; } =
         new TypedEvent<PortPositionChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<PortSizeChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<PortSizeChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortParentChangedEvent> OnPortParentChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<PortParentChangedEvent> OnPortParentChanged { get; init; } =
         new TypedEvent<PortParentChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
         new TypedEvent<PortVisibilityChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded { get; init; } =
         new TypedEvent<IncomingLinkAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved { get; init; } =
         new TypedEvent<IncomingLinkRemovedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded { get; init; } =
         new TypedEvent<OutgoingLinkAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved { get; init; } =
         new TypedEvent<OutgoingLinkRemovedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; } = new TypedEvent<LinkRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; } = new TypedEvent<LinkRemovedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<LinkAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<LinkAddedEvent>();
 
     /// <inheritdoc />
     public virtual int Width

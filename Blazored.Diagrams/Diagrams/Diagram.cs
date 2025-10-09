@@ -220,28 +220,35 @@ public partial class Diagram : IDiagram
     public virtual IDiagramOptions Options { get; init; } = new DiagramOptions();
 
     /// <inheritdoc />
-    public ITypedEvent<DiagramSizeChangedEvent> OnSizeChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<DiagramSizeChangedEvent> OnSizeChanged { get; init; } =
         new TypedEvent<DiagramSizeChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<DiagramZoomChangedEvent> OnZoomChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<DiagramZoomChangedEvent> OnZoomChanged { get; init; } =
         new TypedEvent<DiagramZoomChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<DiagramPanChangedEvent> OnPanChanged { get; init; } = new TypedEvent<DiagramPanChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<DiagramPanChangedEvent> OnPanChanged { get; init; } = new TypedEvent<DiagramPanChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<LayerAddedEvent> OnLayerAdded { get; init; } = new TypedEvent<LayerAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LayerAddedEvent> OnLayerAdded { get; init; } = new TypedEvent<LayerAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<LayerRemovedEvent> OnLayerRemoved { get; init; } = new TypedEvent<LayerRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LayerRemovedEvent> OnLayerRemoved { get; init; } = new TypedEvent<LayerRemovedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<DiagramPositionChangedEvent> OnPositionChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<DiagramPositionChangedEvent> OnPositionChanged { get; init; } =
         new TypedEvent<DiagramPositionChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<CurrentLayerChangedEvent>? OnCurrentLayerChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<CurrentLayerChangedEvent>? OnCurrentLayerChanged { get; init; } =
         new TypedEvent<CurrentLayerChangedEvent>();
 
 

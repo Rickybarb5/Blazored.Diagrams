@@ -122,30 +122,39 @@ public partial class Layer : ILayer
         .AsReadOnly();
 
     /// <inheritdoc />
-    public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LayerVisibilityChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LayerVisibilityChangedEvent>();
     
     /// <inheritdoc />
-    public ITypedEvent<NodeAddedToLayerEvent> OnNodeAddedToLayer { get; init; } = new TypedEvent<NodeAddedToLayerEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeAddedToLayerEvent> OnNodeAddedToLayer { get; init; } = new TypedEvent<NodeAddedToLayerEvent>();
     /// <inheritdoc />
-    public ITypedEvent<NodeRemovedFromLayerEvent> OnNodeRemovedFromLayer { get; init; } = new TypedEvent<NodeRemovedFromLayerEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedFromLayerEvent> OnNodeRemovedFromLayer { get; init; } = new TypedEvent<NodeRemovedFromLayerEvent>();
     
     /// <inheritdoc />
-    public ITypedEvent<GroupAddedToLayerEvent> OnGroupAddedToLayer { get; init; } = new TypedEvent<GroupAddedToLayerEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupAddedToLayerEvent> OnGroupAddedToLayer { get; init; } = new TypedEvent<GroupAddedToLayerEvent>();
     
     /// <inheritdoc />
-    public ITypedEvent<GroupRemovedFromLayerEvent> OnGroupRemovedFromLayer { get; init; } = new TypedEvent<GroupRemovedFromLayerEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedFromLayerEvent> OnGroupRemovedFromLayer { get; init; } = new TypedEvent<GroupRemovedFromLayerEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =  new TypedEvent<NodeRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =  new TypedEvent<NodeRemovedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } = new TypedEvent<GroupAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } = new TypedEvent<GroupAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]

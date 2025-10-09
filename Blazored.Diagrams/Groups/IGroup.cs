@@ -59,89 +59,106 @@ public interface IGroup :
     /// <summary>
     /// Event triggered when the size changes.
     /// </summary>
+    [JsonIgnore]
     public ITypedEvent<GroupSizeChangedEvent> OnSizeChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the position changes
     /// </summary>
-    public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the selection state changes.
     /// </summary>
-    public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; }
 
     /// <summary>
     /// EventTriggered when the visibility state changes
     /// </summary>
-    public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when a port is added.
     /// </summary>
-    public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } 
 
     /// <summary>
     ///     Event triggered when a port is removed.
     /// </summary>
-    public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; }
+    [JsonIgnore]
+public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; }
     /// <summary>
     ///     Event triggered when a node is added.
     /// </summary>
-    public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; }
 
     /// <summary>
     ///     Event triggered when a node is removed.
     /// </summary>
-    public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; }
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is added.
     /// </summary>
-    public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is removed.
     /// </summary>
-    public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; }
 
     /// <summary>
     /// Event triggered when the padding changes.
     /// </summary>
-    public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; }
+    [JsonIgnore]
+public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; }
     
     
     /// <summary>
     ///     Event triggered when a port is added.
     /// </summary>
-    public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } 
     
     /// <summary>
     ///     Event triggered when a port is removed.
     /// </summary>
-    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } 
     
     
     /// <summary>
     ///     Event triggered when a node is added.
     /// </summary>
-    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } 
     
     /// <summary>
     ///     Event triggered when a node is removed.
     /// </summary>
-    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } 
     
         
     /// <summary>
     ///     Event triggered when a group is added.
     /// </summary>
-    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } 
     
     /// <summary>
     ///     Event triggered when a group is removed.
     /// </summary>
-    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } 
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } 
 
     /// <summary>
     /// Unselects all models in a group

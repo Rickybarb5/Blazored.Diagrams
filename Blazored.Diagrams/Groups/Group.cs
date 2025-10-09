@@ -266,56 +266,73 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             .AsReadOnly();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<GroupSizeChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<GroupSizeChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; } =
         new TypedEvent<GroupPositionChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; } =
         new TypedEvent<GroupSelectionChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
         new TypedEvent<GroupVisibilityChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } = new TypedEvent<PortAddedToGroupEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } = new TypedEvent<PortAddedToGroupEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; } =
         new TypedEvent<PortRemovedFromGroupEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; } = new TypedEvent<NodeAddedToGroupEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; } = new TypedEvent<NodeAddedToGroupEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; } =
         new TypedEvent<NodeRemovedFromGroupEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; } = new TypedEvent<GroupAddedToGroupEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; } = new TypedEvent<GroupAddedToGroupEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; } =
         new TypedEvent<GroupRemovedFromGroupEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; } =
         new TypedEvent<GroupPaddingChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =   new TypedEvent<NodeRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =   new TypedEvent<NodeRemovedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } =  new TypedEvent<GroupAddedEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } =  new TypedEvent<GroupAddedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
+    [JsonIgnore]
+public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
 }

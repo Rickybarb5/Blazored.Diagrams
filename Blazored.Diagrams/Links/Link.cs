@@ -91,21 +91,27 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
     }
 
     /// <inheritdoc />
-    public ITypedEvent<LinkSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<LinkSizeChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<LinkSizeChangedEvent>();
     
     /// <inheritdoc />
-    public ITypedEvent<LinkTargetPortChangedEvent> OnTargetPortChanged { get; init; } = new TypedEvent<LinkTargetPortChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkTargetPortChangedEvent> OnTargetPortChanged { get; init; } = new TypedEvent<LinkTargetPortChangedEvent>();
     
     /// <inheritdoc />
-    public ITypedEvent<LinkSourcePortChangedEvent> OnSourcePortChanged { get; init; } = new TypedEvent<LinkSourcePortChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkSourcePortChangedEvent> OnSourcePortChanged { get; init; } = new TypedEvent<LinkSourcePortChangedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<LinkTargetPositionChangedEvent> OnTargetPositionChanged { get; init; } = new TypedEvent<LinkTargetPositionChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkTargetPositionChangedEvent> OnTargetPositionChanged { get; init; } = new TypedEvent<LinkTargetPositionChangedEvent>();
 
     /// <inheritdoc />
-    public ITypedEvent<LinkSelectionChangedEvent> OnSelectionChanged { get; init; } =
+    [JsonIgnore]
+public ITypedEvent<LinkSelectionChangedEvent> OnSelectionChanged { get; init; } =
         new TypedEvent<LinkSelectionChangedEvent>();
     /// <inheritdoc />
-    public ITypedEvent<LinkVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LinkVisibilityChangedEvent>();
+    [JsonIgnore]
+public ITypedEvent<LinkVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LinkVisibilityChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
