@@ -24,7 +24,7 @@ public class ResultNode : Node, IHasComponent<ResultNodeComponent>, INumberOutpu
 
     public void NotifyNumberChanged()
     {
-        OnNumberChanged?.Invoke(NumberOutput);
+        OnNumberChanged.Invoke(NumberOutput);
     }
 
     public ResultNode()

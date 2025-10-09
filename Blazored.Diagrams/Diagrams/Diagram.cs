@@ -6,6 +6,7 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Diagram;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Diagrams;
@@ -34,8 +35,8 @@ public partial class Diagram : IDiagram
     /// </summary>
     public Diagram()
     {
-        _layers.OnItemAdded += HandleLayerAdded;
-        _layers.OnItemRemoved += HandleLayerRemoved;
+        _layers.OnItemAdded.Subscribe(HandleLayerAdded);
+        _layers.OnItemRemoved.Subscribe(HandleLayerRemoved);
         // Always ensure a default layer exists
         EnsureDefaultLayer();
     }
@@ -53,14 +54,14 @@ public partial class Diagram : IDiagram
         }
     }
 
-    private void HandleLayerRemoved(ILayer obj)
+    private void HandleLayerRemoved(ItemRemovedEvent<ILayer> ev)
     {
-        OnLayerRemoved?.Invoke(this, obj);
+        OnLayerRemoved.Publish(new(ev.Item));
     }
 
-    private void HandleLayerAdded(ILayer obj)
+    private void HandleLayerAdded(ItemAddedEvent<ILayer> ev)
     {
-        OnLayerAdded?.Invoke(this, obj);
+        OnLayerAdded.Publish(new(ev.Item));
     }
 
     /// <inheritdoc />
@@ -80,7 +81,7 @@ public partial class Diagram : IDiagram
             {
                 var oldX = _panX;
                 _panX = value;
-                OnPanChanged?.Invoke(this, oldX, _panY, value, _panY);
+                OnPanChanged.Publish(new(this, oldX, _panY, value, _panY));
             }
         }
     }
@@ -95,7 +96,7 @@ public partial class Diagram : IDiagram
             {
                 var oldY = _panY;
                 _panY = value;
-                OnPanChanged?.Invoke(this, _panX, oldY, value, _panY);
+                OnPanChanged.Publish(new(this, _panX, oldY, value, _panY));
             }
         }
     }
@@ -112,7 +113,7 @@ public partial class Diagram : IDiagram
             {
                 var oldWidth = _width;
                 _width = value;
-                OnSizeChanged?.Invoke(this, oldWidth, _height, _width, _height);
+                OnSizeChanged.Publish(new(this, oldWidth, _height, _width, _height));
             }
         }
     }
@@ -128,7 +129,7 @@ public partial class Diagram : IDiagram
             {
                 var oldHeight = _height;
                 _width = value;
-                OnSizeChanged?.Invoke(this, _width, oldHeight, _width, _height);
+                OnSizeChanged.Publish(new(this, _width, oldHeight, _width, _height));
             }
         }
     }
@@ -178,7 +179,7 @@ public partial class Diagram : IDiagram
 
                 var oldLayer = _currentLayer;
                 _currentLayer = value;
-                OnCurrentLayerChanged?.Invoke(oldLayer, _currentLayer);
+                OnCurrentLayerChanged.Publish(new(oldLayer, _currentLayer));
             }
         }
     }
@@ -194,7 +195,7 @@ public partial class Diagram : IDiagram
             {
                 var oldValue = _positionX;
                 _positionX = value;
-                OnPositionChanged?.Invoke(this, oldValue, _positionY, _positionX, _positionY);
+                OnPositionChanged.Publish(new(this, oldValue, _positionY, _positionX, _positionY));
             }
         }
     }
@@ -210,39 +211,44 @@ public partial class Diagram : IDiagram
             {
                 var oldValue = _positionY;
                 _positionY = value;
-                OnPositionChanged?.Invoke(this, _positionX, oldValue, _positionX, _positionY);
+                OnPositionChanged.Publish(new(this, _positionX, oldValue, _positionX, _positionY));
             }
         }
     }
 
     /// <inheritdoc />
     public virtual IDiagramOptions Options { get; init; } = new DiagramOptions();
-    
-    /// <inheritdoc />
-    public event Action<IDiagram, double, double>? OnZoomChanged;
 
     /// <inheritdoc />
-    public event Action<IDiagram, int, int, int, int>? OnPanChanged;
+    public ITypedEvent<DiagramSizeChangedEvent> OnSizeChanged { get; init; } =
+        new TypedEvent<DiagramSizeChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IDiagram, ILayer>? OnLayerAdded;
+    public ITypedEvent<DiagramZoomChangedEvent> OnZoomChanged { get; init; } =
+        new TypedEvent<DiagramZoomChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IDiagram, ILayer>? OnLayerRemoved;
+    public ITypedEvent<DiagramPanChangedEvent> OnPanChanged { get; init; } = new TypedEvent<DiagramPanChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IDiagram, int, int, int, int>? OnPositionChanged;
+    public ITypedEvent<LayerAddedEvent> OnLayerAdded { get; init; } = new TypedEvent<LayerAddedEvent>();
 
     /// <inheritdoc />
-    public event Action<ILayer, ILayer>? OnCurrentLayerChanged;
+    public ITypedEvent<LayerRemovedEvent> OnLayerRemoved { get; init; } = new TypedEvent<LayerRemovedEvent>();
 
     /// <inheritdoc />
-    public event Action<IDiagram, int, int, int, int>? OnSizeChanged;
+    public ITypedEvent<DiagramPositionChangedEvent> OnPositionChanged { get; init; } =
+        new TypedEvent<DiagramPositionChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<CurrentLayerChangedEvent>? OnCurrentLayerChanged { get; init; } =
+        new TypedEvent<CurrentLayerChangedEvent>();
+
 
     /// <inheritdoc />
     public void Dispose()
     {
-        _layers.OnItemAdded -= HandleLayerAdded;
-        _layers.OnItemRemoved -= HandleLayerRemoved;
+        _layers.OnItemAdded.Unsubscribe(HandleLayerAdded);
+        _layers.OnItemRemoved.Unsubscribe(HandleLayerRemoved);
     }
 }

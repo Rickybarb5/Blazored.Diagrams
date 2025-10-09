@@ -4,6 +4,7 @@ using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Newtonsoft.Json;
 
@@ -32,10 +33,10 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     /// </summary>
     public Port()
     {
-        _incomingLinks.OnItemAdded += HandleIncomingLinkAdded;
-        _incomingLinks.OnItemRemoved += HandleIncomingLinkRemoved;
-        _outgoingLinks.OnItemAdded += HandleOutgoingLinkAdded;
-        _outgoingLinks.OnItemRemoved += HandleOutgoingLinkRemoved;
+        _incomingLinks.OnItemAdded.Subscribe(HandleIncomingLinkAdded);
+        _incomingLinks.OnItemRemoved.Subscribe(HandleIncomingLinkRemoved);
+        _outgoingLinks.OnItemAdded.Subscribe(HandleOutgoingLinkAdded);
+        _outgoingLinks.OnItemRemoved.Subscribe(HandleOutgoingLinkRemoved);
     }
 
     /// <inheritdoc />
@@ -53,6 +54,51 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     public virtual bool HasOutGoingLinks => _outgoingLinks.Count != 0;
 
     /// <inheritdoc />
+    public ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; } =
+        new TypedEvent<PortJustificationChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged { get; init; } =
+        new TypedEvent<PortAlignmentChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<PortPositionChangedEvent> OnPositionChanged { get; init; } =
+        new TypedEvent<PortPositionChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<PortSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<PortSizeChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<PortParentChangedEvent> OnPortParentChanged { get; init; } =
+        new TypedEvent<PortParentChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
+        new TypedEvent<PortVisibilityChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded { get; init; } =
+        new TypedEvent<IncomingLinkAddedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved { get; init; } =
+        new TypedEvent<IncomingLinkRemovedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded { get; init; } =
+        new TypedEvent<OutgoingLinkAddedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved { get; init; } =
+        new TypedEvent<OutgoingLinkRemovedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; } = new TypedEvent<LinkRemovedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<LinkAddedEvent>();
+
+    /// <inheritdoc />
     public virtual int Width
     {
         get => _width;
@@ -62,7 +108,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var oldWidth = _width;
                 _width = value;
-                OnSizeChanged?.Invoke(this, oldWidth, _height, _width, _height);
+                OnSizeChanged.Publish(new(this, oldWidth, _height, _width, _height));
             }
         }
     }
@@ -77,7 +123,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var oldHeight = _height;
                 _height = value;
-                OnSizeChanged?.Invoke(this, _width, oldHeight, _width, _height);
+                OnSizeChanged.Publish(new(this, _width, oldHeight, _width, _height));
             }
         }
     }
@@ -93,7 +139,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var oldX = _positionX;
                 _positionX = value;
-                OnPositionChanged?.Invoke(this, oldX, _positionY, _positionX, _positionY);
+                OnPositionChanged.Publish(new(this, oldX, _positionY, _positionX, _positionY));
             }
         }
     }
@@ -108,7 +154,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var oldY = _positionY;
                 _positionY = value;
-                OnPositionChanged?.Invoke(this, _positionX, oldY, _positionX, _positionY);
+                OnPositionChanged.Publish(new(this, _positionX, oldY, _positionX, _positionY));
             }
         }
     }
@@ -124,7 +170,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var oldX = _positionX;
                 _offsetX = value;
-                OnPositionChanged?.Invoke(this, oldX, PositionY, PositionX, PositionY);
+                OnPositionChanged.Publish(new(this, oldX, PositionY, PositionX, PositionY));
             }
         }
     }
@@ -139,7 +185,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var oldY = _positionY;
                 _positionY = value;
-                OnPositionChanged?.Invoke(this, PositionX, oldY, PositionX, PositionY);
+                OnPositionChanged.Publish(new(this, PositionX, oldY, PositionX, PositionY));
             }
         }
     }
@@ -154,7 +200,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             if (_isVisible != value)
             {
                 _isVisible = value;
-                OnVisibilityChanged?.Invoke(this);
+                OnVisibilityChanged.Publish(new(this));
             }
         }
     }
@@ -169,7 +215,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var old = _justification;
                 _justification = value;
-                OnPortJustificationChanged?.Invoke(this, old, _justification);
+                OnPortJustificationChanged.Publish(new(this, old, _justification));
             }
         }
     }
@@ -185,7 +231,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             {
                 var old = _alignment;
                 _alignment = value;
-                OnPortAlignmentChanged?.Invoke(this, old, _alignment);
+                OnPortAlignmentChanged.Publish(new(this, old, _alignment));
             }
         }
     }
@@ -235,40 +281,10 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
                 var oldParent = _parent;
                 _parent = value;
                 _parent.Ports.Add(this);
-                OnPortParentChanged?.Invoke(this, oldParent, _parent);
+                OnPortParentChanged.Publish(new(this, oldParent, _parent));
             }
         }
     }
-    
-    /// <inheritdoc />
-    public event Action<IPort>? OnVisibilityChanged;
-
-    /// <inheritdoc />
-    public event Action<IPort, ILink>? OnIncomingLinkAdded;
-
-    /// <inheritdoc />
-    public event Action<IPort, ILink>? OnIncomingLinkRemoved;
-
-    /// <inheritdoc />
-    public event Action<IPort, ILink>? OnOutgoingLinkAdded;
-
-    /// <inheritdoc />
-    public event Action<IPort, ILink>? OnOutgoingLinkRemoved;
-
-    /// <inheritdoc />
-    public event Action<IPort, PortJustification, PortJustification>? OnPortJustificationChanged;
-
-    /// <inheritdoc />
-    public event Action<IPort, IPortContainer, IPortContainer>? OnPortParentChanged;
-
-    /// <inheritdoc />
-    public event Action<IPort, PortAlignment, PortAlignment>? OnPortAlignmentChanged;
-
-    /// <inheritdoc />
-    public event Action<IPort, int, int, int, int>? OnPositionChanged;
-
-    /// <inheritdoc />
-    public event Action<IPort, int, int, int, int>? OnSizeChanged;
 
     /// <inheritdoc />
     public virtual void Dispose()
@@ -279,9 +295,9 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
         _outgoingLinks.Clear();
         _parent.Ports.Remove(this);
 
-        _incomingLinks.OnItemAdded -= HandleIncomingLinkAdded;
-        _incomingLinks.OnItemRemoved -= HandleIncomingLinkRemoved;
-        _outgoingLinks.OnItemAdded -= HandleOutgoingLinkAdded;
-        _outgoingLinks.OnItemRemoved -= HandleOutgoingLinkRemoved;
+        _incomingLinks.OnItemAdded.Unsubscribe(HandleIncomingLinkAdded);
+        _incomingLinks.OnItemRemoved.Unsubscribe(HandleIncomingLinkRemoved);
+        _outgoingLinks.OnItemAdded.Unsubscribe(HandleOutgoingLinkAdded);
+        _outgoingLinks.OnItemRemoved.Unsubscribe(HandleOutgoingLinkRemoved);
     }
 }

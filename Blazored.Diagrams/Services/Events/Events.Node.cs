@@ -64,9 +64,9 @@ public record NodeSizeChangedEvent(INode Model, double OldWidth, double OldHeigh
 /// <summary>
 ///     Event triggered when a port is added to a node.
 /// </summary>
-/// <param name="Model"></param>
+/// <param name="Node"></param>
 /// <param name="Port"></param>
-public record PortAddedToNodeEvent(INode Model, IPort Port) : NodeEvent(Model);
+public record PortAddedToNodeEvent(INode Node, IPort Port) : NodeEvent(Node);
 
 /// <summary>
 ///     Event triggered when a port is removed from a node.

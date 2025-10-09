@@ -4,6 +4,7 @@ using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Newtonsoft.Json;
 
@@ -30,44 +31,50 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
     /// </summary>
     public Group()
     {
-        _nodes.OnItemAdded += HandleNodeAdded;
-        _nodes.OnItemRemoved += HandleNodeRemoved;
-        _groups.OnItemAdded += HandleGroupAdded;
-        _groups.OnItemRemoved += HandleGroupRemoved;
-        _ports.OnItemAdded += HandlePortAdded;
-        _ports.OnItemRemoved += HandlePortRemoved;
+        _nodes.OnItemAdded.Subscribe(HandleNodeAdded);
+        _nodes.OnItemRemoved.Subscribe(HandleNodeRemoved);
+        _groups.OnItemAdded.Subscribe(HandleGroupAdded);
+        _groups.OnItemRemoved.Subscribe(HandleGroupRemoved);
+        _ports.OnItemAdded.Subscribe(HandlePortAdded);
+        _ports.OnItemRemoved.Subscribe(HandlePortRemoved);
     }
 
-    private void HandleGroupRemoved(IGroup obj)
+    private void HandleGroupRemoved(ItemRemovedEvent<IGroup> obj)
     {
-        OnGroupRemoved?.Invoke(this, obj);
+        OnGroupRemovedFromGroup.Publish(new(this, obj.Item));
+        OnGroupRemoved.Publish(new(obj.Item));
     }
 
-    private void HandleGroupAdded(IGroup obj)
+    private void HandleGroupAdded(ItemAddedEvent<IGroup> obj)
     {
-        OnGroupAdded?.Invoke(this, obj);
+        OnGroupAddedTogroup.Publish(new(this, obj.Item));
+        OnGroupAdded.Publish(new(obj.Item));
     }
 
-    private void HandleNodeRemoved(INode obj)
+    private void HandleNodeRemoved(ItemRemovedEvent<INode> obj)
     {
-        OnNodeRemoved?.Invoke(this, obj);
+        OnNodeRemovedFromGroup.Publish(new(this, obj.Item));
+        OnNodeRemoved.Publish(new(obj.Item));
     }
 
-    private void HandleNodeAdded(INode obj)
+    private void HandleNodeAdded(ItemAddedEvent<INode> obj)
     {
-        OnNodeAdded?.Invoke(this, obj);
+        OnNodeAddedToGroup.Publish(new(this, obj.Item));
+        OnNodeAdded.Publish(new(obj.Item));
     }
 
-    private void HandlePortRemoved(IPort obj)
+    private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
     {
-        obj.Dispose();
-        OnPortRemoved?.Invoke(this, obj);
+        obj.Item.Dispose();
+        OnPortRemovedFromGroup.Publish(new(this, obj.Item));
+        OnPortRemoved.Publish(new(obj.Item));
     }
 
-    private void HandlePortAdded(IPort obj)
+    private void HandlePortAdded(ItemAddedEvent<IPort> obj)
     {
-        obj.Parent = this;
-        OnPortAdded?.Invoke(this, obj);
+        obj.Item.Parent = this;
+        OnPortAddedToGroup?.Publish(new(this, obj.Item));
+        OnPortAdded.Publish(new(obj.Item));
     }
 
     /// <inheritdoc />
@@ -79,14 +86,14 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
         _nodes.Clear();
         _groups.ForEach(x => x.Dispose());
         _groups.Clear();
-        _nodes.OnItemAdded -= HandleNodeAdded;
-        _nodes.OnItemRemoved -= HandleNodeRemoved;
+        _nodes.OnItemAdded.Unsubscribe(HandleNodeAdded);
+        _nodes.OnItemRemoved.Unsubscribe(HandleNodeRemoved);
 
-        _groups.OnItemAdded -= HandleGroupAdded;
-        _groups.OnItemRemoved -= HandleGroupRemoved;
+        _groups.OnItemAdded.Unsubscribe(HandleGroupAdded);
+        _groups.OnItemRemoved.Unsubscribe(HandleGroupRemoved);
 
-        _ports.OnItemAdded -= HandlePortAdded;
-        _ports.OnItemRemoved -= HandlePortRemoved;
+        _ports.OnItemAdded.Unsubscribe(HandlePortAdded);
+        _ports.OnItemRemoved.Unsubscribe(HandlePortRemoved);
     }
 
     /// <inheritdoc />
@@ -102,7 +109,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             {
                 var oldWidth = _width;
                 _width = value;
-                OnSizeChanged?.Invoke(this, oldWidth, _height, _width, _height);
+                OnSizeChanged?.Publish(new(this, oldWidth, _height, _width, _height));
             }
         }
     }
@@ -117,7 +124,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             {
                 var oldHeight = _height;
                 _height = value;
-                OnSizeChanged?.Invoke(this, _width, oldHeight, _width, _height);
+                OnSizeChanged?.Publish(new(this, _width, oldHeight, _width, _height));
             }
         }
     }
@@ -133,7 +140,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             {
                 var oldX = _positionX;
                 _positionX = value;
-                OnPositionChanged?.Invoke(this, oldX, _positionY, _positionX, _positionY);
+                OnPositionChanged?.Publish(new(this, oldX, _positionY, _positionX, _positionY));
             }
         }
     }
@@ -148,7 +155,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             {
                 var oldY = _positionX;
                 _positionY = value;
-                OnPositionChanged?.Invoke(this, _positionX, oldY, _positionX, _positionY);
+                OnPositionChanged?.Publish(new(this, _positionX, oldY, _positionX, _positionY));
             }
         }
     }
@@ -162,7 +169,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             if (_isSelected != value)
             {
                 _isSelected = value;
-                OnSelectionChanged?.Invoke(this);
+                OnSelectionChanged?.Publish(new (this));
             }
         }
     }
@@ -177,7 +184,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             if (_isVisible != value)
             {
                 _isVisible = value;
-                OnVisibilityChanged?.Invoke(this);
+                OnVisibilityChanged?.Publish(new(this));
             }
         }
     }
@@ -193,7 +200,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             {
                 var oldPadding = _padding;
                 _padding = value;
-                OnPaddingChanged?.Invoke(this, oldPadding, _padding);
+                OnPaddingChanged?.Publish(new(this, oldPadding, _padding));
             }
         }
     }
@@ -258,37 +265,57 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             .ToList()
             .AsReadOnly();
 
+    /// <inheritdoc />
+    public ITypedEvent<GroupSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<GroupSizeChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, int, int>? OnPaddingChanged;
+    public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; } =
+        new TypedEvent<GroupPositionChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, int, int, int, int>? OnSizeChanged;
+    public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; } =
+        new TypedEvent<GroupSelectionChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, int, int, int, int>? OnPositionChanged;
+    public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
+        new TypedEvent<GroupVisibilityChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup>? OnSelectionChanged;
+    public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } = new TypedEvent<PortAddedToGroupEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup>? OnVisibilityChanged;
+    public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; } =
+        new TypedEvent<PortRemovedFromGroupEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, INode>? OnNodeAdded;
+    public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; } = new TypedEvent<NodeAddedToGroupEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, INode>? OnNodeRemoved;
+    public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; } =
+        new TypedEvent<NodeRemovedFromGroupEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, IGroup>? OnGroupAdded;
+    public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; } = new TypedEvent<GroupAddedToGroupEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, IGroup>? OnGroupRemoved;
+    public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; } =
+        new TypedEvent<GroupRemovedFromGroupEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, IPort>? OnPortAdded;
+    public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; } =
+        new TypedEvent<GroupPaddingChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<IGroup, IPort>? OnPortRemoved;
+    public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =   new TypedEvent<NodeRemovedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } =  new TypedEvent<GroupAddedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
 }

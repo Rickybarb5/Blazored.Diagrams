@@ -68,7 +68,7 @@ public class PortTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnSizeChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnSizeChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.Width = 50;
@@ -129,7 +129,7 @@ public class PortTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnPositionChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnPositionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.PositionX = 50;
@@ -176,14 +176,14 @@ public class PortTests
     {
         // Arrange
         var obj = Instance;
-        var count = 0;
-        obj.OnPortJustificationChanged += (_, _, _) => count++;
+        var eventCount = 0;
+        obj.OnPortJustificationChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.Justification = PortJustification.End;
 
         //Assert
-        Assert.Equal(1, count);
+        Assert.Equal(1, eventCount);
     }
 
     [Theory]
@@ -210,7 +210,7 @@ public class PortTests
         // Arrange
         var obj = Instance;
         var count = 0;
-        obj.OnPortAlignmentChanged += (_, _, _) => count++;
+        obj.OnPortAlignmentChanged.Subscribe((e) => count++);
 
         //Act
         obj.Alignment = PortAlignment.CenterParent;
@@ -225,7 +225,7 @@ public class PortTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnVisibilityChanged += (_) => eventCount++;
+        obj.OnVisibilityChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsVisible = false;

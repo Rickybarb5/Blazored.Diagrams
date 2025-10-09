@@ -1,3 +1,5 @@
+using Blazored.Diagrams.Services.Events;
+
 namespace Blazored.Diagrams.Nodes;
 
 public partial class Node
@@ -12,7 +14,7 @@ public partial class Node
             var oldY = _positionY;
             _positionX = x;
             _positionY = y;
-            OnPositionChanged?.Invoke(this, oldX, oldY, _positionX, _positionY);
+            OnPositionChanged.Publish(new NodePositionChangedEvent(this, oldX, oldY, _positionX, _positionY));
         }
     }
 
@@ -26,7 +28,7 @@ public partial class Node
             var oldHeight = _height;
             _width = width;
             _height = height;
-            OnSizeChanged?.Invoke(this, oldWidth, oldHeight, _width, _height);
+            OnSizeChanged.Publish(new NodeSizeChangedEvent(this, oldWidth, oldHeight, _width, _height));
         }
     }
 

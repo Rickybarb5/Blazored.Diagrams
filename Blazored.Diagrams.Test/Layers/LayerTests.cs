@@ -43,7 +43,7 @@ public class LayerTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnVisibilityChanged += (_) => eventCount++;
+        obj.OnVisibilityChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsVisible = false;
@@ -60,12 +60,12 @@ public class LayerTests
         var layer = Instance;
         var node = new Node();
         var eventCount = 0;
-        layer.OnNodeAdded += (g, n) =>
+        layer.OnNodeAddedToLayer.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(node, n);
-            Assert.Same(layer, g);
-        };
+            Assert.Same(node, e.Node);
+            Assert.Same(layer, e.Model);
+        });
 
         //Act
         layer.Nodes.Add(node);
@@ -83,12 +83,12 @@ public class LayerTests
         var layer = Instance;
         var node = new Node();
         var eventCount = 0;
-        layer.OnNodeRemoved += (g, n) =>
+        layer.OnNodeRemovedFromLayer.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(node, n);
-            Assert.Same(layer, g);
-        };
+            Assert.Same(node, e.Node);
+            Assert.Same(layer, e.Model);
+        });
         layer.Nodes.Add(node);
 
         //Act
@@ -107,12 +107,12 @@ public class LayerTests
         var layer = Instance;
         var added = new Group();
         var eventCount = 0;
-        layer.OnGroupAdded += (g, n) =>
+        layer.OnGroupAddedToLayer.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(layer, g);
-        };
+            Assert.Same(added, e.AddedGroup);
+            Assert.Same(layer, e.Model);
+        });
 
         //Act
         layer.Groups.Add(added);
@@ -130,12 +130,12 @@ public class LayerTests
         var layer = Instance;
         var added = new Group();
         var eventCount = 0;
-        layer.OnGroupRemoved += (g, n) =>
+        layer.OnGroupRemovedFromLayer.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(layer, g);
-        };
+            Assert.Same(added, e.RemovedGroup);
+            Assert.Same(layer, e.Model);
+        });
         layer.Groups.Add(added);
 
         //Act

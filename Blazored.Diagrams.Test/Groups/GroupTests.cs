@@ -69,7 +69,7 @@ public class GroupTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnSizeChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnSizeChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.Width = 50;
@@ -130,7 +130,7 @@ public class GroupTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnPositionChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnPositionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.PositionX = 50;
@@ -162,7 +162,7 @@ public class GroupTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnSelectionChanged += (_) => eventCount++;
+        obj.OnSelectionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsSelected = true;
@@ -192,7 +192,7 @@ public class GroupTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnVisibilityChanged += (_) => eventCount++;
+        obj.OnVisibilityChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsVisible = false;
@@ -221,7 +221,7 @@ public class GroupTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnPaddingChanged += (_, _, _) => eventCount++;
+        obj.OnPaddingChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.Padding = 50;
@@ -237,12 +237,12 @@ public class GroupTests
         var group = Instance;
         var node = new Node();
         var eventCount = 0;
-        group.OnNodeAdded += (g, n) =>
+        group.OnNodeAddedToGroup.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(node, n);
-            Assert.Same(group, g);
-        };
+            Assert.Same(node, e.Node);
+            Assert.Same(group, e.Model);
+        });
 
         //Act
         group.Nodes.Add(node);
@@ -260,12 +260,12 @@ public class GroupTests
         var group = Instance;
         var node = new Node();
         var eventCount = 0;
-        group.OnNodeRemoved += (g, n) =>
+        group.OnNodeRemovedFromGroup.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(node, n);
-            Assert.Same(group, g);
-        };
+            Assert.Same(node, e.Node);
+            Assert.Same(group, e.Model);
+        });
         group.Nodes.Add(node);
 
         //Act
@@ -284,12 +284,12 @@ public class GroupTests
         var group = Instance;
         var added = new Group();
         var eventCount = 0;
-        group.OnGroupAdded += (g, n) =>
+        group.OnGroupAddedTogroup.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(group, g);
-        };
+            Assert.Same(added, e.AddedGroup);
+            Assert.Same(group, e.ParentModel);
+        });
 
         //Act
         group.Groups.Add(added);
@@ -307,12 +307,12 @@ public class GroupTests
         var group = Instance;
         var added = new Group();
         var eventCount = 0;
-        group.OnGroupRemoved += (g, n) =>
+        group.OnGroupRemovedFromGroup.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(group, g);
-        };
+            Assert.Same(added, e.RemovedGroup);
+            Assert.Same(group, e.ParentModel);
+        });
         group.Groups.Add(added);
 
         //Act
@@ -331,12 +331,12 @@ public class GroupTests
         var group = Instance;
         var added = new Port();
         var eventCount = 0;
-        group.OnPortAdded += (g, n) =>
+        group.OnPortAddedToGroup.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(group, g);
-        };
+            Assert.Same(added, e.Port);
+            Assert.Same(group, e.Model);
+        });
 
         //Act
         group.Ports.Add(added);
@@ -354,12 +354,12 @@ public class GroupTests
         var group = Instance;
         var added = new Port();
         var eventCount = 0;
-        group.OnPortRemoved += (g, n) =>
+        group.OnPortRemovedFromGroup.Subscribe(e =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(group, g);
-        };
+            Assert.Same(added, e.Port);
+            Assert.Same(group, e.Model);
+        });
         group.Ports.Add(added);
 
         //Act

@@ -2,6 +2,7 @@
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Nodes;
@@ -24,20 +25,22 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     /// </summary>
     public Node()
     {
-        _ports.OnItemAdded += HandlePortAdded;
-        _ports.OnItemRemoved += HandlePortRemoved;
+        _ports.OnItemAdded.Subscribe(HandlePortAdded);
+        _ports.OnItemRemoved.Subscribe(HandlePortRemoved);
     }
 
-    private void HandlePortRemoved(IPort obj)
+    private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
     {
-        obj.Dispose();
-        OnPortRemoved?.Invoke(this, obj);
+        obj.Item.Dispose();
+        OnPortRemovedFromNode.Publish(new(this, obj.Item));
+        OnPortRemoved.Publish(new PortRemovedEvent(obj.Item));
     }
 
-    private void HandlePortAdded(IPort obj)
+    private void HandlePortAdded(ItemAddedEvent<IPort> obj)
     {
-        obj.Parent = this;
-        OnPortAdded?.Invoke(this, obj);
+        obj.Item.Parent = this;
+        OnPortAddedToNode.Publish(new(this, obj.Item));
+        OnPortAdded.Publish(new PortAddedEvent(obj.Item));
     }
 
 
@@ -54,7 +57,7 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             {
                 var oldWidth = _width;
                 _width = value;
-                OnSizeChanged?.Invoke(this, oldWidth, _height, _width, _height);
+                OnSizeChanged.Publish(new NodeSizeChangedEvent(this, oldWidth, _height, _width, _height));
             }
         }
     }
@@ -69,7 +72,7 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             {
                 var oldHeight = _height;
                 _height = value;
-                OnSizeChanged?.Invoke(this, _width, oldHeight, _width, _height);
+                OnSizeChanged.Publish(new NodeSizeChangedEvent(this, _width, oldHeight, _width, _height));
             }
         }
     }
@@ -85,7 +88,7 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             {
                 var oldX = _positionX;
                 _positionX = value;
-                OnPositionChanged?.Invoke(this, oldX, _positionY, _positionX, _positionY);
+                OnPositionChanged.Publish(new NodePositionChangedEvent(this, oldX, _positionY, _positionX, _positionY));
             }
         }
     }
@@ -100,13 +103,10 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             {
                 var oldY = _positionY;
                 _positionY = value;
-                OnPositionChanged?.Invoke(this, _positionX, oldY, _positionX, _positionY);
+                OnPositionChanged.Publish(new NodePositionChangedEvent(this, _positionX, oldY, _positionX, _positionY));
             }
         }
     }
-
-    /// <inheritdoc />
-    public event Action<INode, int, int, int, int>? OnPositionChanged;
 
     /// <inheritdoc />
     public virtual bool IsSelected
@@ -117,7 +117,7 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             if (_isSelected != value)
             {
                 _isSelected = value;
-                OnSelectionChanged?.Invoke(this);
+                OnSelectionChanged.Publish(new NodeSelectionChangedEvent(this));
             }
         }
     }
@@ -132,7 +132,7 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             if (_isVisible != value)
             {
                 _isVisible = value;
-                OnVisibilityChanged?.Invoke(this);
+                OnVisibilityChanged.Publish(new NodeVisibilityChangedEvent(this));
             }
         }
     }
@@ -152,25 +152,32 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     /// <inheritdoc />
     public virtual void Dispose()
     {
-        _ports.OnItemAdded -= HandlePortAdded;
-        _ports.OnItemRemoved -= HandlePortRemoved;
+        _ports.OnItemAdded.Unsubscribe(HandlePortAdded);
+        _ports.OnItemRemoved.Unsubscribe(HandlePortRemoved);
         _ports.ForEach(x => x.Dispose());
         _ports.Clear();
     }
 
+    /// <inheritdoc />
+    public ITypedEvent<NodePositionChangedEvent> OnPositionChanged { get; init; } = new TypedEvent<NodePositionChangedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<NodeSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<NodeSizeChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<INode, int, int, int, int>? OnSizeChanged;
+    public ITypedEvent<NodeSelectionChangedEvent> OnSelectionChanged { get; init; }  = new TypedEvent<NodeSelectionChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<INode>? OnSelectionChanged;
+    public  ITypedEvent<NodeVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<NodeVisibilityChangedEvent>();
 
     /// <inheritdoc />
-    public event Action<INode>? OnVisibilityChanged;
+    public  ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
 
     /// <inheritdoc />
-    public event Action<INode, IPort>? OnPortAdded;
+    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
 
     /// <inheritdoc />
-    public event Action<INode, IPort>? OnPortRemoved;
+    public ITypedEvent<PortAddedToNodeEvent> OnPortAddedToNode { get; init; } = new TypedEvent<PortAddedToNodeEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; } = new TypedEvent<PortRemovedFromNodeEvent>();
 }

@@ -1,5 +1,6 @@
 using Blazored.Diagrams.Behaviours;
 using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Behaviours;
 using Blazored.Diagrams.Services.Events;
@@ -10,11 +11,6 @@ namespace Blazored.Diagrams.Services.Diagrams;
 /// <inheritdoc />
 public partial class DiagramService : IDiagramService
 {
-    /// <summary>
-    /// Propagates model events to the event aggregator.
-    /// </summary>
-    protected IEventPropagator EventPropagator;
-
     /// <inheritdoc />
     public IEventAggregator Events { get; set; }
 
@@ -51,9 +47,8 @@ public partial class DiagramService : IDiagramService
         Behaviours = new BehaviourContainer(this);
         Add = new AddContainer(Diagram);
         Remove = new DeleteContainer(Diagram);
-        Events = new EventAggregator();
+        Events = new EventAggregator(this);
         Serialize = new SerializationContainer(this);
-        EventPropagator = new EventPropagator(this);
     }
 
     private void InitializeBehaviours()
@@ -108,7 +103,6 @@ public partial class DiagramService : IDiagramService
     public void Dispose()
     {
         Behaviours.Dispose();
-        EventPropagator.Dispose();
         Events.Dispose();
     }
 }

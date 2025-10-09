@@ -3,6 +3,7 @@ using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Layers;
@@ -43,27 +44,50 @@ public interface ILayer : IId,
     /// <summary>
     /// Event triggered when the visibility state changes.
     /// </summary>
-    public event Action<ILayer>? OnVisibilityChanged;
+    public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when a node is added.
     /// </summary>
-    event Action<ILayer, INode> OnNodeAdded;
+    public ITypedEvent<NodeAddedToLayerEvent> OnNodeAddedToLayer { get; init; }
 
     /// <summary>
     ///     Event triggered when a node is removed.
     /// </summary>
-    event Action<ILayer, INode> OnNodeRemoved;
+    public ITypedEvent<NodeRemovedFromLayerEvent> OnNodeRemovedFromLayer { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is added.
     /// </summary>
-    event Action<ILayer, IGroup> OnGroupAdded;
+    public ITypedEvent<GroupAddedToLayerEvent> OnGroupAddedToLayer { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is removed.
     /// </summary>
-    event Action<ILayer, IGroup> OnGroupRemoved;
+    public ITypedEvent<GroupRemovedFromLayerEvent> OnGroupRemovedFromLayer { get; init; }
+        
+    /// <summary>
+    ///     Event triggered when a node is added.
+    /// </summary>
+    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } 
+    
+    /// <summary>
+    ///     Event triggered when a node is removed.
+    /// </summary>
+    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } 
+    
+        
+    /// <summary>
+    ///     Event triggered when a group is added.
+    /// </summary>
+    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } 
+    
+    /// <summary>
+    ///     Event triggered when a group is removed.
+    /// </summary>
+    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } 
+    
+    
 
     /// <summary>
     /// Unselects all models in a layer

@@ -14,7 +14,7 @@ public partial class Diagram
             var oldY = _panY;
             _panX = panX;
             _panY = panY;
-            OnPanChanged?.Invoke(this, oldX, oldY, _panX, _panY);
+            OnPanChanged.Publish(new(this, oldX, oldY, _panX, _panY));
         }
     }
 
@@ -49,7 +49,7 @@ public partial class Diagram
         {
             var oldZoom = _zoom;
             _zoom = zoom;
-            OnZoomChanged?.Invoke(this, oldZoom, _zoom);
+            OnZoomChanged.Publish(new(this, oldZoom, _zoom));
         }
     }
 
@@ -64,7 +64,7 @@ public partial class Diagram
             var oldHeight = _height;
             _width = width;
             _height = height;
-            OnSizeChanged?.Invoke(this, oldWidth, oldHeight, _width, _height);
+            OnSizeChanged.Publish(new(this, oldWidth, oldHeight, _width, _height));
         }
     }
 
@@ -79,7 +79,7 @@ public partial class Diagram
             var oldY = _positionY;
             _positionX = x;
             _positionY = y;
-            OnPositionChanged?.Invoke(this, oldX, oldY, _positionX, _positionY);
+            OnPositionChanged.Publish(new(this, oldX, oldY, _positionX, _positionY));
         }
     }
 

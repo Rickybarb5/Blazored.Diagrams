@@ -5,6 +5,7 @@ using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Layers;
@@ -17,36 +18,39 @@ public partial class Layer : ILayer
     private readonly ObservableList<IGroup> _groups = [];
     private readonly ObservableList<INode> _nodes = [];
     private bool _isVisible = true;
-    private bool _currentLayer;
 
 
     public Layer()
     {
-        _nodes.OnItemAdded += HandleNodeAdded;
-        _nodes.OnItemRemoved += HandleNodeRemoved;
+        _nodes.OnItemAdded.Subscribe(HandleNodeAdded); 
+        _nodes.OnItemRemoved.Subscribe(HandleNodeRemoved);
 
-        _groups.OnItemAdded += HandleGroupAdded;
-        _groups.OnItemRemoved += HandleGroupRemoved;
+        _groups.OnItemAdded.Subscribe(HandleGroupAdded);
+        _groups.OnItemRemoved.Subscribe(HandleGroupRemoved);
     }
 
-    private void HandleGroupRemoved(IGroup obj)
+    private void HandleGroupRemoved(ItemRemovedEvent<IGroup> obj)
     {
-        OnGroupRemoved?.Invoke(this, obj);
+        OnGroupRemovedFromLayer.Publish(new(this, obj.Item));
+        OnGroupRemoved.Publish(new(obj.Item));
     }
 
-    private void HandleGroupAdded(IGroup obj)
+    private void HandleGroupAdded(ItemAddedEvent<IGroup> obj)
     {
-        OnGroupAdded?.Invoke(this, obj);
+        OnGroupAddedToLayer.Publish(new(this, obj.Item));
+        OnGroupAdded.Publish(new(obj.Item));
     }
 
-    private void HandleNodeRemoved(INode obj)
+    private void HandleNodeRemoved(ItemRemovedEvent<INode> e)
     {
-        OnNodeRemoved?.Invoke(this, obj);
+        OnNodeRemovedFromLayer.Publish(new(this, e.Item));
+        OnNodeRemoved.Publish(new(e.Item));
     }
 
-    private void HandleNodeAdded(INode obj)
+    private void HandleNodeAdded(ItemAddedEvent<INode> e)
     {
-        OnNodeAdded?.Invoke(this, obj);
+        OnNodeAddedToLayer.Publish(new(this, e.Item));
+        OnNodeAdded.Publish(new(e.Item));
     }
 
     /// <inheritdoc />
@@ -85,7 +89,7 @@ public partial class Layer : ILayer
             if (_isVisible != value)
             {
                 _isVisible = value;
-                OnVisibilityChanged?.Invoke(this);
+                OnVisibilityChanged.Publish(new(this));
             }
         }
     }
@@ -116,6 +120,32 @@ public partial class Layer : ILayer
         .DistinctBy(x => x.Id)
         .ToList()
         .AsReadOnly();
+
+    /// <inheritdoc />
+    public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LayerVisibilityChangedEvent>();
+    
+    /// <inheritdoc />
+    public ITypedEvent<NodeAddedToLayerEvent> OnNodeAddedToLayer { get; init; } = new TypedEvent<NodeAddedToLayerEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<NodeRemovedFromLayerEvent> OnNodeRemovedFromLayer { get; init; } = new TypedEvent<NodeRemovedFromLayerEvent>();
+    
+    /// <inheritdoc />
+    public ITypedEvent<GroupAddedToLayerEvent> OnGroupAddedToLayer { get; init; } = new TypedEvent<GroupAddedToLayerEvent>();
+    
+    /// <inheritdoc />
+    public ITypedEvent<GroupRemovedFromLayerEvent> OnGroupRemovedFromLayer { get; init; } = new TypedEvent<GroupRemovedFromLayerEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =  new TypedEvent<NodeRemovedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } = new TypedEvent<GroupAddedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
@@ -158,28 +188,10 @@ public partial class Layer : ILayer
         _nodes.Clear();
         _groups.ForEach(x => x.Dispose());
         _groups.Clear();
-        _nodes.OnItemAdded -= HandleNodeAdded;
-        _nodes.OnItemRemoved -= HandleNodeRemoved;
+        _nodes.OnItemAdded.Unsubscribe(HandleNodeAdded); 
+        _nodes.OnItemRemoved.Unsubscribe(HandleNodeRemoved);
 
-        _groups.OnItemAdded -= HandleGroupAdded;
-        _groups.OnItemRemoved -= HandleGroupRemoved;
+        _groups.OnItemAdded.Unsubscribe(HandleGroupAdded);
+        _groups.OnItemRemoved.Unsubscribe(HandleGroupRemoved);
     }
-
-    /// <inheritdoc />
-    public event Action<ILayer>? OnLayerUsageChanged;
-
-    /// <inheritdoc />
-    public event Action<ILayer>? OnVisibilityChanged;
-
-    /// <inheritdoc />
-    public event Action<ILayer, INode>? OnNodeAdded;
-
-    /// <inheritdoc />
-    public event Action<ILayer, INode>? OnNodeRemoved;
-
-    /// <inheritdoc />
-    public event Action<ILayer, IGroup>? OnGroupAdded;
-
-    /// <inheritdoc />
-    public event Action<ILayer, IGroup>? OnGroupRemoved;
 }

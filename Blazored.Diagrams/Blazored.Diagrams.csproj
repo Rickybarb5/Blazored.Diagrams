@@ -33,24 +33,6 @@
         <Compile Update="Diagrams\Diagram.Features.cs">
             <DependentUpon>Diagram.cs</DependentUpon>
         </Compile>
-        <Compile Update="Services\Events\EventPropagator.Diagram.cs">
-          <DependentUpon>EventPropagator.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\EventPropagator.Group.cs">
-          <DependentUpon>EventPropagator.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\EventPropagator.Layer.cs">
-          <DependentUpon>EventPropagator.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\EventPropagator.Link.cs">
-          <DependentUpon>EventPropagator.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\EventPropagator.Node.cs">
-          <DependentUpon>EventPropagator.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\EventPropagator.Port.cs">
-          <DependentUpon>EventPropagator.cs</DependentUpon>
-        </Compile>
         <Compile Update="Services\Events\Events.Behaviours.cs">
           <DependentUpon>Events.cs</DependentUpon>
         </Compile>
@@ -74,6 +56,9 @@
         </Compile>
         <Compile Update="Options\Behaviours\DefaultLinkOptions.cs">
           <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\Events.ObservableList.cs">
+          <DependentUpon>Events.cs</DependentUpon>
         </Compile>
     </ItemGroup>
     <ItemGroup>

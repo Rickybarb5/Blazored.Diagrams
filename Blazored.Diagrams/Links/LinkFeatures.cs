@@ -15,7 +15,7 @@ public partial class Link
             var oldY = _targetPositionY;
             _targetPositionX = x;
             _targetPositionY = y;
-            OnTargetPositionChanged?.Invoke(this, oldX, oldY, _targetPositionX, _targetPositionY);
+            OnTargetPositionChanged.Publish(new(this, oldX, oldY, _targetPositionX, _targetPositionY));
         }
     }
 
@@ -29,7 +29,7 @@ public partial class Link
             var oldHeight = _height;
             _width = width;
             _height = height;
-            OnSizeChanged?.Invoke(this, oldWidth, oldHeight, _width, _height);
+            OnSizeChanged.Publish(new(this, oldWidth, oldHeight, _width, _height));
         }
     }
 

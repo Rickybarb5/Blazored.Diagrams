@@ -12,7 +12,7 @@ public class ObservableListTests
         // Arrange
         var list = new ObservableList<INode>();
         var eventTriggered = false;
-        list.OnItemAdded += ctx => { eventTriggered = true; };
+        list.OnItemAdded.Subscribe(e=>{ eventTriggered = true; });
         // Act
         list.Add(new Node());
 
@@ -29,8 +29,8 @@ public class ObservableListTests
         list.Add(new Node());
         var addEventTriggered = false;
         var removeEventTriggered = false;
-        list.OnItemAdded += ctx => { addEventTriggered = true; };
-        list.OnItemRemoved += ctx => { removeEventTriggered = true; };
+        list.OnItemAdded.Subscribe(e=>{ addEventTriggered = true; });
+        list.OnItemRemoved.Subscribe(ctx=>{ removeEventTriggered = true; });
         // Act
         list.Insert(0, new Node());
 
@@ -46,7 +46,7 @@ public class ObservableListTests
         // Arrange
         var list = new ObservableList<INode>();
         var eventTriggered = false;
-        list.OnItemRemoved += ctx => { eventTriggered = true; };
+        list.OnItemRemoved.Subscribe(ctx=>eventTriggered = true);
         var node = new Node();
         list.Add(node);
 
@@ -64,7 +64,7 @@ public class ObservableListTests
         // Arrange
         var list = new ObservableList<INode>();
         var eventTriggered = false;
-        list.OnItemRemoved += ctx => { eventTriggered = true; };
+        list.OnItemRemoved.Subscribe(ctx=>{ eventTriggered = true; });
         var node = new Node();
         list.Add(node);
 
@@ -83,11 +83,11 @@ public class ObservableListTests
         var list = new ObservableList<INode>();
         var eventTriggered = false;
         int eventCount = default;
-        list.OnItemAdded += ctx =>
+        list.OnItemAdded.Subscribe(ctx =>
         {
             eventTriggered = true;
             eventCount++;
-        };
+        });
 
         // Act
         list.AddRange([new Node(), new Node(), new Node()]);
@@ -107,8 +107,8 @@ public class ObservableListTests
         var node1 = new Node();
         var node2 = new Node();
         list.Add(node1);
-        list.OnItemAdded += ctx => { addEventTriggered = true; };
-        list.OnItemRemoved += ctx => { removeEventTriggered = true; };
+        list.OnItemAdded.Subscribe(ctx=>{ addEventTriggered = true; });
+        list.OnItemRemoved .Subscribe(ctx=>{ removeEventTriggered = true; });
 
         // Act
         list[0] = node2;
@@ -127,11 +127,11 @@ public class ObservableListTests
         var list = new ObservableList<INode>();
         var eventTriggered = false;
         int eventCount = default;
-        list.OnItemRemoved += ctx =>
+        list.OnItemRemoved.Subscribe(ctx=>
         {
             eventTriggered = true;
             eventCount++;
-        };
+        });
         list.AddRange([new Node(), new Node(), new Node()]);
 
         // Act

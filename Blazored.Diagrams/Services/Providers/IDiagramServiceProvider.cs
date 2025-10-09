@@ -17,12 +17,4 @@ public interface IDiagramServiceProvider
     /// <typeparam name="TDiagram"></typeparam>
     /// <returns><see cref="DiagramService"/>.</returns>
     IDiagramService GetDiagramService(IDiagram diagram);
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="diagram"></param>
-    /// <returns></returns>
-    internal IEventPropagator GetDiagramEventPropagator(IDiagram diagram);
-    internal IEventAggregator GetDiagramEventAggregator(IDiagram diagram);
 }

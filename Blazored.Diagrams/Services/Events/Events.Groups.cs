@@ -15,9 +15,9 @@ public record GroupRemovedEvent(IGroup Model) : GroupEvent(Model);
 public record GroupPositionChangedEvent(IGroup Model, int OldX, int OldY, int NewX, int NewY)
     : GroupEvent(Model);
 
-public record GroupSelectionChanged(IGroup Model) : GroupEvent(Model);
+public record GroupSelectionChangedEvent(IGroup Model) : GroupEvent(Model);
 
-public record GroupVisibilityChanged(IGroup Model) : GroupEvent(Model);
+public record GroupVisibilityChangedEvent(IGroup Model) : GroupEvent(Model);
 
 public record GroupPaddingChangedEvent(IGroup Model, int OldPadding, int NewPadding) : GroupEvent(Model);
 

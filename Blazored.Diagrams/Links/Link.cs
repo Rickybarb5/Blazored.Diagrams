@@ -1,6 +1,7 @@
 ﻿
 using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Newtonsoft.Json;
 
@@ -37,7 +38,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
                 var oldPort = _sourcePort;
                 _sourcePort = value;
                 _sourcePort.OutgoingLinks.Add(this);
-                OnSourcePortChanged?.Invoke(this, oldPort, _sourcePort);
+                OnSourcePortChanged.Publish(new(this, oldPort, _sourcePort));
             }
         }
     }
@@ -54,7 +55,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
                 var oldTargetPort = _targetPort;
                 _targetPort = value;
                 _targetPort?.IncomingLinks.Add(this);
-                OnTargetPortChanged?.Invoke(this, oldTargetPort, _targetPort);
+                OnTargetPortChanged.Publish(new(this, oldTargetPort, _targetPort));
             }
         }
     }
@@ -69,7 +70,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
             {
                 var oldx = _targetPositionX;
                 _targetPositionX = value;
-                OnTargetPositionChanged?.Invoke(this, oldx, _targetPositionY, _targetPositionX, _targetPositionY);
+                OnTargetPositionChanged.Publish(new(this, oldx, _targetPositionY, _targetPositionX, _targetPositionY));
             }
         }
     }
@@ -84,10 +85,27 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
             {
                 var oldY = _targetPositionY;
                 _targetPositionY = value;
-                OnTargetPositionChanged?.Invoke(this, _targetPositionX, oldY, _targetPositionX, _targetPositionY);
+                OnTargetPositionChanged.Publish(new(this, _targetPositionX, oldY, _targetPositionX, _targetPositionY));
             }
         }
     }
+
+    /// <inheritdoc />
+    public ITypedEvent<LinkSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<LinkSizeChangedEvent>();
+    
+    /// <inheritdoc />
+    public ITypedEvent<LinkTargetPortChangedEvent> OnTargetPortChanged { get; init; } = new TypedEvent<LinkTargetPortChangedEvent>();
+    
+    /// <inheritdoc />
+    public ITypedEvent<LinkSourcePortChangedEvent> OnSourcePortChanged { get; init; } = new TypedEvent<LinkSourcePortChangedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<LinkTargetPositionChangedEvent> OnTargetPositionChanged { get; init; } = new TypedEvent<LinkTargetPositionChangedEvent>();
+
+    /// <inheritdoc />
+    public ITypedEvent<LinkSelectionChangedEvent> OnSelectionChanged { get; init; } =
+        new TypedEvent<LinkSelectionChangedEvent>();
+    /// <inheritdoc />
+    public ITypedEvent<LinkVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LinkVisibilityChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
@@ -103,7 +121,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
             if (_isSelected != value)
             {
                 _isSelected = value;
-                OnSelectionChanged?.Invoke(this);
+                OnSelectionChanged.Publish(new(this));
             }
         }
     }
@@ -118,7 +136,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
             if (_isVisible != value)
             {
                 _isVisible = value;
-                OnVisibilityChanged?.Invoke(this);
+                OnVisibilityChanged.Publish(new(this));
             }
         }
     }
@@ -133,7 +151,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
             {
                 var oldWidth = _width;
                 _width = value;
-                OnSizeChanged?.Invoke(this, oldWidth, _height, _width, _height);
+                OnSizeChanged.Publish(new (this, oldWidth, _height, _width, _height));
             }
         }
     }
@@ -148,7 +166,7 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
             {
                 var oldHeight = _height;
                 _height = value;
-                OnSizeChanged?.Invoke(this, _width, oldHeight, _width, _height);
+                OnSizeChanged.Publish(new(this, _width, oldHeight, _width, _height));
             }
         }
     }
@@ -160,21 +178,4 @@ public partial class Link : ILink, IHasComponent<DefaultLinkComponent>
         _targetPort?.IncomingLinks.Remove(this);
     }
 
-    /// <inheritdoc />
-    public event Action<ILink, int, int, int, int>? OnSizeChanged;
-
-    /// <inheritdoc />
-    public event Action<ILink, IPort?, IPort?>? OnTargetPortChanged;
-
-    /// <inheritdoc />
-    public event Action<ILink, IPort, IPort>? OnSourcePortChanged;
-
-    /// <inheritdoc />
-    public event Action<ILink, int, int, int, int>? OnTargetPositionChanged;
-
-    /// <inheritdoc />
-    public event Action<ILink>? OnSelectionChanged;
-
-    /// <inheritdoc />
-    public event Action<ILink>? OnVisibilityChanged;
 }

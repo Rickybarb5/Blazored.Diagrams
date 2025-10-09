@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Serialization;
 using Newtonsoft.Json;
 
@@ -19,12 +20,12 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     /// <summary>
     /// Event triggered when an item is added.
     /// </summary>
-    internal event Action<TModel>? OnItemAdded;
+    internal ITypedEvent<ItemAddedEvent<TModel>> OnItemAdded = new TypedEvent<ItemAddedEvent<TModel>>();
 
     /// <summary>
     /// Event triggered when an item is removed.
     /// </summary>
-    internal event Action<TModel>? OnItemRemoved;
+    internal ITypedEvent<ItemRemovedEvent<TModel>> OnItemRemoved = new TypedEvent<ItemRemovedEvent<TModel>>();
 
     /// <inheritdoc />
     [JsonIgnore]
@@ -43,9 +44,9 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
         {
             var oldItem = _internalIDictionary.Values.ElementAt(index);
             _internalIDictionary.Remove(oldItem.Id);
-            OnItemRemoved?.Invoke(oldItem);
+            OnItemRemoved?.Publish(new(oldItem));
             _internalIDictionary[value.Id] = value;
-            OnItemAdded?.Invoke(value);
+            OnItemAdded?.Publish(new(value));
         }
     }
 
@@ -63,7 +64,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     {
         if (_internalIDictionary.TryAdd(item.Id, item))
         {
-            OnItemAdded?.Invoke(item);
+            OnItemAdded?.Publish(new(item));
         }
     }
 
@@ -85,7 +86,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     {
         if (_internalIDictionary.Remove(item.Id))
         {
-            OnItemRemoved?.Invoke(item);
+            OnItemRemoved?.Publish(new(item));
             return true;
         }
 
@@ -97,7 +98,7 @@ public class ObservableList<TModel> : IList<TModel> where TModel : IId
     {
         var itemsToRemove = _internalIDictionary.Values.ToList();
         _internalIDictionary.Clear();
-        itemsToRemove.ForEach(x => OnItemRemoved?.Invoke(x));
+        itemsToRemove.ForEach(x => OnItemRemoved?.Publish(new(x)));
     }
 
     /// <inheritdoc />

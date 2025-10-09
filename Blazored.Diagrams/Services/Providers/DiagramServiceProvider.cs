@@ -8,8 +8,6 @@ namespace Blazored.Diagrams.Services.Providers;
 public class DiagramServiceProvider : IDiagramServiceProvider
 {
     private readonly Dictionary<string, IDiagramService> _diagramServices = [];
-    private readonly Dictionary<string, IEventPropagator> _diagramEventPropagators = [];
-    private readonly Dictionary<string, IEventAggregator> _eventAggregators = [];
 
     /// <inheritdoc />
     public IDiagramService GetDiagramService(IDiagram diagram)
@@ -18,30 +16,6 @@ public class DiagramServiceProvider : IDiagramServiceProvider
         {
             service = new DiagramService(diagram, this);
             _diagramServices.Add(diagram.Id, service);
-        }
-
-        return service;
-    }
-    
-    /// <inheritdoc />
-    public IEventPropagator GetDiagramEventPropagator(IDiagram diagram)
-    {
-        if (!_diagramEventPropagators.TryGetValue(diagram.Id, out IEventPropagator? service))
-        {
-            service = new EventPropagator(GetDiagramService(diagram));
-            _diagramEventPropagators.Add(diagram.Id, service);
-        }
-
-        return service;
-    }
-    
-    /// <inheritdoc />
-    public IEventAggregator GetDiagramEventAggregator(IDiagram diagram)
-    {
-        if (!_eventAggregators.TryGetValue(diagram.Id, out IEventAggregator? service))
-        {
-            service = new EventAggregator();
-            _eventAggregators.Add(diagram.Id, service);
         }
 
         return service;

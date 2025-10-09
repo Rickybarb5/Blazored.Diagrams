@@ -1,5 +1,6 @@
 ﻿using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
+using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Ports;
 
@@ -90,52 +91,62 @@ public interface IPort :
     /// <summary>
     ///     Event triggered when the port alignment changes.
     /// </summary>
-    public event Action<IPort, PortJustification, PortJustification> OnPortJustificationChanged;
+    ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when PortPosition changes.
     /// </summary>
-    public event Action<IPort, PortAlignment, PortAlignment> OnPortAlignmentChanged;
+    ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged{ get; init; }
 
     /// <summary>
     ///     Event triggered when the position is changed.
     /// </summary>
-    event Action<IPort, int, int, int, int> OnPositionChanged;
+    ITypedEvent<PortPositionChangedEvent> OnPositionChanged{ get; init; }
 
     /// <summary>
     ///     Event triggered when the size changes.
     /// </summary>
-    public event Action<IPort, int, int, int, int> OnSizeChanged;
+    ITypedEvent<PortSizeChangedEvent> OnSizeChanged{ get; init; }
 
     /// <summary>
     /// Event triggered when the port is assigned to a container.
     /// </summary>
-    public event Action<IPort, IPortContainer, IPortContainer>? OnPortParentChanged;
+    ITypedEvent<PortParentChangedEvent> OnPortParentChanged{ get; init; }
 
     /// <summary>
     ///     Event triggered when the <see cref="IVisible.IsVisible" /> flag is changed.
     /// </summary>
-    event Action<IPort> OnVisibilityChanged;
+    ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged{ get; init; }
 
     /// <summary>
     ///     Event triggered when a incoming link is attached to the port.
     /// </summary>
-    public event Action<IPort, ILink> OnIncomingLinkAdded;
+    ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded{ get; init; }
 
     /// <summary>
     ///     Event triggered when a incoming link is detached to the port.
     /// </summary>
-    public event Action<IPort, ILink> OnIncomingLinkRemoved;
+    ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved{ get; init; }
 
     /// <summary>
     ///     Event triggered when a outgoing link is attached to the port.
     /// </summary>
-    public event Action<IPort, ILink> OnOutgoingLinkAdded;
+    ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded{ get; init; }
 
     /// <summary>
     ///     Event triggered when a outgoing link is detached to the port.
     /// </summary>
-    public event Action<IPort, ILink> OnOutgoingLinkRemoved;
+    ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved{ get; init; }
+    
+    /// <summary>
+    ///     Event triggered when a link removed from the port.
+    /// </summary>
+    ITypedEvent<LinkRemovedEvent> OnLinkRemoved{ get; init; }
+    
+    /// <summary>
+    ///     Event triggered when a link is added the port.
+    /// </summary>
+    ITypedEvent<LinkAddedEvent> OnLinkAdded{ get; init; }
 
     /// <summary>
     ///     Calculates the x and y coordinates based on the position and alignment.

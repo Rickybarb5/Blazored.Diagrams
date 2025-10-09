@@ -5,6 +5,7 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Diagram;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Diagrams;
@@ -90,37 +91,37 @@ public interface IDiagram :
     /// <summary>
     ///     Event triggered when the diagram position is changed.
     /// </summary>
-    internal event Action<IDiagram, int, int, int, int> OnSizeChanged;
+    ITypedEvent<DiagramSizeChangedEvent> OnSizeChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the zoom value changes.
     /// </summary>
-    event Action<IDiagram, double, double>? OnZoomChanged;
+    ITypedEvent<DiagramZoomChangedEvent> OnZoomChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the pan value changes.
     /// </summary>
-    event Action<IDiagram, int, int, int, int>? OnPanChanged;
+    ITypedEvent<DiagramPanChangedEvent>  OnPanChanged { get; init; }
 
     /// <summary>
     /// Event triggered when a layer is added.
     /// </summary>
-    event Action<IDiagram, ILayer>? OnLayerAdded;
+    ITypedEvent<LayerAddedEvent>  OnLayerAdded { get; init; }
 
     /// <summary>
     /// Event triggered when a layer is removed.
     /// </summary>
-    event Action<IDiagram, ILayer>? OnLayerRemoved;
+    ITypedEvent<LayerRemovedEvent>  OnLayerRemoved  { get; init; }
 
     /// <summary>
     /// Event triggered when the diagram position changes.
     /// </summary>
-    event Action<IDiagram, int, int, int, int>? OnPositionChanged;
+    ITypedEvent<DiagramPositionChangedEvent>  OnPositionChanged { get; init; }
     
     /// <summary>
     /// Event triggered when the layer starts/stops being used.
     /// </summary>
-    event Action<ILayer, ILayer>? OnCurrentLayerChanged;
+    ITypedEvent<CurrentLayerChangedEvent> ? OnCurrentLayerChanged { get; init; }
 
     /// <summary>
     /// Unselects all models in the diagram.

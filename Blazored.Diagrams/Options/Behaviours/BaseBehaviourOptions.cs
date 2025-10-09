@@ -18,7 +18,7 @@ public partial class BaseBehaviourOptions : IBehaviourOptions
             if (value != _isEnabled)
             {
                 _isEnabled = value;
-                OnEnabledChanged?.Invoke(value);
+                OnEnabledChanged.Invoke(value);
             }
         }
     }

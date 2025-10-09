@@ -52,13 +52,13 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            _subscription = DiagramService.Events.SubscribeWhere<GroupSelectionChanged>(p => p.Model.Id == Group.Id, SetGroupCssClass);
+            _subscription = DiagramService.Events.SubscribeWhere<GroupSelectionChangedEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass);
         }
 
         SetGroupCssClass();
     }
 
-    private void SetGroupCssClass(GroupSelectionChanged e)
+    private void SetGroupCssClass(GroupSelectionChangedEvent e)
     {
         SetGroupCssClass();
     }

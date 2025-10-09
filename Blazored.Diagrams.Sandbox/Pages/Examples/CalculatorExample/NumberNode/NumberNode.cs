@@ -22,7 +22,7 @@ public class NumberNode : Node, IHasComponent<NumberNodeComponent>, INumberOutpu
 
     public void NotifyNumberChanged()
     {
-        OnNumberChanged?.Invoke(NumberOutput);
+        OnNumberChanged.Invoke(NumberOutput);
     }
 
     public NumberNode()

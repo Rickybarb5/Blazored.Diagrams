@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Links;
+using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Ports;
 
@@ -14,7 +15,7 @@ public partial class Port
             var oldY = _positionY;
             _positionX = x;
             _positionY = y;
-            OnPositionChanged?.Invoke(this, oldX, oldY, _positionX, _positionY);
+            OnPositionChanged.Publish(new(this, oldX, oldY, _positionX, _positionY));
         }
     }
 
@@ -35,7 +36,7 @@ public partial class Port
             var oldHeight = _height;
             _width = width;
             _height = height;
-            OnSizeChanged?.Invoke(this, oldWidth, oldHeight, _width, _height);
+            OnSizeChanged.Publish(new(this, oldWidth, oldHeight, _width, _height));
         }
     }
 
@@ -62,24 +63,26 @@ public partial class Port
         _height = height;
     }
 
-    private void HandleOutgoingLinkRemoved(ILink obj)
+    private void HandleOutgoingLinkRemoved(ItemRemovedEvent<ILink> obj)
     {
-        OnOutgoingLinkRemoved?.Invoke(this, obj);
+        OnOutgoingLinkRemoved.Publish(new(this, obj.Item));
+        OnLinkRemoved.Publish(new(obj.Item));
     }
 
-    private void HandleOutgoingLinkAdded(ILink obj)
+    private void HandleOutgoingLinkAdded(ItemAddedEvent<ILink> obj)
     {
-        OnOutgoingLinkAdded?.Invoke(this, obj);
+        OnOutgoingLinkAdded.Publish(new(this, obj.Item));
+        OnLinkAdded.Publish(new(obj.Item));
     }
 
-    private void HandleIncomingLinkRemoved(ILink obj)
+    private void HandleIncomingLinkRemoved(ItemRemovedEvent<ILink> obj)
     {
-        OnIncomingLinkRemoved?.Invoke(this, obj);
+        OnIncomingLinkRemoved.Publish(new(this, obj.Item));
     }
 
-    private void HandleIncomingLinkAdded(ILink obj)
+    private void HandleIncomingLinkAdded(ItemAddedEvent<ILink> obj)
     {
-        OnIncomingLinkAdded?.Invoke(this, obj);
+        OnIncomingLinkAdded.Publish(new(this, obj.Item));
     }
 
     /// <inheritdoc />

@@ -1,6 +1,7 @@
 ﻿using Blazored.Diagrams.Ports;
 
 using Blazored.Diagrams.Interfaces;
+using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Links;
@@ -59,30 +60,30 @@ public interface ILink : IId,
     /// <summary>
     /// Event triggered when the link container size changes.
     /// </summary>
-    public event Action<ILink, int, int, int, int>? OnSizeChanged;
+    ITypedEvent<LinkSizeChangedEvent> OnSizeChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the target port is set.
     /// </summary>
-    public event Action<ILink, IPort?, IPort?> OnTargetPortChanged;
+    ITypedEvent<LinkTargetPortChangedEvent> OnTargetPortChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the source port is set.
     /// </summary>
-    public event Action<ILink, IPort, IPort> OnSourcePortChanged;
+    ITypedEvent<LinkSourcePortChangedEvent> OnSourcePortChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the target position of the link changes.
     /// </summary>
-    public event Action<ILink, int, int, int, int> OnTargetPositionChanged;
+    ITypedEvent<LinkTargetPositionChangedEvent> OnTargetPositionChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the <see cref="ISelectable.IsSelected"/> flag changes.
     /// </summary>
-    public event Action<ILink>? OnSelectionChanged;
+    ITypedEvent<LinkSelectionChangedEvent> OnSelectionChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the <see cref="IVisible.IsVisible"/> flag changes.
     /// </summary>
-    public event Action<ILink>? OnVisibilityChanged;
+    ITypedEvent<LinkVisibilityChangedEvent> OnVisibilityChanged { get; init; }
 }

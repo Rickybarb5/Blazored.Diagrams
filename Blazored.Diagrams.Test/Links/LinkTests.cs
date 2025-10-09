@@ -69,7 +69,7 @@ public class LinkTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnSizeChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnSizeChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.Width = 50;
@@ -130,7 +130,7 @@ public class LinkTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnTargetPositionChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnTargetPositionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.TargetPositionX = 50;
@@ -162,7 +162,7 @@ public class LinkTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnSelectionChanged += (_) => eventCount++;
+        obj.OnSelectionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsSelected = true;
@@ -192,7 +192,7 @@ public class LinkTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnVisibilityChanged += (_) => eventCount++;
+        obj.OnVisibilityChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsVisible = false;
@@ -248,7 +248,7 @@ public class LinkTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnSourcePortChanged += (_, _, _) => eventCount++;
+        obj.OnSourcePortChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.SourcePort = new Port();
@@ -263,7 +263,7 @@ public class LinkTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnTargetPortChanged += (_, _, _) => eventCount++;
+        obj.OnTargetPortChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.TargetPort = new Port() { Parent = new Node() };

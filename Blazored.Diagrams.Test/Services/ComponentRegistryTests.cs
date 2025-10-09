@@ -2,6 +2,7 @@ using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
@@ -88,6 +89,14 @@ public class ComponentRegistryTests
 
     private class UnregisteredTestNode : INode
     {
+        private ITypedEvent<NodeSizeChangedEvent> _sizeChanged;
+        private ITypedEvent<NodePositionChangedEvent> _positionChanged;
+        private ITypedEvent<NodeSelectionChangedEvent> _selectionChanged;
+        private ITypedEvent<NodeVisibilityChangedEvent> _visibilityChanged;
+        private ITypedEvent<PortAddedToNodeEvent> _portAdded;
+        private ITypedEvent<PortRemovedFromNodeEvent> _portRemoved;
+        private ITypedEvent<PortAddedEvent> _portAdded1;
+        private ITypedEvent<PortRemovedEvent> _portRemoved1;
         public string Id { get; init; }
         public bool IsVisible { get; set; }
         public bool IsSelected { get; set; }
@@ -123,6 +132,51 @@ public class ComponentRegistryTests
         {
             throw new NotImplementedException();
         }
+
+        ITypedEvent<NodeSizeChangedEvent> INode.OnSizeChanged
+        {
+            get => _sizeChanged;
+            init => _sizeChanged = value;
+        }
+
+        ITypedEvent<NodePositionChangedEvent> INode.OnPositionChanged
+        {
+            get => _positionChanged;
+            init => _positionChanged = value;
+        }
+
+        ITypedEvent<NodeSelectionChangedEvent> INode.OnSelectionChanged
+        {
+            get => _selectionChanged;
+            init => _selectionChanged = value;
+        }
+
+        ITypedEvent<NodeVisibilityChangedEvent> INode.OnVisibilityChanged
+        {
+            get => _visibilityChanged;
+            init => _visibilityChanged = value;
+        }
+
+        ITypedEvent<PortAddedEvent> INode.OnPortAdded
+        {
+            get => _portAdded1;
+            init => _portAdded1 = value;
+        }
+
+        ITypedEvent<PortRemovedEvent> INode.OnPortRemoved
+        {
+            get => _portRemoved1;
+            init => _portRemoved1 = value;
+        }
+
+        ITypedEvent<PortAddedToNodeEvent> INode.OnPortAddedToNode
+        {
+            get => _portAdded;
+            init => _portAdded = value;
+        }
+
+        public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
+
 
         public event Action<INode, int, int, int, int>? OnSizeChanged;
         public event Action<INode, int, int, int, int>? OnPositionChanged;

@@ -88,8 +88,8 @@ public class DiagramTests
         var layer = new Layer();
         var addEventCount = 0;
         var removeEventCount = 0;
-        diagram.OnLayerAdded += (_, _) => addEventCount++;
-        diagram.OnLayerRemoved += (_, _) => removeEventCount++;
+        diagram.OnLayerAdded.Subscribe((e) => addEventCount++);
+        diagram.OnLayerRemoved.Subscribe((e) => removeEventCount++);
 
         //Act
         diagram.Layers.Add(layer);
@@ -106,7 +106,7 @@ public class DiagramTests
         //Arrange
         var diagram = Instance;
         var eventCount = 0;
-        diagram.OnPanChanged += (_, _, _, _, _) => eventCount++;
+        diagram.OnPanChanged.Subscribe((e) => eventCount++);
 
         //Act
         diagram.PanX = 5;

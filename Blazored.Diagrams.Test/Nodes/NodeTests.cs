@@ -67,7 +67,7 @@ public class NodeTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnSizeChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnSizeChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.Width = 50;
@@ -128,7 +128,7 @@ public class NodeTests
         const int width = 100;
         const int height = 300;
         var eventCount = 0;
-        obj.OnPositionChanged += (_, _, _, _, _) => eventCount++;
+        obj.OnPositionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.PositionX = 50;
@@ -160,7 +160,7 @@ public class NodeTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnSelectionChanged += (_) => eventCount++;
+        obj.OnSelectionChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsSelected = true;
@@ -190,7 +190,7 @@ public class NodeTests
         // Arrange
         var obj = Instance;
         var eventCount = 0;
-        obj.OnVisibilityChanged += (_) => eventCount++;
+        obj.OnVisibilityChanged.Subscribe((e) => eventCount++);
 
         //Act
         obj.IsVisible = false;
@@ -206,12 +206,12 @@ public class NodeTests
         var node = Instance;
         var added = new Port();
         var eventCount = 0;
-        node.OnPortAdded += (g, n) =>
+        node.OnPortAddedToNode.Subscribe((e) => 
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(node, g);
-        };
+            Assert.Same(added, e.Port);
+            Assert.Same(node, e.Node);
+        });
 
         //Act
         node.Ports.Add(added);
@@ -227,18 +227,18 @@ public class NodeTests
     {
         //Arrange
         var node = Instance;
-        var added = new Port();
+        var port = new Port();
         var eventCount = 0;
-        node.OnPortRemoved += (g, n) =>
+        node.OnPortRemovedFromNode.Subscribe((e) =>
         {
             eventCount++;
-            Assert.Same(added, n);
-            Assert.Same(node, g);
-        };
-        node.Ports.Add(added);
+            Assert.Same(port, e.Port);
+            Assert.Same(node, e.Model);
+        });
+        node.Ports.Add(port);
 
         //Act
-        node.Ports.Remove(added);
+        node.Ports.Remove(port);
 
         //Assert
         Assert.Empty(node.Ports);

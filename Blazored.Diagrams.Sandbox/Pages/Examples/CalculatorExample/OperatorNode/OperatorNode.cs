@@ -56,7 +56,7 @@ public class OperatorNode : Node, IHasComponent<OperatorNodeComponent>, INumberO
 
     public void NotifyOperatorChanged()
     {
-        OnOperatorChanged?.Invoke(Operator);
+        OnOperatorChanged.Invoke(Operator);
     }
 
     private decimal? _numberOutput;
@@ -76,6 +76,6 @@ public class OperatorNode : Node, IHasComponent<OperatorNodeComponent>, INumberO
 
     public void NotifyNumberChanged()
     {
-        OnNumberChanged?.Invoke(NumberOutput);
+        OnNumberChanged.Invoke(NumberOutput);
     }
 }
