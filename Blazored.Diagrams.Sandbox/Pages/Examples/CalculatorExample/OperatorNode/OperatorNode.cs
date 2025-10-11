@@ -1,5 +1,6 @@
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.OperatorNode;
@@ -71,11 +72,10 @@ public class OperatorNode : Node, IHasComponent<OperatorNodeComponent>, INumberO
         }
     }
 
-
-    public event Action<decimal?>? OnNumberChanged;
+    public ITypedEvent<NumberNode.NumberNode.NumberNodeChangedEvent> OnNumberChanged { get; init; } = new TypedEvent<NumberNode.NumberNode.NumberNodeChangedEvent>();
 
     public void NotifyNumberChanged()
     {
-        OnNumberChanged.Invoke(NumberOutput);
+        OnNumberChanged.Publish(new(NumberOutput));
     }
 }

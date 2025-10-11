@@ -1,7 +1,7 @@
 .default-port {
-    height: 30px;
-    width: 30px;
-    /*border-radius: 50%;*/
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
     background-color: whitesmoke;
     border-color: black;
     border-style: solid;

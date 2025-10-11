@@ -90,7 +90,7 @@ public required YourNodeClass Node;
 
 
 @code {
-    [Inject] public IDiagramServiceProvider Provider { get; set; }
+    [Inject] public IDiagramService Service { get; set; }
     private bool _open;
     private string? _cssCode;
     private string? _componentCode;
@@ -102,10 +102,8 @@ public required YourNodeClass Node;
     readonly CircularNode _circularNode = new();
     readonly Node _node = new();
     readonly NamedNode _namedNode = new();
-    IDiagramService Service;
     protected override Task OnInitializedAsync()
     {
-        Service = Provider.GetDiagramService(new Diagram());
         _circularNode.SetPosition(100, 100);
 
         _node.SetPosition(300, 100);

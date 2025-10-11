@@ -96,13 +96,6 @@
 
 @code {
 
-    [Inject] public IDiagramServiceProvider Provider { get; set; }
-    private IDiagramService Service;
-
-    protected override Task OnInitializedAsync()
-    {
-        Service = Provider.GetDiagramService(new Diagram());
-        return base.OnInitializedAsync();
-    }
+    [Inject] public IDiagramService Service { get; set; }
 
 }

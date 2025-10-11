@@ -284,7 +284,7 @@ public class GroupTests
         var group = Instance;
         var added = new Group();
         var eventCount = 0;
-        group.OnGroupAddedTogroup.Subscribe(e =>
+        group.OnGroupAddedToGroup.Subscribe(e =>
         {
             eventCount++;
             Assert.Same(added, e.AddedGroup);

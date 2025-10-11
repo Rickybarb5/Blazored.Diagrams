@@ -2,7 +2,7 @@ using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
-using Blazored.Diagrams.Services.Providers;
+
 
 namespace Blazored.Diagrams.Test.Behaviours;
 
@@ -10,8 +10,7 @@ public class DefaultLayerBehaviourTests
 {
     private IDiagramService CreateService()
     {
-        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
-        var service = diagramServiceProvider.GetDiagramService(new Diagram());
+        var service = new DiagramService();
         return service;
     }
 

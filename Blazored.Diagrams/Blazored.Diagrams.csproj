@@ -60,6 +60,9 @@
         <Compile Update="Services\Events\Events.ObservableList.cs">
           <DependentUpon>Events.cs</DependentUpon>
         </Compile>
+        <Compile Update="Services\Events\EventAggregator.Propagation.cs">
+          <DependentUpon>EventAggregator.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

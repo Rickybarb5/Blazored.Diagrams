@@ -47,7 +47,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
 
     private void HandleGroupAdded(ItemAddedEvent<IGroup> obj)
     {
-        OnGroupAddedTogroup.Publish(new(this, obj.Item));
+        OnGroupAddedToGroup.Publish(new(this, obj.Item));
         OnGroupAdded.Publish(new(obj.Item));
     }
 
@@ -304,7 +304,7 @@ public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; } = new TypedEvent<GroupAddedToGroupEvent>();
+public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedToGroup { get; init; } = new TypedEvent<GroupAddedToGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]

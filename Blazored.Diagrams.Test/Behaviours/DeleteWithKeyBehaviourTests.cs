@@ -6,7 +6,7 @@ using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
-using Blazored.Diagrams.Services.Providers;
+
 using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazored.Diagrams.Test.Behaviours;
@@ -15,8 +15,7 @@ public class DeleteWithKeyBehaviourTests
 {
     private IDiagramService CreateService()
     {
-        DiagramServiceProvider diagramServiceProvider = new DiagramServiceProvider();
-        var service = diagramServiceProvider.GetDiagramService(new Diagram());
+        var service = new DiagramService();
         return service;
     }
 

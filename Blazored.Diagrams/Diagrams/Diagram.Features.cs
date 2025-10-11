@@ -33,13 +33,13 @@ public partial class Diagram
     /// <inheritdoc />
     public virtual void StepZoomUp()
     {
-        SetZoom(Zoom /*TODO:Get step from options*/);
+        SetZoom(Zoom);
     }
 
     /// <inheritdoc />
     public virtual void StepZoomDown()
     {
-        SetZoom(Zoom /*TODO:Get step from options*/);
+        SetZoom(Zoom);
     }
 
     /// <inheritdoc />

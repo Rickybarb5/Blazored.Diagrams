@@ -31,12 +31,10 @@
 
 @code {
 
-    [Inject] public IDiagramServiceProvider Provider { get; set; } = null!;
-    private IDiagramService Service;
+    [Inject] public IDiagramService Service { get; set; }
 
     protected override Task OnInitializedAsync()
     {
-        Service = Provider.GetDiagramService(new Diagram());
         var layer2 = new Layer();
         Service.Add.Layer(layer2);
         foreach (var index in Enumerable.Range(1, 4))

@@ -42,20 +42,13 @@
 
 
 @code {
-    [Inject] public IDiagramServiceProvider Provider { get; set; }
+    [Inject] public IDiagramService Service { get; set; }
     [Inject] public ISerializationService SerializationService { get; set; }
     IPort? SelectedPort;
     ILink? selectedLink;
     INode? SelectedNode;
     IGroup? SelectedGroup;
     private List<IDisposable> _subscriptions;
-    IDiagramService Service;
-
-    protected override Task OnInitializedAsync()
-    {
-        Service = Provider.GetDiagramService(new Diagram());
-        return base.OnInitializedAsync();
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

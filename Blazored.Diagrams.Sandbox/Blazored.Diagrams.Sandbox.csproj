@@ -19,4 +19,9 @@
     <ItemGroup>
         <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
     </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Pages\Examples\CalculatorExample\NumberNode\NumberNode.Events.cs">
+        <DependentUpon>NumberNode.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>

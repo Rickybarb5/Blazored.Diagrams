@@ -6,29 +6,36 @@ namespace Blazored.Diagrams.Services.Serialization;
 /// <inheritdoc />
 public class SerializationService : ISerializationService
 {
-    private readonly JsonSerializerSettings _settings;
-
-    public SerializationService()
-    {
-        _settings = CreateSettings();
-    }
+    private JsonSerializerSettings? _settings;
     
     /// <inheritdoc />
-    public string ToJson<TDiagram>(TDiagram diagram)
+    public virtual string ToJson<TDiagram>(TDiagram diagram)
         where TDiagram : IDiagram
     {
+        if (_settings is null)
+        {
+            _settings = CreateSettings();
+        }
         return JsonConvert.SerializeObject(diagram, _settings);
     }
 
     /// <inheritdoc />
-    public TDiagram FromJson<TDiagram>(string json)
+    public virtual TDiagram FromJson<TDiagram>(string json)
         where TDiagram : IDiagram
     {
+        
+        if (_settings is null)
+        {
+            _settings = CreateSettings();
+        }
         return JsonConvert.DeserializeObject<TDiagram>(json, _settings)!;
     }
 
-    //Todo: make this just public?
-    public static JsonSerializerSettings CreateSettings()
+    /// <summary>
+    /// Creates the <see cref="JsonSerializerSettings"/> used to serialize and deserialize the diagram.
+    /// </summary>
+    /// <returns></returns>
+    public virtual JsonSerializerSettings CreateSettings()
     {
         var settings = new JsonSerializerSettings
         {

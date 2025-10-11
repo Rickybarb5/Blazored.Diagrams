@@ -76,7 +76,7 @@
                 _diagramService?.Dispose();
                 _diagramService = value;
                 _redrawSubscription = _diagramService.Events
-                    .SubscribeWhere<DiagramRedrawEvent>(p => p.Model.Id == _diagramService?.Diagram.Id, Redraw);
+                    .SubscribeTo<DiagramRedrawEvent>(Redraw);
                 InvokeAsync(StateHasChanged);
             }
         }
@@ -105,6 +105,7 @@
             _diagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
             _diagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
             await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
+            _diagramService.Events.Publish(new DiagramRedrawEvent(_diagramService.Diagram));
         }
 
         await base.OnAfterRenderAsync(firstRender);

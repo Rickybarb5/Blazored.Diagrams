@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Observers;
-using Blazored.Diagrams.Services.Providers;
+
 using Blazored.Diagrams.Services.Registry;
 using Blazored.Diagrams.Services.Serialization;
 using Blazored.Diagrams.Services.Virtualization;
@@ -24,9 +25,9 @@ public static class BlazoredDiagramsExtensions
     {
         services
             .AddSingleton<IResizeObserverService, ResizeObserverService>()
-            .AddSingleton<IDiagramServiceProvider, DiagramServiceProvider>()
             .AddSingleton<IVirtualizationService, VirtualizationService>()
             .AddSingleton<ISerializationService, SerializationService>()
+            .AddTransient<IDiagramService, DiagramService>()
             .AddSingleton<IComponentRegistry, ComponentRegistry>();
         
         return services;

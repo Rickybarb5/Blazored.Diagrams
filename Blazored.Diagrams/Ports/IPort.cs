@@ -70,8 +70,6 @@ public interface IPort :
     /// <returns>True if the link can connect to the input port, false otherwise.</returns>
     bool CanConnectTo(IPort port);
 
-    //TODO:Add an allows connection or something.
-
     /// <summary>
     ///     Sets the X and Y coordinates on the screen.
     ///     Does not trigger the event.

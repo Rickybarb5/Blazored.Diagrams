@@ -1,13 +1,12 @@
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 
 namespace Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.NumberNode;
 
-public class NumberNode : Node, IHasComponent<NumberNodeComponent>, INumberOutput
+public partial class NumberNode : Node, IHasComponent<NumberNodeComponent>, INumberOutput
 {
-    public event Action<decimal?> OnNumberChanged;
-
     private decimal? _numberOutput;
 
     public decimal? NumberOutput
@@ -22,7 +21,7 @@ public class NumberNode : Node, IHasComponent<NumberNodeComponent>, INumberOutpu
 
     public void NotifyNumberChanged()
     {
-        OnNumberChanged.Invoke(NumberOutput);
+        OnNumberChanged.Publish(new (NumberOutput));
     }
 
     public NumberNode()

@@ -107,7 +107,7 @@ public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init
     ///     Event triggered when a nested group is added.
     /// </summary>
     [JsonIgnore]
-public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedTogroup { get; init; }
+public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedToGroup { get; init; }
 
     /// <summary>
     ///     Event triggered when a nested group is removed.

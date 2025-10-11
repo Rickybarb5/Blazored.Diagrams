@@ -1,10 +1,8 @@
 using Blazored.Diagrams.Behaviours;
 using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Behaviours;
 using Blazored.Diagrams.Services.Events;
-using Blazored.Diagrams.Services.Providers;
 
 namespace Blazored.Diagrams.Services.Diagrams;
 
@@ -32,9 +30,12 @@ public partial class DiagramService : IDiagramService
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="diagram"></param>
-    /// <param name="diagramServiceProvider"></param>
-    public DiagramService(IDiagram diagram, IDiagramServiceProvider diagramServiceProvider)
+    public DiagramService()
+    {
+        InitializeDiagram(new Diagram());
+    }
+
+    private void InitializeDiagram(IDiagram diagram)
     {
         Diagram = diagram;
         InitializeServices();
@@ -92,9 +93,7 @@ public partial class DiagramService : IDiagramService
     void IDiagramService.SwitchDiagram(IDiagram diagram)
     {
         Dispose();
-        Diagram = diagram;
-        InitializeServices();
-        InitializeBehaviours();
+        InitializeDiagram(diagram);
         Events.Publish(new DiagramRedrawEvent(Diagram));
        
     }
