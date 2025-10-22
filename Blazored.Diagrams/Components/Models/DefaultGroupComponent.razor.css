@@ -2,8 +2,8 @@
     /* Add shadows to create the "card" effect */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
-    width: 100%;
-    height: 100%;
+    width: 100%; /* Occupy the whole container */
+    height: 100%;/* Occupy the whole container */
     background: rgba(115, 110, 113, 0.40);
 }
 
@@ -16,7 +16,7 @@
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
 }
 
-.min-size {
-    width: 100px; /* Adjust as needed */
-    height: 100px; /* Adjust as needed */
-}
+/*.min-size {*/
+/*    width: 100px;*/
+/*    height: 100px;*/
+/*}*/

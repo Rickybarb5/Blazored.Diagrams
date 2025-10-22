@@ -17,6 +17,9 @@ public partial class DiagramService : IDiagramService
 
     /// <inheritdoc />
     public ISerializationContainer Storage { get; set; } = null!;
+    
+    /// <inheritdoc />
+    public IOptionsContainer Options { get; set; } = null!;
 
     /// <inheritdoc />
     public IAddContainer Add { get; set; } = null!;
@@ -46,6 +49,7 @@ public partial class DiagramService : IDiagramService
     private void InitializeServices()
     {
         Behaviours = new BehaviourContainer(this);
+        Options = new OptionsContainer(this);
         Add = new AddContainer(Diagram);
         Remove = new DeleteContainer(Diagram);
         Events = new EventAggregator(this);

@@ -44,48 +44,17 @@
         {
             _subscriptions =
             [
-                DiagramService.Events.SubscribeWhere<IncomingLinkAddedEvent>(p => p.Model.Id == Port.Id, LinkAdded),
-                DiagramService.Events.SubscribeWhere<IncomingLinkRemovedEvent>(p => p.Model.Id == Port.Id, LinkRemoved),
-                DiagramService.Events.SubscribeWhere<OutgoingLinkAddedEvent>(p => p.Model.Id == Port.Id, LinkAdded),
-                DiagramService.Events.SubscribeWhere<OutgoingLinkRemovedEvent>(p => p.Model.Id == Port.Id, LinkRemoved),
-                DiagramService.Events.SubscribeWhere<PortPointerEnterEvent>(p => p.Model.Id == Port.Id, OnPointerEnter),
-                DiagramService.Events.SubscribeWhere<PortPointerLeaveEvent>(p => p.Model.Id == Port.Id, OnPointerLeave),
+                DiagramService.Events.SubscribeWhere<IncomingLinkAddedEvent>(p => p.Model.Id == Port.Id, SetNodeCssClass),
+                DiagramService.Events.SubscribeWhere<IncomingLinkRemovedEvent>(p => p.Model.Id == Port.Id, SetNodeCssClass),
+                DiagramService.Events.SubscribeWhere<OutgoingLinkAddedEvent>(p => p.Model.Id == Port.Id, SetNodeCssClass),
+                DiagramService.Events.SubscribeWhere<OutgoingLinkRemovedEvent>(p => p.Model.Id == Port.Id, SetNodeCssClass),
+                DiagramService.Events.SubscribeWhere<PortPointerEnterEvent>(p => p.Model.Id == Port.Id, SetNodeCssClass),
+                DiagramService.Events.SubscribeWhere<PortPointerLeaveEvent>(p => p.Model.Id == Port.Id, SetNodeCssClass),
             ];
         }
     }
-
-    private void LinkRemoved(OutgoingLinkRemovedEvent obj)
-    {
-        SetNodeCssClass();
-    }
-
-    private void LinkAdded(OutgoingLinkAddedEvent obj)
-    {
-        SetNodeCssClass();
-    }
-
-
-    private void LinkRemoved(IncomingLinkRemovedEvent incomingLinkRemovedEvent)
-    {
-        SetNodeCssClass();
-    }
-
-    private void LinkAdded(IncomingLinkAddedEvent incomingLinkAddedEvent)
-    {
-        SetNodeCssClass();
-    }
-
-    private void OnPointerEnter(PortPointerEnterEvent portPointerEnterEvent)
-    {
-        SetNodeCssClass();
-    }
-
-    private void OnPointerLeave(PortPointerLeaveEvent portPointerLeaveEvent)
-    {
-        SetNodeCssClass();
-    }
-
-    private void SetNodeCssClass()
+    
+    private void SetNodeCssClass(IEvent ev)
     {
         _builder.Clear();
         _builder.Append(Class);

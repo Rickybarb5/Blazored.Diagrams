@@ -1,38 +1,184 @@
 @page "/diagram-events"
-<div style="display:flex;flex-direction: row;height:100%">
-    <MudContainer MaxWidth="MaxWidth.False" Style="height:100%">
-        <MudExpansionPanel Text="Diagram Events" IsInitiallyExpanded="true">
-            <EventCollectionComponent T="IDiagram"></EventCollectionComponent>
-        </MudExpansionPanel>
-    </MudContainer>
+@inject HttpClient Http
+@using System.Text.Json
+@using System.Text.RegularExpressions
 
-</div>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+    <MudText Typo="Typo.h3" GutterBottom="true">Event Documentation</MudText>
+
+    @if (isLoading)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary"/>
+    }
+    else if (eventGroups.Any())
+    {
+        <MudTabs Elevation="2" Rounded="true" PanelClass="pa-4" Centered="true">
+            @foreach (var group in eventGroups)
+            {
+                <MudTabPanel Text="@group.Name">
+                    <MudExpansionPanels MultiExpansion="true" Dense="true">
+                        @foreach (var eventDoc in group.Events)
+                        {
+                            <MudExpansionPanel Dense="true">
+                                <TitleContent>
+                                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Text">@eventDoc.Name</MudChip>
+                                </TitleContent>
+                                <ChildContent>
+                                    <MudText Typo="Typo.body1" Class="mb-4">
+                                        @FormatDocumentation(eventDoc.Summary)
+                                    </MudText>
+
+                                    @if (eventDoc.Parameters.Any())
+                                    {
+                                        <MudText Typo="Typo.h6" Class="mb-2">Parameters</MudText>
+                                        <MudSimpleTable Dense="true" Hover="true" FixedHeader="true" Style="overflow-x: auto;">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Documentation</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach (var param in eventDoc.Parameters)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <MudText>
+                                                            <code>@param.Name</code>
+                                                        </MudText>
+                                                    </td>
+                                                    <td>
+                                                        <MudText>
+                                                            <code>@param.TypeName</code>
+                                                        </MudText>
+                                                    </td>
+                                                    <td>@FormatDocumentation(param.Documentation)</td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                        </MudSimpleTable>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body2">
+                                            <i>This event has no parameters.</i>
+                                        </MudText>
+                                    }
+                                </ChildContent>
+                            </MudExpansionPanel>
+                        }
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            }
+        </MudTabs>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Error">
+            Could not load any event documentation.
+            Ensure JSON files exist in <code>wwwroot/docs/</code>.
+        </MudAlert>
+    }
+
+</MudContainer>
 
 @code {
+    private List<EventGroup> eventGroups = new();
+    private bool isLoading = true;
 
-    private const string EventSubscription = @"
-        Node1.OnClick += HandleClickEvent;
-        Node2.OnDoubleClick += HandleDoubleClickEvent;
-        Diagram.OnNodeClicked += HandleDiagramNodeClickEvent;";
-
-    private const string EventManagement = @"
-    private void HandleDiagramNodeClickEvent(INode n, MouseEventArgs arg2)
+    // The list of files to fetch from wwwroot/docs/
+    private string[] groupNames =
     {
-        if (n is NamedNode namedNode)
-            Snackbar.Add($""[Diagram event] - {namedNode.Name} triggered a click event event."", Severity.Info);
+        "Diagram",
+        "Node",
+        "Links",
+        "Ports",
+        "Groups",
+        "Layer",
+        "ObservableList"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        foreach (var name in groupNames)
+        {
+            var path = $"docs/events.{name.ToLower()}.json";
+            try
+            {
+                var eventDocs = await Http.GetFromJsonAsync<List<EventDoc>>(path, options);
+                if (eventDocs != null && eventDocs.Any())
+                {
+                    eventGroups.Add(new EventGroup { Name = name, Events = eventDocs });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // File not found, just skip this group
+                Console.WriteLine($"Could not find documentation file: {path}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading {path}: {ex.Message}");
+            }
+        }
+
+        isLoading = false;
     }
 
-    private void HandleClickEvent(INode n, MouseEventArgs arg2)
+    /// <summary>
+    /// Formats the XML doc string to render <see> and <paramref> tags as code.
+    /// This is a safe way to render doc comments without enabling raw HTML.
+    /// </summary>
+    private MarkupString FormatDocumentation(string doc)
     {
-        if (n is NamedNode namedNode)
-            Snackbar.Add($""[Node event] -  {namedNode.Name} triggered a click event."", Severity.Success);
+        if (string.IsNullOrEmpty(doc))
+        {
+            return (MarkupString)"";
+        }
+
+        // Regex to find <see cref="..."/> and extract the last part of the name
+        var formatted = Regex.Replace(
+            doc,
+            @"<see cref=""(T|P|F|M):([\w\.]+)""\s*/>",
+            m => $"<code>{m.Groups[2].Value.Split('.').Last()}</code>"
+        );
+
+        // Regex to find <paramref name="..."/>
+        formatted = Regex.Replace(
+            formatted,
+            @"<paramref name=""(\w+)""\s*/>",
+            m => $"<code>{m.Groups[1].Value}</code>"
+        );
+
+        return (MarkupString)formatted;
     }
 
-    private void HandleDoubleClickEvent(INode n, MouseEventArgs arg2)
+    // --- C# Models to match the JSON structure ---
+
+    public class EventGroup
     {
-        if (n is NamedNode namedNode)
-            Snackbar.Add($""[Node event] -  {namedNode.Name} triggered the db click event."", Severity.Warning);
+        public string Name { get; set; }
+        public List<EventDoc> Events { get; set; } = new();
     }
-";
+
+    public class EventParameterDoc
+    {
+        public string Name { get; set; }
+        public string TypeName { get; set; }
+        public string Documentation { get; set; }
+    }
+
+    public class EventDoc
+    {
+        public string Name { get; set; }
+        public string Summary { get; set; }
+        public List<EventParameterDoc> Parameters { get; set; }
+    }
 
 }

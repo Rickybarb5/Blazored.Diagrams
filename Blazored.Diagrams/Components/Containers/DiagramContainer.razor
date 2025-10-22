@@ -122,7 +122,7 @@
         _sb.Append(_diagramService.Diagram.Options.Style.ContainerStyle);
         if (_diagramService.Diagram.Options.Style.GridEnabled)
         {
-            _sb.Append(_diagramService.Diagram.Options.Style.GridStyle);
+            _sb.Append(_diagramService.Options.Styling.GridStyle);
         }
 
         return _sb.ToString();

@@ -77,7 +77,7 @@ public class EventLoggingBehavior : BaseBehaviour
                     $"[{nameof(NodeSelectionChangedEvent)}] Node {e.Model.Id} selection changed to {e.Model.IsSelected}")),
             _diagramService.Events.SubscribeTo<NodePositionChangedEvent>(e =>
                 Console.WriteLine(
-                    $"[{nameof(NodePositionChangedEvent)}] Node {e.Model.Id} moved from ({e.OldWidth},{e.OldHeight}) to ({e.NewWidth},{e.NewHeight})")),
+                    $"[{nameof(NodePositionChangedEvent)}] Node {e.Model.Id} moved from ({e.OldX},{e.OldY}) to ({e.NewX},{e.NewY})")),
             _diagramService.Events.SubscribeTo<NodeSizeChangedEvent>(e =>
                 Console.WriteLine(
                     $"[{nameof(NodeSizeChangedEvent)}] Node {e.Model.Id} resized from ({e.OldWidth}x{e.OldHeight}) to ({e.NewWidth}x{e.NewHeight})")),

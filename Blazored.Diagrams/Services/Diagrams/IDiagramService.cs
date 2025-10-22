@@ -40,6 +40,11 @@ public interface IDiagramService : IDisposable
     public IDeleteContainer Remove { get; set; }
 
     /// <summary>
+    /// Customize diagram options.
+    /// </summary>
+    IOptionsContainer Options { get; set; }
+
+    /// <summary>
     /// Replaces the diagram instance with another.
     /// </summary>
     /// <param name="diagram">A diagram instance</param>

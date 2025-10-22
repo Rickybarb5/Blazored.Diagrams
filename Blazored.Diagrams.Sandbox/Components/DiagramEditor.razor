@@ -41,13 +41,13 @@
 
     private async Task Load(MouseEventArgs obj)
     {
-        var reference = await DialogService.ShowAsync<LoadDiagramDialog>("Load", new DialogParameters() { { nameof(LoadDiagramDialog.Service), DiagramService } });
-        var result = await reference.Result;
-
-        if (!result.Canceled)
-        {
-            await OnDiagramLoaded.InvokeAsync((string)result.Data);
-        }
+        // var reference = await DialogService.ShowAsync<LoadDiagramDialog>("Load", new DialogParameters() { { nameof(LoadDiagramDialog.Service), DiagramService } });
+        // var result = await reference.Result;
+        //
+        // if (!result.Canceled)
+        // {
+        //     await OnDiagramLoaded.InvokeAsync((string)result.Data);
+        // }
     }
 
 }

@@ -12,28 +12,28 @@ public interface IEvent;
 /// <summary>
 /// Base class for a diagram event.
 /// </summary>
-/// <param name="Model"></param>
+/// <param name="Model">The diagram that triggered the event.</param>
 public record DiagramEvent(IDiagram Model) : ModelEventBase<IDiagram>(Model);
 
 /// <summary>
 /// Event triggered when the diagram position changes.
 /// </summary>
-/// <param name="Model">Diagram</param>
-/// <param name="OldX">Old position x</param>
-/// <param name="OldY">Old position Y</param>
-/// <param name="NewX">New position X</param>
-/// <param name="NewY">New position Y</param>
+/// <param name="Model">The diagram that triggered the event.</param>
+/// <param name="OldX">The previous X position value.</param>
+/// <param name="OldY">The previous Y position value.</param>
+/// <param name="NewX">The new X position value.</param>
+/// <param name="NewY">The new Y position value.</param>
 public record DiagramPositionChangedEvent(IDiagram Model, double OldX, double OldY, double NewX, double NewY)
     : DiagramEvent(Model);
 
 /// <summary>
 /// Event triggered when the diagram size changes.
 /// </summary>
-/// <param name="Model">Diagram.</param>
-/// <param name="OldWidth">Previous width value.</param>
-/// <param name="OldHeight">Previous height value. </param>
-/// <param name="NewWidth">New diagram width</param>
-/// <param name="NewHeight">New diagram height.</param>
+/// <param name="Model">The diagram that triggered the event.</param>
+/// <param name="OldWidth">Previous width value in pixels.</param>
+/// <param name="OldHeight">Previous height value in pixels. </param>
+/// <param name="NewWidth">New diagram width in pixels.</param>
+/// <param name="NewHeight">New diagram height in pixels.</param>
 public record DiagramSizeChangedEvent(
     IDiagram Model,
     double OldWidth,
@@ -45,94 +45,94 @@ public record DiagramSizeChangedEvent(
 /// <summary>
 /// Event triggered when the zoom changes.
 /// </summary>
-/// <param name="Model"></param>
-/// <param name="OldZoom"></param>
-/// <param name="NewZoom"></param>
+/// <param name="Model">The diagram that triggered the event.</param>
+/// <param name="OldZoom">The previous zoom factor (e.g., 1.0 for 100%).</param>
+/// <param name="NewZoom">The new zoom factor.</param>
 public record DiagramZoomChangedEvent(IDiagram Model, double OldZoom, double NewZoom) : DiagramEvent(Model);
 
 /// <summary>
 /// Event triggered when the pan changes.
 /// </summary>
-/// <param name="Model"></param>
-/// <param name="OldPanX"></param>
-/// <param name="OldPanY"></param>
-/// <param name="PanX"></param>
-/// <param name="PanY"></param>
+/// <param name="Model">The diagram that triggered the event.</param>
+/// <param name="OldPanX">The previous pan X offset value in pixels.</param>
+/// <param name="OldPanY">The previous pan Y offset value in pixels.</param>
+/// <param name="PanX">The new pan X offset value in pixels.</param>
+/// <param name="PanY">The new pan Y offset value in pixels.</param>
 public record DiagramPanChangedEvent(IDiagram Model, int OldPanX, int OldPanY, int PanX, int PanY)
     : DiagramEvent(Model);
 
 /// <summary>
 /// Event triggered when a diagram redraw is requested.
 /// </summary>
-/// <param name="Model"></param>
+/// <param name="Model">The diagram that requested the redraw.</param>
 public record DiagramRedrawEvent(IDiagram Model) : DiagramEvent(Model);
 
 /// <summary>
-///     Event triggered when an @onpointerdown event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onpointerdown</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args">Pointer events.</param>
+/// <param name="Args">The <see cref="PointerEventArgs"/>.</param>
 public record DiagramPointerDownEvent(IDiagram Model, PointerEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onpointerup event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onpointerup</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args">Pointer events.</param>
+/// <param name="Args">The <see cref="PointerEventArgs"/>.</param>
 public record DiagramPointerUpEvent(IDiagram Model, PointerEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onpointermove event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onpointermove</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args">Pointer events.</param>
+/// <param name="Args">The <see cref="PointerEventArgs"/>.</param>
 public record DiagramPointerMoveEvent(IDiagram Model, PointerEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onpointerenter event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onpointerenter</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args">Pointer events.</param>
+/// <param name="Args">The <see cref="PointerEventArgs"/>.</param>
 public record DiagramPointerEnterEvent(IDiagram Model, PointerEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onpointerleave event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onpointerleave</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args">Pointer events.</param>
+/// <param name="Args">The <see cref="PointerEventArgs"/>.</param>
 public record DiagramPointerLeaveEvent(IDiagram Model, PointerEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onwheel event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onwheel</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args"> <see cref="WheelEventArgs"/>.</param>
+/// <param name="Args">The <see cref="WheelEventArgs"/>.</param>
 public record DiagramWheelEvent(IDiagram Model, WheelEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onclick event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onclick</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args"><see cref="MouseEventArgs"/></param>
+/// <param name="Args">The <see cref="MouseEventArgs"/>.</param>
 public record DiagramClickedEvent(IDiagram Model, MouseEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @ondblclick event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@ondblclick</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args"><see cref="MouseEventArgs"/></param>
+/// <param name="Args">The <see cref="MouseEventArgs"/>.</param>
 public record DiagramDoubleClickedEvent(IDiagram Model, MouseEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onkeyup event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onkeyup</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args"><see cref="KeyboardEventArgs"/></param>
+/// <param name="Args">The <see cref="KeyboardEventArgs"/>.</param>
 public record DiagramKeyUpEvent(IDiagram Model, KeyboardEventArgs Args) : ModelInputEvent<IDiagram>(Model);
 
 /// <summary>
-///     Event triggered when an @onkeydown event happens on the <see cref="DiagramContainer"/>
+/// Event triggered when an <c>@onkeydown</c> event happens on the <see cref="DiagramContainer"/>.
 /// </summary>
 /// <param name="Model">The diagram that triggered the event.</param>
-/// <param name="Args"><see cref="KeyboardEventArgs"/></param>
+/// <param name="Args">The <see cref="KeyboardEventArgs"/>.</param>
 public record DiagramKeyDownEvent(IDiagram Model, KeyboardEventArgs Args) : ModelInputEvent<IDiagram>(Model);

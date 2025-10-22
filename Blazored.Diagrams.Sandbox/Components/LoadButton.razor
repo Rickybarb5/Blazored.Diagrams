@@ -10,22 +10,22 @@
 
     private async Task Load(MouseEventArgs obj)
     {
-        var dialogParameters = new DialogParameters
-        {
-            [nameof(LoadDiagramDialog.Service)] = DiagramService
-        };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialogReference = DialogService.ShowAsync<LoadDiagramDialog>("Dialog Keyboard Accessibility Demo", dialogParameters, options).Result;
-        var dialogResult = await dialogReference.Result;
-        if (dialogResult.Canceled)
-        {
-            StateHasChanged();
-        }
-        else
-        {
-            await OnDiagramLoaded.InvokeAsync((Diagram)dialogResult.Data);
-            StateHasChanged();
-        }
+        // var dialogParameters = new DialogParameters
+        // {
+        //     [nameof(LoadDiagramDialog.Service)] = DiagramService
+        // };
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+        // var dialogReference = DialogService.ShowAsync<LoadDiagramDialog>("Dialog Keyboard Accessibility Demo", dialogParameters, options).Result;
+        // var dialogResult = await dialogReference.Result;
+        // if (dialogResult.Canceled)
+        // {
+        //     StateHasChanged();
+        // }
+        // else
+        // {
+        //     await OnDiagramLoaded.InvokeAsync((Diagram)dialogResult.Data);
+        //     StateHasChanged();
+        // }
     }
 
 }

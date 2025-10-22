@@ -16,35 +16,35 @@
     /// </summary>
     [CascadingParameter]
     public IDiagramService DiagramService { get; set; } = null!;
-    
+
     /// <summary>
     /// <see cref="Group"/>
     /// </summary>
     [Parameter]
     public required Group Group { get; set; }
-    
+
     /// <summary>
     /// Optional content if people want to use the default component.
     /// </summary>
     [Parameter]
     public RenderFragment? Content { get; set; }
-    
+
     /// <summary>
     /// Minimum width of the group when it has no nested nodes or groups.
     /// </summary>
-    [Parameter] 
-    public int MinWidth { get; set; }= 100;
+    [Parameter]
+    public int MinWidth { get; set; } = 100;
 
     /// <summary>
     /// Minimum height of the group when it has no nested nodes or groups.
     /// </summary>
-    [Parameter] 
+    [Parameter]
     public int MinHeight { get; set; } = 100;
-    
+
     private string Class { get; set; } = DefaultCssClass;
     private const string DefaultCssClass = "default-group";
     private readonly StringBuilder _builder = new();
-    private IDisposable _subscription = null!;
+    private List<IDisposable> _subscriptions = null!;
 
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -52,13 +52,18 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            _subscription = DiagramService.Events.SubscribeWhere<GroupSelectionChangedEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass);
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeWhere<GroupSelectionChangedEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass),
+                DiagramService.Events.SubscribeWhere<NodeRemovedFromGroupEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass),
+                DiagramService.Events.SubscribeWhere<GroupRemovedFromGroupEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass),
+            ];
         }
 
         SetGroupCssClass();
     }
 
-    private void SetGroupCssClass(GroupSelectionChangedEvent e)
+    private void SetGroupCssClass(IEvent e)
     {
         SetGroupCssClass();
     }
@@ -66,18 +71,16 @@
     private void SetGroupCssClass()
     {
         _builder.Clear();
+        _builder.Append(DefaultCssClass);
         if (Group.Nodes.Count == 0 && Group.Groups.Count == 0)
         {
-            _builder.Append($"{DefaultCssClass} min-size");
+            // _builder.Append(" min-size");
             Group.SetSize(MinWidth, MinHeight);
         }
-        else
+
+        if (Group.IsSelected)
         {
-            _builder.Append(DefaultCssClass);
-            if (Group.IsSelected)
-            {
-                _builder.Append(" selected");
-            }
+            _builder.Append(" selected");
         }
 
         Class = _builder.ToString();
@@ -86,7 +89,7 @@
     /// <inheritdoc />
     public void Dispose()
     {
-        _subscription.Dispose();
+        _subscriptions.DisposeAll();
     }
 
 }

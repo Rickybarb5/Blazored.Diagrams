@@ -35,7 +35,7 @@ public record DrawLinkStartEvent(ILink Link) : IEvent;
 public record DrawLinkCreatedEvent(ILink Link) : IEvent;
 
 /// <summary>
-/// Event triggered when a link was being created  via the <see cref="DrawLinkBehavior"/>, but was not attached to a target port.
+/// Event triggered when a link was being created  via the <see cref="DrawLinkBehavior"/> but was not attached to a target port.
 /// </summary>
 /// <param name="Link">Link whose creation was cancelled .</param>
 public record DrawLinkCancelledEvent(ILink Link) : IEvent;
@@ -43,5 +43,6 @@ public record DrawLinkCancelledEvent(ILink Link) : IEvent;
 /// <summary>
 /// Enabled event for behaviours.
 /// </summary>
-/// <param name="IsEnabled"></param>
-public record BehaviourEnabledEvent(bool IsEnabled):IEvent;
+/// <param name="BehaviourType">Type of the behaviour that was enabled or disabled.</param>
+/// <param name="IsEnabled">Value indicating whether the behaviour was enabled or disabled.</param>
+public record BehaviourEnabledEvent(Type BehaviourType, bool IsEnabled):IEvent;

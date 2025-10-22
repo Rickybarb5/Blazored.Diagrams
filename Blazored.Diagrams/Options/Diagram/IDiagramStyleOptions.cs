@@ -25,7 +25,7 @@ public interface IDiagramStyleOptions
     /// <summary>
     /// Opacity of the grid lines (0–1). Default: <see cref="DefaultGridLineOpacity"/>.
     /// </summary>
-    double GridLineOpacity { get; set; }
+    decimal GridLineOpacity { get; set; }
 
     /// <summary>
     /// Size of the grid lines in pixels. Default: <see cref="DefaultGridLineThickness"/>.

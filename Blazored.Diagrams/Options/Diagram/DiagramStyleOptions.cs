@@ -29,7 +29,7 @@ public partial class DiagramStyleOptions : IDiagramStyleOptions
     /// <summary>
     /// Default grid line opacity.
     /// </summary>
-    private const double DefaultGridLineOpacity = 0.1;
+    private const decimal DefaultGridLineOpacity = 0.1m;
     
     /// <summary>
     /// Default grid line thickness in pixels.
@@ -39,7 +39,7 @@ public partial class DiagramStyleOptions : IDiagramStyleOptions
     private int _cellSize;
     private string? _gridStyle;
     private string _gridLineColor;
-    private double _gridLineOpacity;
+    private decimal _gridLineOpacity;
     private int _gridLineThickness;
 
     public DiagramStyleOptions()
@@ -97,7 +97,7 @@ public partial class DiagramStyleOptions : IDiagramStyleOptions
     /// <summary>
     /// Opacity of the grid lines (0–1). Default: <see cref="DefaultGridLineOpacity"/>.
     /// </summary>
-    public double GridLineOpacity
+    public decimal GridLineOpacity
     {
         get => _gridLineOpacity;
         set
