@@ -6,10 +6,13 @@
 @code {
 
     /// <summary>
-    ///     Wave height.
+    /// Height of the wave.
     /// </summary>
-    [Parameter]
-    public int WaveHeight { get; set; } = 20;
+    protected int WaveHeight 
+    {
+        get => DiagramService.Options.CurvedLinkOptions.WaveHeight;
+        set => DiagramService.Options.CurvedLinkOptions.WaveHeight = value;
+    }
 
     /// <inheritdoc />
     protected override string GetPath()
@@ -22,6 +25,27 @@
 
         // Using a simple cubic Bézier curve to draw a single wave
         return $"M {RelativeX1} {RelativeY1} C {control1X} {control1Y}, {control2X} {control2Y}, {RelativeX2} {RelativeY2}";
+    }
+
+    /// <inheritdoc />
+    protected override string StrokeColor
+    {
+        get => DiagramService.Options.CurvedLinkOptions.StrokeColor;
+        set => DiagramService.Options.CurvedLinkOptions.StrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override string SelectedStrokeColor
+    {
+        get => DiagramService.Options.CurvedLinkOptions.SelectedStrokeColor;
+        set => DiagramService.Options.CurvedLinkOptions.SelectedStrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override int StrokeWidth 
+    {
+        get => DiagramService.Options.CurvedLinkOptions.StrokeWidth;
+        set => DiagramService.Options.CurvedLinkOptions.StrokeWidth = value;
     }
 
 }

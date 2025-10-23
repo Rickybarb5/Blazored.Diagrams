@@ -60,6 +60,12 @@
         <Compile Update="Services\Events\EventAggregator.Propagation.cs">
           <DependentUpon>EventAggregator.cs</DependentUpon>
         </Compile>
+        <Compile Update="Options\Behaviours\CurvedLinkOptions.cs">
+          <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Options\Behaviours\LineLinkOptions.cs">
+          <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

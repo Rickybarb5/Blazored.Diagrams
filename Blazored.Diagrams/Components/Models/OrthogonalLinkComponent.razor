@@ -19,5 +19,24 @@
                $"V {targetY} " +
                $"H {targetX}";
     }
+    /// <inheritdoc />
+    protected override string StrokeColor
+    {
+        get => DiagramService.Options.OrthogonalLinkOptions.StrokeColor;
+        set => DiagramService.Options.OrthogonalLinkOptions.StrokeColor = value;
+    }
 
+    /// <inheritdoc />
+    protected override string SelectedStrokeColor
+    {
+        get => DiagramService.Options.OrthogonalLinkOptions.SelectedStrokeColor;
+        set => DiagramService.Options.OrthogonalLinkOptions.SelectedStrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override int StrokeWidth 
+    {
+        get => DiagramService.Options.OrthogonalLinkOptions.StrokeWidth;
+        set => DiagramService.Options.OrthogonalLinkOptions.StrokeWidth = value;
+    }
 }
