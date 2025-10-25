@@ -24,10 +24,10 @@ public interface IAddContainer
     /// <summary>
     /// Adds a node to a node container.
     /// </summary>
-    /// <param name="parentGroup">Group to which the node will be added to.</param>
+    /// <param name="nodeContainer">Group to which the node will be added to.</param>
     /// <param name="node">Node to be added to the container.</param>
     /// <typeparam name="TNode">Node Type</typeparam>
-    IAddContainer NodeTo<TNode>(INodeContainer parentGroup, TNode node)
+    IAddContainer NodeTo<TNode>(INodeContainer nodeContainer, TNode node)
         where TNode : INode;
 
     /// <summary>

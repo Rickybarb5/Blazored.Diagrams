@@ -12,11 +12,9 @@ namespace Blazored.Diagrams.Behaviours;
 ///     Some UI changes don't happen if they come from an external component.
 ///     This behaviour forces triggers the redraw event when necessary.
 /// </summary>
-/// <typeparam name="T"></typeparam>
 public class RedrawBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private RedrawBehaviourOptions options;
 
     /// <summary>
     /// Instantiates a new RedrawBehaviour{T}
@@ -25,7 +23,7 @@ public class RedrawBehaviour : BaseBehaviour
     public RedrawBehaviour(IDiagramService service)
     {
         _service = service;
-        options = _service.Behaviours.GetBehaviourOptions<RedrawBehaviourOptions>();
+        var options = _service.Behaviours.GetBehaviourOptions<RedrawBehaviourOptions>();
         options.OnEnabledChanged.Subscribe(OnEnabledChanged);
         OnEnabledChanged(options.IsEnabled);
     }

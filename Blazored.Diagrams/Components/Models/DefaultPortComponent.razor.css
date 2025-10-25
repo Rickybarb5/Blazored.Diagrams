@@ -24,4 +24,14 @@
 
 .default-port:hover {
     cursor: grab;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    transition: filter 0.15s ease;
+}
+
+.selected {
+    background: #696969;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    transition: filter 0.15s ease;
 }

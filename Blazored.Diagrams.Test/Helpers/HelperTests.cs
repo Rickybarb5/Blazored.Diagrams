@@ -17,23 +17,7 @@ public class HelperTests
         group.SetSize(100, 100);
         node.SetSize(50, 50);
         //Act
-        node.CenterIn(group);
-        //Assert
-        Assert.NotEqual(0, node.PositionX);
-        Assert.NotEqual(0, node.PositionY);
-    }
-
-    [Fact]
-    public void Test_GetCenterCoordinates()
-    {
-        //Arrange
-        var group = new Group();
-        var node = new Node();
-
-        group.SetSize(100, 100);
-        node.SetSize(50, 50);
-        //Act
-        node.CenterIn(group);
+        node.CenterIn(group.Width, group.Height, group.PositionX, group.PositionY);
         //Assert
         Assert.NotEqual(0, node.PositionX);
         Assert.NotEqual(0, node.PositionY);

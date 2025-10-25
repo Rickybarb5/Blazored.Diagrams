@@ -13,7 +13,7 @@
                 <MudExpansionPanels MultiExpansion="true">
 
                     <MudExpansionPanel Text="@($"{nameof(DiagramContainer)} Component")" Expanded="true">
-                        <CodeHighlighter Code="@diagramContainerCode" Language="markup"></CodeHighlighter>
+                        <CodeHighlighter Code="@diagramContainerCode" Language="cshtml"></CodeHighlighter>
                         <MudText Typo="Typo.body1" Class="mt-4">
                             The <b>@($"{nameof(DiagramContainer)}")</b> component takes up all of the available space of the parent component and it's responsible for drawing the diagram elements to the webpage.
                             It requires a <b>@($"{nameof(IDiagramService)}")</b> implementation as a parameter.

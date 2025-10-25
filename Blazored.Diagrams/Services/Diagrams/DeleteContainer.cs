@@ -1,4 +1,4 @@
-using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
@@ -10,23 +10,27 @@ namespace Blazored.Diagrams.Services.Diagrams;
 /// <inheritdoc />
 public class DeleteContainer : IDeleteContainer
 {
-    private IDiagram Diagram;
-    public DeleteContainer(IDiagram diagram)
+    private readonly IDiagramService service;
+    
+    /// <summary>
+    /// Instantiates a new <see cref="DeleteContainer"/> 
+    /// </summary>
+    /// <param name="service"></param>
+    public DeleteContainer(IDiagramService service)
     {
-        Diagram = diagram;
+        this.service = service;
     }
     /// <inheritdoc />
     public virtual IDeleteContainer Node(INode nodeToRemove)
     {
-        if (Diagram.Layers.Select(layer => layer.Nodes.Remove(nodeToRemove)).Any(removed => removed))
+        if (service.Diagram.Layers.Select(layer => layer.Nodes.Remove(nodeToRemove)).Any(removed => removed))
         {
             return this;
         }
 
-        Diagram.Layers
+        service.Diagram.Layers
             .SelectMany(x => x.AllGroups)
-            .Select(group => group.Nodes.Remove(nodeToRemove))
-            .Any(removed => removed);
+            .ForEach(group => group.Nodes.Remove(nodeToRemove));
 
         return this;
     }
@@ -34,17 +38,16 @@ public class DeleteContainer : IDeleteContainer
     /// <inheritdoc />
     public virtual IDeleteContainer Group(IGroup groupToRemove)
     {
-        foreach (var layer in Diagram.Layers)
+        foreach (var layer in service.Diagram.Layers)
         {
             var removed = layer.Groups.Remove(groupToRemove);
             if (removed) 
                 return this;
         }
 
-        Diagram.Layers
+        service.Diagram.Layers
             .SelectMany(x => x.AllGroups)
-            .Select(group => group.Groups.Remove(groupToRemove))
-            .Any(removed => removed);
+            .ForEach(group => group.Groups.Remove(groupToRemove));
         
         return this;
     }
@@ -52,24 +55,16 @@ public class DeleteContainer : IDeleteContainer
     /// <inheritdoc />
     public virtual IDeleteContainer Layer(ILayer layer)
     {
-        Diagram.Layers.Remove(layer);
+        service.Diagram.Layers.Remove(layer);
         return this;
     }
 
     /// <inheritdoc />
     public IDeleteContainer Remove(IPort port)
     {
-        var success = Diagram.Layers
+        service.Diagram.Layers
             .SelectMany(x => x.AllNodes)
-            .Select(node => node.Ports.Remove(port))
-            .Any(removed => removed);
-        if (!success)
-        {
-            Diagram.Layers
-                .SelectMany(x => x.AllGroups)
-                .Select(group => group.Ports.Remove(port))
-                .Any(removed => removed);
-        }
+            .ForEach(node => node.Ports.Remove(port));
 
         return this;
     }
@@ -78,7 +73,7 @@ public class DeleteContainer : IDeleteContainer
     public virtual IDeleteContainer Link(ILink linkToRemove)
     {
         linkToRemove.SourcePort.OutgoingLinks.Remove(linkToRemove);
-        linkToRemove?.TargetPort?.IncomingLinks.Remove(linkToRemove);
+        linkToRemove.TargetPort?.IncomingLinks.Remove(linkToRemove);
         
         return this;
     }

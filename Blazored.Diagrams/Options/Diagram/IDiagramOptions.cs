@@ -5,6 +5,9 @@ using Blazored.Diagrams.Options.Behaviours;
 
 namespace Blazored.Diagrams.Options.Diagram;
 
+/// <summary>
+/// Default Diagram options.
+/// </summary>
 public interface IDiagramOptions
 {
     /// <summary>

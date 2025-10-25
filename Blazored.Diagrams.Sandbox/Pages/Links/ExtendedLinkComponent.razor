@@ -1,0 +1,34 @@
+@inherits DefaultLinkComponent
+
+@*
+    We call the base component's render tree. This automatically renders the <svg> container,
+    the <path> element with event listeners, selection logic, and the default glow effect.
+    We just override the logic in the @code block.
+*@
+@{ base.BuildRenderTree(__builder); }
+
+@code {
+    // IMPORTANT: The Link parameter is mandatory.
+    public new ExtendedLink Link { get; set; } = null!;
+
+    // Override GetPath() to draw a custom SVG path (an S-curve)
+    protected override string GetPath()
+    {
+        // RelativeX1/Y1 and RelativeX2/Y2 are provided by the base DefaultLinkComponent
+        var control1X = RelativeX1 + 50; // Offset control point from start X
+        var control1Y = RelativeY1;      // Keep control point Y at start Y
+        var control2X = RelativeX2 - 50; // Offset control point from end X
+        var control2Y = RelativeY2;      // Keep control point Y at end Y
+
+        // Cubic Bezier curve path definition
+        return $"M {RelativeX1} {RelativeY1} C {control1X} {control1Y}, {control2X} {control2Y}, {RelativeX2} {RelativeY2}";
+    }
+
+    // Override the stroke color for visual distinction
+    protected override string StrokeColor { get; set; } = "#009688"; // Teal
+
+    // Override selected color to match the teal theme
+    protected override string SelectedStrokeColor { get; set; } = "#4db6ac"; // Lighter Teal
+    // Override stroke to be double the normal width.
+    protected override int StrokeWidth { get; set; } = 8;
+}

@@ -8,7 +8,9 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())"/>
         <MudText Typo="Typo.h5" Class="ml-3">Blazored Diagrams</MudText>
         <MudSpacer/>
-        <MudIcon Icon="@Icons.Custom.Brands.GitHub" ></MudIcon>
+        <MudLink Href="https://github.com/Rickybarb5/Blazored.Diagrams" Target="_blank">
+            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Color="Color.Secondary"></MudIcon>
+        </MudLink>
         <MudToggleIconButton bind-Toggled="@_mudThemeProvider.IsDarkMode" ToggledChanged="b => IsDarkMode = !IsDarkMode" Icon="@Icons.Material.Filled.LightMode" ToggledIcon="@Icons.Material.Filled.DarkMode"></MudToggleIconButton>
     </MudAppBar>
     <MudDrawer 

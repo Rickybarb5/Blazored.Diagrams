@@ -1,5 +1,8 @@
 namespace Blazored.Diagrams.Options.Diagram;
 
+/// <summary>
+/// Default style options.
+/// </summary>
 public interface IDiagramStyleOptions
 {
     /// <summary>

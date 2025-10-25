@@ -11,7 +11,6 @@ namespace Blazored.Diagrams.Behaviours;
 public class DefaultGroupBehaviour : BaseBehaviour
 {
     private readonly IDiagramService _service;
-    private readonly DefaultGroupBehaviourOptions _behaviourOptions;
 
     /// <summary>
     /// Instantiates a new <see cref="DefaultGroupBehaviour"/>
@@ -20,9 +19,9 @@ public class DefaultGroupBehaviour : BaseBehaviour
     public DefaultGroupBehaviour(IDiagramService service)
     {
         _service = service;
-        _behaviourOptions = _service.Behaviours.GetBehaviourOptions<DefaultGroupBehaviourOptions>()!;
-        _behaviourOptions.OnEnabledChanged.Subscribe(OnEnabledChanged);
-        OnEnabledChanged(_behaviourOptions.IsEnabled);
+        var behaviourOptions = _service.Behaviours.GetBehaviourOptions<DefaultGroupBehaviourOptions>()!;
+        behaviourOptions.OnEnabledChanged.Subscribe(OnEnabledChanged);
+        OnEnabledChanged(behaviourOptions.IsEnabled);
     }
 
     private void OnEnabledChanged(BehaviourEnabledEvent ev)
@@ -52,7 +51,7 @@ public class DefaultGroupBehaviour : BaseBehaviour
     }
 
 
-    private void HandleGroupAddedToGroupEvent(GroupAddedToGroupEvent obj)
+    private static void HandleGroupAddedToGroupEvent(GroupAddedToGroupEvent obj)
     {
         // A group cannot be added to itself
         if (obj.ParentModel.Id == obj.AddedGroup.Id && obj.ParentModel.AllGroups.Any(g => g.Id == obj.AddedGroup.Id))
@@ -71,7 +70,7 @@ public class DefaultGroupBehaviour : BaseBehaviour
         });
         obj.Model.AllNodes.ForEach(n =>
         {
-            n.SetPositionInternal(n.PositionX + xDiff, n.PositionY + yDiff);
+            n.SetPosition(n.PositionX + xDiff, n.PositionY + yDiff);
             _service.Events.Publish(new NodeRedrawEvent(n));
         });
         obj.Model.AllPorts.ForEach(p =>

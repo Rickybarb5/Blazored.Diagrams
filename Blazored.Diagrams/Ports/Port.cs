@@ -25,6 +25,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     private int _width;
     private int _positionX;
     private int _positionY;
+    private bool _selected;
     private int _offsetX;
     private int _offsetY;
 
@@ -109,6 +110,11 @@ public ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; } = new TypedEve
     /// <inheritdoc />
     [JsonIgnore]
 public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<LinkAddedEvent>();
+    
+    
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; } = new TypedEvent<PortSelectionChangedEvent>();
 
     /// <inheritdoc />
     public virtual int Width
@@ -311,5 +317,16 @@ public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<L
         _incomingLinks.OnItemRemoved.Unsubscribe(HandleIncomingLinkRemoved);
         _outgoingLinks.OnItemAdded.Unsubscribe(HandleOutgoingLinkAdded);
         _outgoingLinks.OnItemRemoved.Unsubscribe(HandleOutgoingLinkRemoved);
+    }
+
+    public bool IsSelected { get=> _selected;
+        set
+        {
+            if (value != _selected)
+            {
+                _selected = value;
+                OnSelectionChanged.Publish(new (this));
+            }
+        }
     }
 }

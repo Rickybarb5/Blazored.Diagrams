@@ -12,6 +12,7 @@ public interface IPort :
     IPosition,
     ISize,
     ILinkContainer,
+    ISelectable,
     IDisposable
 {
     /// <summary>
@@ -144,6 +145,11 @@ public interface IPort :
     ///     Event triggered when a link is added the port.
     /// </summary>
     ITypedEvent<LinkAddedEvent> OnLinkAdded{ get; init; }
+    /// <summary>
+    /// Event triggered when a port is selected/unselected.
+    /// </summary>
+    public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; }
+
 
     /// <summary>
     ///     Calculates the x and y coordinates based on the position and alignment.

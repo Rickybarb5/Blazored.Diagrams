@@ -188,6 +188,8 @@ public class DrawLinkBehavior : BaseBehaviour
     {
         if (CanLinkToTarget())
         {
+            //Port gets selected when the pointer goes down.
+            _sourcePort!.IsSelected = false;
             _targetPort!.IncomingLinks.Add(Link!);
             _service.Events.Publish(new DrawLinkCreatedEvent(Link!));
         }

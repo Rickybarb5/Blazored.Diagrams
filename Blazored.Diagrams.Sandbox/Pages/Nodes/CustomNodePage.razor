@@ -27,7 +27,7 @@
                             Your Razor component (e.g., <code>MyCustomComponent.razor</code>) **must** contain a parameter named <code>Node</code>. Its type should be the C# class you created in Step 1.
                         </MudText>
                         <MudAlert Severity="Severity.Warning" Class="mb-3">
-                            ⚠️ This parameter is **required** for the diagram system to render the node correctly.
+                            The "Node" parameter is **required** for the diagram container render the node correctly.
                         </MudAlert>
                         <CodeHighlighter Language="cshtml" Code="@componentCode"></CodeHighlighter>
                     </MudExpansionPanel>
@@ -177,20 +177,19 @@ public class MyCustomNode : Node, IHasComponent<MyCustomComponent>
         @"@* Razor Component (MyCustomComponent.razor) *@
 @using Blazored.Diagrams.Ports
  <style>
-                        /* Live Demo Styling for MyCustomComponent */
-                        .custom-node-box {
-                            width: 250px;
-                            height: 150px;
-                            background-color: #3f51b5; /* MudBlazor Primary */
-                            color: white;
-                            border-radius: 8px;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            padding: 10px;
-                        }
-                    </style>
+    custom-node-box {
+        width: 250px;
+        height: 150px;
+        background-color: #3f51b5;
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        }
+</style>
 <div class=""custom-node-box"">
     <div class=""d-flex flex-column align-center"">
         <MudText Typo=""Typo.h5"">@Node.Name</MudText>

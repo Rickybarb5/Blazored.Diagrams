@@ -40,6 +40,11 @@ public interface ILayer : IId,
     /// </summary>
     [JsonIgnore]
     public IReadOnlyList<ILink> AllLinks { get; }
+    
+    /// <summary>
+    /// Gets the selected models in the layer.
+    /// </summary>
+    public IReadOnlyList<ISelectable> SelectedModels { get; }
 
     /// <summary>
     /// Event triggered when the visibility state changes.

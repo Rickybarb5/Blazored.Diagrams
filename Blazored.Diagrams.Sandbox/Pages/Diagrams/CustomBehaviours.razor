@@ -126,11 +126,16 @@
 
     private void HandleDiagramDoubleClicked(DiagramDoubleClickedEvent e)
     {
-        // Custom Logic: Select all models
+        // Custom Logic: Select nodes
         e.Model.Nodes.ForEach(n => n.IsSelected = true);
 
         // Request a full redraw to update the selection visual state immediately
         _service.Events.Publish(new DiagramRedrawEvent(e.Model));
+    }
+
+    public void Dispose()
+    {
+        Subscriptions.DisposeAll();
     }
 }";
 

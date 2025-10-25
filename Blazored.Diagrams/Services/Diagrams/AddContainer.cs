@@ -1,4 +1,4 @@
-using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Layers;
@@ -11,10 +11,14 @@ namespace Blazored.Diagrams.Services.Diagrams;
 /// <inheritdoc />
 public class AddContainer : IAddContainer
 {
-    private IDiagram _diagram;
-    public AddContainer(IDiagram diagram)
+    private readonly IDiagramService service;
+    /// <summary>
+    /// Instantiates a new <see cref="AddContainer"/>.
+    /// </summary>
+    /// <param name="service"></param>
+    public AddContainer(IDiagramService service)
     {
-        _diagram = diagram;
+        this.service = service;
     }
     /// <summary>
     /// Creates a group in another group.
@@ -26,6 +30,12 @@ public class AddContainer : IAddContainer
     public IAddContainer AddGroupTo<TGroup>(IGroupContainer parent, TGroup group)
         where TGroup : IGroup
     {
+        if (group.PositionX == 0 && group.PositionY == 0 && parent is IPosition p and ISize s)
+        {
+            var padding = parent is IPadding pad ? pad.Padding : 0; 
+            group.CenterIn(s.Width, s.Height, p.PositionX, p.PositionY, padding);
+        }
+        
         parent.Groups.Add(group);
         return this;
     }
@@ -33,14 +43,20 @@ public class AddContainer : IAddContainer
     /// <summary>
     /// Adds a node to a node container.
     /// </summary>
-    /// <param name="parentGroup">Group to which the node will be added to.</param>
+    /// <param name="nodeContainer">Group to which the node will be added to.</param>
     /// <param name="node">Node to be added to the container.</param>
     /// <typeparam name="TNode">Node Type</typeparam>
     /// <returns></returns>
-    public IAddContainer NodeTo<TNode>(INodeContainer parentGroup, TNode node)
+    public IAddContainer NodeTo<TNode>(INodeContainer nodeContainer, TNode node)
         where TNode : INode
     {
-        parentGroup.Nodes.Add(node);
+        if (node.PositionX == 0 && node.PositionY == 0 && nodeContainer is IPosition p and ISize s)
+        {
+            var padding = nodeContainer is IPadding pad ? pad.Padding : 0; 
+            node.CenterIn(s.Width, s.Height, p.PositionX, p.PositionY, padding);
+        }
+        
+        nodeContainer.Nodes.Add(node);
         return this;
     }
 
@@ -83,28 +99,36 @@ public class AddContainer : IAddContainer
     public IAddContainer Layer<TLayer>(TLayer layer)
         where TLayer : ILayer
     {
-        _diagram.Layers.Add(layer);
+        service.Diagram.Layers.Add(layer);
         return this;
     }
 
     /// <inheritdoc />
     public virtual IAddContainer Node(INode node)
     {
-        _diagram.CurrentLayer.Nodes.Add(node);
+        if (node.PositionX == 0 && node.PositionY == 0)
+        {
+            node.CenterIn(service.Diagram);
+        }
+        service.Diagram.CurrentLayer.Nodes.Add(node);
         return this;
     }
 
     /// <inheritdoc />
     public virtual IAddContainer Group(IGroup group)
     {
-        _diagram.CurrentLayer.Groups.Add(group);
+        if (group.PositionX == 0 && group.PositionY == 0)
+        {
+            group.CenterIn(service.Diagram);
+        }
+        service.Diagram.CurrentLayer.Groups.Add(group);
         return this;
     }
 
     /// <inheritdoc />
     public virtual IAddContainer AddLayer(ILayer layer)
     {
-        _diagram.Layers.Add(layer);
+        service.Diagram.Layers.Add(layer);
         return this;
     }
 }

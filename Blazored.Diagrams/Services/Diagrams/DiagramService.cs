@@ -50,8 +50,8 @@ public partial class DiagramService : IDiagramService
     {
         Behaviours = new BehaviourContainer(this);
         Options = new OptionsContainer(this);
-        Add = new AddContainer(Diagram);
-        Remove = new DeleteContainer(Diagram);
+        Add = new AddContainer(this);
+        Remove = new DeleteContainer(this);
         Events = new EventAggregator(this);
         Storage = new SerializationContainer(this);
     }

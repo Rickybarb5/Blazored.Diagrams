@@ -17,33 +17,36 @@ public static class HelperExtensions
     {
         return (model.PositionX + model.Width / 2, model.PositionY + model.Height / 2);
     }
-
-    /// <summary>
-    ///     Changes the position of a model to be in the center of a container.
-    /// </summary>
-    /// <param name="toCenter"></param>
-    /// <param name="container"></param>
-    /// <typeparam name="ToCenter">Model to be centered.</typeparam>
-    /// <typeparam name="Container"></typeparam>
-    public static void CenterIn<ToCenter, Container>(this ToCenter toCenter, Container container)
+    
+    public static void CenterIn<ToCenter>(
+        this ToCenter toCenter,
+        int containerWidth,
+        int containerHeight,
+        int containerPositionX,
+        int containerPositionY,
+        int padding = 0)
         where ToCenter : IPosition, ISize
-        where Container : IPosition, ISize
     {
-        // Calculate the center of the container
-        var targetCenterX = container.PositionX + container.Width / 2;
-        var targetCenterY = container.PositionY + container.Height / 2;
+        // --- 1. Calculate the inner content area (excluding padding) ---
+        // The inner content's top-left corner starts after the padding.
+        var innerPositionX = containerPositionX + padding;
+        var innerPositionY = containerPositionY + padding;
 
-        // Calculate the new position for the toCenter element to center it within the container
+        // The inner content's width/height is the total minus padding on both sides.
+        var innerWidth = containerWidth - (padding * 2);
+        var innerHeight = containerHeight - (padding * 2);
+
+        // --- 2. Calculate the center of the inner content area ---
+        var targetCenterX = innerPositionX + innerWidth / 2;
+        var targetCenterY = innerPositionY + innerHeight / 2;
+
+        // --- 3. Calculate the new position for 'toCenter' to align its center with the target center ---
+        // This correctly accounts for the size of the object being centered.
         var newPositionX = targetCenterX - toCenter.Width / 2;
         var newPositionY = targetCenterY - toCenter.Height / 2;
 
-        if (container is IPadding p)
-        {
-            newPositionX -= p.Padding;
-            newPositionY -= p.Padding;
-        }
-
-        // Set the new position of the toCenter element
+        // --- 4. Set the new position ---
+        // NO padding subtraction is needed here, as it was accounted for in Step 1 & 2.
         toCenter.SetPosition(newPositionX, newPositionY);
     }
 

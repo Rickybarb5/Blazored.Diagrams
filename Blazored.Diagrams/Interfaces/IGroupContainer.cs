@@ -6,7 +6,7 @@ namespace Blazored.Diagrams.Interfaces;
 /// <summary>
 ///     Interface that describes a model that contains groups.
 /// </summary>
-public interface IGroupContainer
+public interface IGroupContainer 
 {
     /// <summary>
     ///     List of groups.

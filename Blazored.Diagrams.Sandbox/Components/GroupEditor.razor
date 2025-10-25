@@ -42,12 +42,12 @@
 
     private void AddNode(MouseEventArgs arg)
     {
-        Group.Nodes.Add(new Node());
+        Service.Add.NodeTo(Group, new Node());
     }
 
     private void AddGroup(MouseEventArgs obj)
     {
-        Group.Groups.Add(new Group());
+        Service.Add.AddGroupTo(Group, new Group());
     }
 
 }

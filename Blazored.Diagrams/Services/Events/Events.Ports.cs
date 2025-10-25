@@ -172,3 +172,9 @@ public record PortDoubleClickedEvent(IPort Model, MouseEventArgs Args) : ModelIn
 /// </summary>
 /// <param name="Model">The <see cref="IPort"/> that requested the redraw.</param>
 public record PortRedrawEvent(IPort Model) : PortEvent(Model);
+
+/// <summary>
+/// Event triggered when a port is selected.
+/// </summary>
+/// <param name="Model">The <see cref="IPort"/> whose selection status changed.</param>
+public record PortSelectionChangedEvent(IPort Model) : PortEvent(Model);

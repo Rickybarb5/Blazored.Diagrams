@@ -54,6 +54,13 @@ public interface IDiagram :
     [JsonIgnore]
     IReadOnlyList<IPort> AllPorts { get; }
     
+    
+    /// <summary>
+    /// Gets the selected models in the diagram.
+    /// </summary>
+    [JsonIgnore]
+    public IReadOnlyList<ISelectable> SelectedModels { get; }
+    
     /// <summary>
     /// Gets the current active layer.
     /// </summary>

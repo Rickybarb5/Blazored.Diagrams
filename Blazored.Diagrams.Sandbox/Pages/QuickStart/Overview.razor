@@ -1,6 +1,6 @@
 @page "/"
 
-<MudContainer MaxWidth="MaxWidth.Medium" Class="my-8">
+<MudContainer MaxWidth="MaxWidth.Large" Class="my-8">
     <MudGrid Justify="Justify.Center">
 
         <MudItem xs="12" sm="10">
@@ -11,26 +11,27 @@
                 <MudCardContent>
                     <MudTimeline Align="TimelineAlign.Start">
 
-                        <MudTimelineItem Color="Color.Success" Size="Size.Large">
-                            <TimelineOpposite>
-                                <MudText Typo="Typo.h6">Step 1: Install NuGet Package</MudText>
-                            </TimelineOpposite>
-                            <TimelineContent>
-                                <MudText Class="mb-2">Add the core package to your Blazor project:</MudText>
-                                <CodeHighlighter Code="dotnet add package Blazored.Diagrams" Language="powershell"></CodeHighlighter>
-                            </TimelineContent>
+                        <MudTimelineItem Color="Color.Primary" Size="Size.Large">
+                                <ItemOpposite>
+                                    <MudText Typo="Typo.h6">Step 1: Install NuGet Package</MudText>
+                                    <MudText Class="mb-2">Add the core package to your Blazor project:</MudText>
+                                    <CodeHighlighter Code="dotnet add package Blazored.Diagrams" Language="powershell"></CodeHighlighter>
+
+                                </ItemOpposite>
                         </MudTimelineItem>
 
-                        <MudTimelineItem Color="Color.Primary" Size="Size.Large">
-                            <TimelineOpposite>
+                        <MudTimelineItem Color="Color.Secondary" Size="Size.Large">
+                            <ItemOpposite>
                                 <MudText Typo="Typo.h6">Step 2: Register Services</MudText>
-                            </TimelineOpposite>
-                            <TimelineContent>
                                 <MudText Class="mb-2">In your `Program.cs` or `Startup.cs`, register the required services:</MudText>
                                 <CodeHighlighter Code="@($"builder.Services.{nameof(BlazoredDiagramsExtensions.AddBlazoredDiagrams)}();")" Language="csharp"></CodeHighlighter>
-                            </TimelineContent>
+                            </ItemOpposite>
                         </MudTimelineItem>
-
+                        <MudTimelineItem Color="Color.Success" Size="Size.Large">
+                            <ItemOpposite>
+                                <MudText Typo="Typo.h6">Step 3: Start developing!</MudText>
+                                </ItemOpposite>
+                        </MudTimelineItem>
                     </MudTimeline>
                 </MudCardContent>
             </MudCard>
@@ -54,8 +55,16 @@
                             <b>Nodes</b> - Objects that represent an element, entity, or component.
                         </MudListItem>
                         <MudDivider />
-                        <MudListItem Icon="@Icons.Material.Filled.NearMe">
+                        <MudListItem Icon="@Icons.Material.Filled.GroupWork">
+                            <b>Groups</b> -Group multiple components together for easy management.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.PrivateConnectivity">
                             <b>Ports</b> - Connection points on nodes for creating links.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.Timeline">
+                            <b>Links</b> - Create links between ports by dragging the mouse.
                         </MudListItem>
                         <MudDivider />
                         <MudListItem Icon="@Icons.Material.Filled.ControlPoint">
@@ -68,10 +77,6 @@
                         <MudDivider />
                         <MudListItem Icon="@Icons.Material.Filled.Mouse">
                             <b>Selection & Multi-Selection</b> - Select diagram objects using the mouse and keyboard controls.
-                        </MudListItem>
-                        <MudDivider />
-                        <MudListItem Icon="@Icons.Material.Filled.Link">
-                            <b>Link Creation</b> - Create links between ports by dragging the mouse.
                         </MudListItem>
                         <MudDivider />
                         <MudListItem Icon="@Icons.Material.Filled.DeleteForever">

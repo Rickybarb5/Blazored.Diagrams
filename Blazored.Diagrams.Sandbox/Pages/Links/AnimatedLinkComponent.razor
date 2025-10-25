@@ -1,64 +1,97 @@
-using Blazored.Diagrams.Components.Containers;
-using Blazored.Diagrams.Extensions;
-using Blazored.Diagrams.Links;
-using Blazored.Diagrams.Services.Diagrams;
-using Blazored.Diagrams.Services.Events;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
+<style>
+.animated-link {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none; /* Allows clicks to fall through to the path */
+}
 
-namespace Blazored.Diagrams.Components.Models;
+.animated-path {
+    pointer-events: auto; /* Re-enable pointer events on the path itself */
+    stroke-linecap: round;
+    transition: stroke 0.2s, stroke-width 0.2s;
 
-/// <summary>
-/// Basic functionality for a link component
-/// </summary>
-public abstract partial class DefaultLinkComponent
-{
-    /// <summary>
-    /// The stroke color that will be used on the SVG path.
-    /// </summary>
-    protected virtual string Stroke => Link.IsSelected ? SelectedStrokeColor : StrokeColor;
+    /* Animation properties: 'marching ants' effect */
+    animation: dash 5s linear infinite;
+}
+
+.animated-path.selected {
+    stroke-width: 6; /* Thicker when selected */
+    filter: drop-shadow(0 0 5px #ffc107);
+}
+
+@@keyframes dash {
+     to {
+         stroke-dashoffset: -100;
+     }
+ }
+</style>
+    <svg class="animated-link">
+        @* The d attribute defines a straight path with a dashed, animated stroke *@
+        <path d="@GetPath()"
+              fill="none"
+              id="@PathId"
+              stroke="@Stroke"
+              stroke-width="4"
+              stroke-dasharray="10, 5"
+              class="animated-path @(Link.IsSelected ? "selected" : "")"
+              @onpointerleave="HandlePointerLeave"
+              @onpointerdown="HandlePointerDown"
+              @onpointerenter="HandlePointerEnter"
+              @onpointermove="HandlePointerMove"
+              @onpointerup="HandlePointerUp"
+              @onwheel="ctx => DiagramService.Events.Publish(new LinkWheelEvent(Link, ctx))"
+              @onclick="HandleClick"
+              @ondblclick="HandleDoubleClick"/>
+    </svg>
+
+@code {
+    [Inject] private IJSRuntime Js { get; init; } = null!;
+
+    // MANDATORY LINK PARAMETER: Required to receive the model data
+    [Parameter] public required AnimatedLink Link { get; set; }
+
+    // Required to get the container position for relative coordinate calculation
+    [CascadingParameter] public required LinkContainer Container { get; set; }
     
-    /// <summary>
-    ///     Link to be rendered.
-    /// </summary>
-    [Parameter]
-    public Link Link { get; set; }
-
     /// <summary>
     /// Service cascaded through the <see cref="LinkContainer"/>
     /// </summary>
     [CascadingParameter]
     public required IDiagramService DiagramService { get; init; } = null!;
 
-    [Inject] private IJSRuntime Js { get; init; } = null!;
-
     /// <summary>
-    ///     The <see cref="LinkContainer"/> that renders the component.
-    /// </summary>
-    [CascadingParameter]
-    public required LinkContainer Container { get; init; }
+        ///     ID of the element.
+        /// </summary>
+        private string PathId => $"link-path-{Link.Id}";
 
-    /// <summary>
-    ///     Color of the link path. Default is black.
-    /// </summary>
-    protected abstract string StrokeColor { get; set; }
-
-    /// <summary>
-    /// Color of the link path when it's selected. Default is gray.
-    /// </summary>
-    protected abstract string SelectedStrokeColor { get; set; }
-
-    /// <summary>
-    ///     Width of the path. Default is 4.
-    /// </summary>
-    protected abstract int StrokeWidth { get; set; }
+    private string Stroke => Link.IsSelected ? "#ffc107" : "#ff5722"; // Orange/Amber
     
+    /// <summary>
+    /// Relative start X coordinate of the link.
+    /// </summary>
+    private int RelativeX1 => Link.SourcePort.GetCenterCoordinates().CenterX - Container.PositionX;
 
     /// <summary>
-    ///     ID of the element.
+    /// Relative start Y coordinate of the link.
     /// </summary>
-    public virtual string PathId => $"link-path-{Link.Id}";
+    private int RelativeY1 => Link.SourcePort.GetCenterCoordinates().CenterY - Container.PositionY;
+
+    /// <summary>
+    /// Relative end X coordinate of the link.
+    /// </summary>
+    private int RelativeX2 => Container.TargetX - Container.PositionX;
+
+    /// <summary>
+    /// Relative start Y coordinate of the link.
+    /// </summary>
+    private int RelativeY2 => Container.TargetY - Container.PositionY;
+
+    private string GetPath()
+    {
+        return $"M {RelativeX1} {RelativeY1} L {RelativeX2} {RelativeY2}";
+    }
+
 
     /// <summary>
     /// Handles the @onclick event.
@@ -95,7 +128,7 @@ public abstract partial class DefaultLinkComponent
             DiagramService.Events.Publish(new LinkPointerDownEvent(Link, e));
         }
     }
-    
+
     /// <summary>
     /// Handles the @onpointerup event.
     /// </summary>
@@ -144,30 +177,5 @@ public abstract partial class DefaultLinkComponent
         }
     }
 
-    /// <summary>
-    /// Relative start X coordinate of the link.
-    /// </summary>
-    protected virtual int RelativeX1 => Link.SourcePort.GetCenterCoordinates().CenterX - Container.PositionX;
-
-    /// <summary>
-    /// Relative start Y coordinate of the link.
-    /// </summary>
-    protected virtual int RelativeY1 => Link.SourcePort.GetCenterCoordinates().CenterY - Container.PositionY;
-
-    /// <summary>
-    /// Relative end X coordinate of the link.
-    /// </summary>
-    protected virtual int RelativeX2 => Container.TargetX - Container.PositionX;
-
-    /// <summary>
-    /// Relative start Y coordinate of the link.
-    /// </summary>
-    protected virtual int RelativeY2 => Container.TargetY - Container.PositionY;
-
-    /// <summary>
-    /// Gets the path string that is drawn on the SVG.
-    /// </summary>
-    /// <returns></returns>
-    protected abstract string GetPath();
-
 }
+

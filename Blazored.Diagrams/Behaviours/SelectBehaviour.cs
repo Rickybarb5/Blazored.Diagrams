@@ -80,6 +80,7 @@ public class SelectBehaviour : BaseBehaviour
         Subscriptions =
         [
             _service.Events.SubscribeTo<NodePointerDownEvent>(e => SelectModel(e.Model, e.Args)),
+            _service.Events.SubscribeTo<PortPointerDownEvent>(e => SelectModel(e.Model, e.Args)),
             _service.Events.SubscribeTo<GroupPointerDownEvent>(e => SelectModel(e.Model, e.Args)),
             _service.Events.SubscribeTo<LinkPointerDownEvent>(e => SelectModel(e.Model, e.Args)),
             _service.Events.SubscribeTo<DiagramPointerDownEvent>(e => HandleBackgroundClick(e.Model, e.Args)),

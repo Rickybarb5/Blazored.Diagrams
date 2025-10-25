@@ -1,6 +1,7 @@
 ﻿using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Helpers;
+using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
@@ -162,7 +163,11 @@ public partial class Diagram : IDiagram
     /// <inheritdoc />
     [JsonIgnore]
     public virtual IReadOnlyList<IPort> AllPorts => _layers.SelectMany(layer => layer.AllPorts).ToList().AsReadOnly();
-    
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public IReadOnlyList<ISelectable> SelectedModels =>
+        Layers.SelectMany(l => l.SelectedModels).ToList().AsReadOnly();
     /// <inheritdoc />
     public virtual ILayer CurrentLayer
     {

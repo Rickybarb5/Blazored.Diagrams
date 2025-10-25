@@ -13,22 +13,25 @@
         if (firstRender)
         {
             Service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().LinkType =typeof(OrthogonalLink);
-            string[] jobs =
+
+            List<JobPerson> people =
             [
-                "Mark - CEO",
-                "Alex - CFO",
-                "Henry - CTO",
-                "Samantha - Project Manager",
-                "Brody - Product Owner - Project X",
-                "Richard - Product Owner - Project Y",
-                "Developer",
-                "Developer",
-                "Developer",
-                "Developer"
+                new JobPerson("Mark - CEO", 1),
+                new JobPerson("Mark - COO",2),
+                new JobPerson("Alex - CFO",2),
+                new JobPerson("Henry - CTO",2 ),
+                new JobPerson("Samantha - Project Manager",4),
+                new JobPerson("Brody - Product Owner - Project X",3),
+                new JobPerson("Richard - Product Owner - Project Y",3),
+                new JobPerson("Developer",5),
+                new JobPerson("Developer",5),
+                new JobPerson("Developer",5),
+                new JobPerson( "Developer",5),
             ];
-            foreach (var job in jobs)
+            
+            foreach (var person in people)
             {
-                var node = new OrganigramNode { Job = job };
+                var node = new OrganigramNode { Job = person.Title };
                 var port = new Port
                 {
                     Alignment = PortAlignment.Bottom,
@@ -47,5 +50,7 @@
 
         return base.OnAfterRenderAsync(firstRender);
     }
+
+    private record JobPerson(string Title, int Level);
 
 }

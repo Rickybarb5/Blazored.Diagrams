@@ -2,6 +2,7 @@
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Helpers;
+using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
@@ -20,6 +21,9 @@ public partial class Layer : ILayer
     private bool _isVisible = true;
 
 
+    /// <summary>
+    /// Instantiates a new Layer.
+    /// </summary>
     public Layer()
     {
         _nodes.OnItemAdded.Subscribe(HandleNodeAdded); 
@@ -122,6 +126,15 @@ public partial class Layer : ILayer
         .AsReadOnly();
 
     /// <inheritdoc />
+    public IReadOnlyList<ISelectable> SelectedModels => 
+        AllNodes.Cast<ISelectable>()
+        .Concat(AllGroups)
+        .Concat(AllLinks)
+        .Concat(AllPorts)
+        .ToList()
+        .AsReadOnly();
+
+    /// <inheritdoc />
     [JsonIgnore]
 public ITypedEvent<LayerVisibilityChangedEvent> OnVisibilityChanged { get; init; } = new TypedEvent<LayerVisibilityChangedEvent>();
     
@@ -176,6 +189,7 @@ public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedE
             x.UnselectAll();
         });
         AllLinks.ForEach(x => x.IsSelected = false);
+        AllPorts.ForEach(x => x.IsSelected = false);
     }
 
     /// <inheritdoc />
@@ -188,6 +202,7 @@ public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedE
             x.SelectAll();
         });
         AllLinks.ForEach(x => x.IsSelected = true);
+        AllPorts.ForEach(x => x.IsSelected = true);
     }
 
     /// <inheritdoc />

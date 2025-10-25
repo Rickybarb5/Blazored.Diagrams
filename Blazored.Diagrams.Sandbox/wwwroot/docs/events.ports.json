@@ -303,6 +303,17 @@
     ]
   },
   {
+    "Name": "PortSelectionChangedEvent",
+    "Summary": "Event triggered when a port is selected.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose selection status changed."
+      }
+    ]
+  },
+  {
     "Name": "PortSizeChangedEvent",
     "Summary": "Event triggered when the size (width or height) of a port changes.",
     "Parameters": [

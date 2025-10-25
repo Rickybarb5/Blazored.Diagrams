@@ -43,7 +43,7 @@
     ///     Cascading diagram from <see cref="DiagramContainer"/>
     /// </summary>
     [CascadingParameter]
-    public required IDiagramService? DiagramService { get; set; }
+    public required IDiagramService DiagramService { get; set; }
 
     /// <summary>
     ///     Group instance to be presented in the UI.
@@ -123,50 +123,45 @@
         var minY = int.MaxValue;
         var maxX = int.MinValue;
         var maxY = int.MinValue;
-        var minHeight = int.MaxValue;
-        var maxWidth = int.MinValue;
+        
+        // Removed minHeight and maxWidth, as they complicate the Bounding Box (BBox) calculation
+        // The BBox is simply the minimum of all Top-Left coordinates and maximum of all Bottom-Right coordinates.
 
         // Calculate bounding box for nodes
+        // (X, Y) is the top-left corner
         foreach (var node in group.AllNodes)
         {
-            minX = Math.Min(minX, node.PositionX);
-            minY = Math.Min(minY, node.PositionY - node.Height);
-            maxX = Math.Max(maxX, node.PositionX + node.Width);
-            maxY = Math.Max(maxY, node.PositionY);
-
-            // Save height of the node with minX and width of the node with maxY
-            if (node.PositionX == minX)
-                minHeight = Math.Min(minHeight, node.Height);
-            if (node.PositionY == maxY)
-                maxWidth = Math.Max(maxWidth, node.Width);
+            minX = Math.Min(minX, node.PositionX);                     // Smallest X (Left edge)
+            minY = Math.Min(minY, node.PositionY);                     // Smallest Y (Top edge)
+            maxX = Math.Max(maxX, node.PositionX + node.Width);        // Largest X (Right edge)
+            maxY = Math.Max(maxY, node.PositionY + node.Height);       // Largest Y (Bottom edge)
         }
 
         // Calculate bounding box for nested groups
+        // (X, Y) is the top-left corner
         foreach (var nestedGroup in group.AllGroups)
         {
-            minX = Math.Min(minX, nestedGroup.PositionX);
-            minY = Math.Min(minY, nestedGroup.PositionY + nestedGroup.Height);
-            maxX = Math.Max(maxX, nestedGroup.PositionX - nestedGroup.Width);
-            maxY = Math.Max(maxY, nestedGroup.PositionY);
-
-            // Save height of the group with minX and width of the group with maxY
-            if (nestedGroup.PositionX == minX)
-                minHeight = Math.Min(minHeight, nestedGroup.Height);
-            if (nestedGroup.PositionY == maxY)
-                maxWidth = Math.Max(maxWidth, nestedGroup.Width);
+            minX = Math.Min(minX, nestedGroup.PositionX);                  // Smallest X (Left edge)
+            minY = Math.Min(minY, nestedGroup.PositionY);                  // Smallest Y (Top edge)
+            maxX = Math.Max(maxX, nestedGroup.PositionX + nestedGroup.Width);  // Largest X (Right edge)
+            maxY = Math.Max(maxY, nestedGroup.PositionY + nestedGroup.Height); // Largest Y (Bottom edge)
         }
 
         // Update group position and size
+        // Position: Top-Left of the BBox, adjusted by Padding
+        var newPositionX = minX - group.Padding;
+        var newPositionY = minY - group.Padding; // Corrected: Use minY directly
+
+        // Size: The distance between Max and Min, adjusted by Padding
         var newWidth = maxX - minX + group.Padding * 2;
         var newHeight = maxY - minY + group.Padding * 2;
-        var newPositionX = minX - group.Padding;
-        var newPositionY = minY + minHeight - group.Padding;
 
         group.SetPositionInternal(newPositionX, newPositionY);
         group.SetSizeInternal(newWidth, newHeight);
-
+        
         // Redraw ports manually, as we are not triggering group events
         group.Ports.ForEach(p => DiagramService?.Events.Publish(new PortRedrawEvent(p)));
+        
         StateHasChanged();
     }
 

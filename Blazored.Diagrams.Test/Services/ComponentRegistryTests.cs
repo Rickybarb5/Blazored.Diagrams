@@ -176,14 +176,6 @@ public class ComponentRegistryTests
         }
 
         public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
-
-
-        public event Action<INode, int, int, int, int>? OnSizeChanged;
-        public event Action<INode, int, int, int, int>? OnPositionChanged;
-        public event Action<INode>? OnSelectionChanged;
-        public event Action<INode>? OnVisibilityChanged;
-        public event Action<INode, IPort>? OnPortAdded;
-        public event Action<INode, IPort>? OnPortRemoved;
     }
 
     private abstract class BaseTestNode : Node, IHasComponent<TestComponent>;

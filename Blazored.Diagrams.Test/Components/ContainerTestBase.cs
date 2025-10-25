@@ -1,5 +1,4 @@
 using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Options.Diagram;
 using Blazored.Diagrams.Services.Diagrams;
 using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Virtualization;

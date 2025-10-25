@@ -42,6 +42,9 @@ public partial class DiagramStyleOptions : IDiagramStyleOptions
     private decimal _gridLineOpacity;
     private int _gridLineThickness;
 
+    /// <summary>
+    /// Instantiates DiagramStyleOptions.
+    /// </summary>
     public DiagramStyleOptions()
     {
         _nfi.NumberDecimalSeparator = ".";
