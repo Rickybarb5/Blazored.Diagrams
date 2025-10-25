@@ -1,4 +1,4 @@
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
 /// <summary>
 /// Describes a typed event.

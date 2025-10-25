@@ -1,8 +1,8 @@
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.Components;
 using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.Ports;
-using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Newtonsoft.Json;
 

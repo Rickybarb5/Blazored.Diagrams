@@ -1,4 +1,4 @@
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
     /// <summary>
     /// Event triggered when an item is added to an observable list.

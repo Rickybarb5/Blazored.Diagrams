@@ -2,7 +2,7 @@ using Blazored.Diagrams.Components.Containers;
 using Blazored.Diagrams.Diagrams;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
 /// <summary>
 /// Mandatory interface to all record or classes that represent an event.

@@ -1,6 +1,6 @@
 using Blazored.Diagrams.Interfaces;
 
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
 /// <summary>
 /// Base type for all events

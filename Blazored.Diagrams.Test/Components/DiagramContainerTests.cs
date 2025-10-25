@@ -1,5 +1,5 @@
 using Blazored.Diagrams.Components.Containers;
-using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Events;
 using Bunit;
 using Moq;
 

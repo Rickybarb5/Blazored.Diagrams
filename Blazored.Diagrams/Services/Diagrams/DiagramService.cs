@@ -1,5 +1,6 @@
 using Blazored.Diagrams.Behaviours;
 using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Behaviours;
 using Blazored.Diagrams.Services.Events;

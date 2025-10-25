@@ -33,30 +33,6 @@
         <Compile Update="Diagrams\Diagram.Features.cs">
             <DependentUpon>Diagram.cs</DependentUpon>
         </Compile>
-        <Compile Update="Services\Events\Events.Behaviours.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.Diagram.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.Groups.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.Layer.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.Links.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.Node.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.Ports.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Services\Events\Events.ObservableList.cs">
-          <DependentUpon>Events.cs</DependentUpon>
-        </Compile>
         <Compile Update="Services\Events\EventAggregator.Propagation.cs">
           <DependentUpon>EventAggregator.cs</DependentUpon>
         </Compile>

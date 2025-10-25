@@ -1,8 +1,8 @@
 using Blazored.Diagrams.Components.Containers;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Services.Diagrams;
-using Blazored.Diagrams.Services.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;

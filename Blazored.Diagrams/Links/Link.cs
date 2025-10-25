@@ -1,6 +1,6 @@
 ﻿using Blazored.Diagrams.Components.Models;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Newtonsoft.Json;
 

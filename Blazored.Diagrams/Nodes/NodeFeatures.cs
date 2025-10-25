@@ -1,4 +1,4 @@
-using Blazored.Diagrams.Services.Events;
+using Blazored.Diagrams.Events;
 
 namespace Blazored.Diagrams.Nodes;
 

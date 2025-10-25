@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 using System.Xml.Linq;
+using EventDocGenerator;
 
 // --- Main Program ---
 
@@ -63,168 +64,170 @@ foreach (var group in docsByGroup)
 
 Console.WriteLine($"\nTotal events generated: {totalEvents}");
 
-
-// --- Scanner Class ---
-
-public static class EventDocScanner
+namespace EventDocGenerator
 {
-    /// <summary>
-    /// Scans the assembly for event types and groups them by their logical area.
-    /// </summary>
-    /// <returns>An ILookup where the key is the group name (e.g., "Layer", "Node")
-    /// and the value is the list of event docs.</returns>
-    public static ILookup<string, EventDoc> GetDiagramEventDocs(Assembly assembly, string xmlDocPath)
-    {
-        var xml = XDocument.Load(xmlDocPath);
+    // --- Scanner Class ---
 
-        // 1. UPDATED: This now reads the <summary> AND <param> elements.
-        // It stores them in a dictionary for lookup.
-        var members = xml.Descendants("member")
-            .ToDictionary(
-                e => e.Attribute("name")?.Value ?? "",
-                e => 
-                {
-                    // Get Summary
-                    var summaryEl = e.Element("summary");
-                    string summary = null;
-                    if (summaryEl != null)
+    public static class EventDocScanner
+    {
+        /// <summary>
+        /// Scans the assembly for event types and groups them by their logical area.
+        /// </summary>
+        /// <returns>An ILookup where the key is the group name (e.g., "Layer", "Node")
+        /// and the value is the list of event docs.</returns>
+        public static ILookup<string, EventDoc> GetDiagramEventDocs(Assembly assembly, string xmlDocPath)
+        {
+            var xml = XDocument.Load(xmlDocPath);
+
+            // 1. UPDATED: This now reads the <summary> AND <param> elements.
+            // It stores them in a dictionary for lookup.
+            var members = xml.Descendants("member")
+                .ToDictionary(
+                    e => e.Attribute("name")?.Value ?? "",
+                    e => 
                     {
-                        // Use string.Concat(Nodes()) to preserve inner tags like <see>
-                        summary = string.Concat(summaryEl.Nodes()).Trim();
+                        // Get Summary
+                        var summaryEl = e.Element("summary");
+                        string summary = null;
+                        if (summaryEl != null)
+                        {
+                            // Use string.Concat(Nodes()) to preserve inner tags like <see>
+                            summary = string.Concat(summaryEl.Nodes()).Trim();
+                        }
+
+                        // Get Params
+                        var paramDocs = e.Elements("param")
+                            .ToDictionary(
+                                p => p.Attribute("name")?.Value ?? "",
+                                // Use string.Concat(Nodes()) here too
+                                p => string.Concat(p.Nodes()).Trim()
+                            );
+                    
+                        return new { Summary = summary, ParamDocs = paramDocs };
+                    });
+
+            var eventTypes = assembly.GetTypes()
+                .Where(t =>
+                    t.Namespace != null &&
+                    t.Namespace.StartsWith("Blazored.Diagrams.Services.Events") &&
+                    t.IsClass &&
+                    !t.IsAbstract &&
+                    !t.IsGenericTypeDefinition && // Exclude ItemAddedEvent<T> definition
+                    t.GetInterfaces().Any(i => i.Name == "IEvent"));
+
+            return eventTypes
+                .OrderBy(t => t.Name)
+                .Select(type =>
+                {
+                    // 2. Get constructor parameters via reflection (for Name and Type)
+                    var constructor = type.GetConstructors()
+                        .OrderByDescending(c => c.GetParameters().Length)
+                        .FirstOrDefault(); // Get primary ctor
+
+                    // 3. Get XML doc key
+                    var key = $"T:{type.FullName}";
+                    if (type.IsGenericType)
+                    {
+                        key = $"T:{type.FullName?.Split('`')[0]}";
+                    }
+                
+                    // 4. Look up the doc entry for this type
+                    members.TryGetValue(key, out var docEntry);
+                    string summary = docEntry?.Summary;
+                    var paramDocs = docEntry?.ParamDocs ?? new Dictionary<string, string>();
+
+                    if (string.IsNullOrWhiteSpace(summary))
+                    {
+                        summary = "(no documentation found)";
                     }
 
-                    // Get Params
-                    var paramDocs = e.Elements("param")
-                                     .ToDictionary(
-                                         p => p.Attribute("name")?.Value ?? "",
-                                         // Use string.Concat(Nodes()) here too
-                                         p => string.Concat(p.Nodes()).Trim()
-                                     );
-                    
-                    return new { Summary = summary, ParamDocs = paramDocs };
-                });
-
-        var eventTypes = assembly.GetTypes()
-            .Where(t =>
-                t.Namespace != null &&
-                t.Namespace.StartsWith("Blazored.Diagrams.Services.Events") &&
-                t.IsClass &&
-                !t.IsAbstract &&
-                !t.IsGenericTypeDefinition && // Exclude ItemAddedEvent<T> definition
-                t.GetInterfaces().Any(i => i.Name == "IEvent"));
-
-        return eventTypes
-            .OrderBy(t => t.Name)
-            .Select(type =>
-            {
-                // 2. Get constructor parameters via reflection (for Name and Type)
-                var constructor = type.GetConstructors()
-                                      .OrderByDescending(c => c.GetParameters().Length)
-                                      .FirstOrDefault(); // Get primary ctor
-
-                // 3. Get XML doc key
-                var key = $"T:{type.FullName}";
-                if (type.IsGenericType)
-                {
-                    key = $"T:{type.FullName?.Split('`')[0]}";
-                }
+                    // 5. Build the parameter list
+                    var parameters = new List<EventParameterDoc>();
+                    if (constructor != null)
+                    {
+                        parameters = constructor.GetParameters()
+                            .Select(p => 
+                            {
+                                // Find the matching doc for this parameter
+                                paramDocs.TryGetValue(p.Name, out var paramDoc);
+                                return new EventParameterDoc(
+                                    p.Name, 
+                                    p.ParameterType.Name, 
+                                    paramDoc ?? "(no documentation)"
+                                );
+                            })
+                            .ToList();
+                    }
                 
-                // 4. Look up the doc entry for this type
-                members.TryGetValue(key, out var docEntry);
-                string summary = docEntry?.Summary;
-                var paramDocs = docEntry?.ParamDocs ?? new Dictionary<string, string>();
-
-                if (string.IsNullOrWhiteSpace(summary))
-                {
-                    summary = "(no documentation found)";
-                }
-
-                // 5. Build the parameter list
-                var parameters = new List<EventParameterDoc>();
-                if (constructor != null)
-                {
-                    parameters = constructor.GetParameters()
-                        .Select(p => 
-                        {
-                            // Find the matching doc for this parameter
-                            paramDocs.TryGetValue(p.Name, out var paramDoc);
-                            return new EventParameterDoc(
-                                p.Name, 
-                                p.ParameterType.Name, 
-                                paramDoc ?? "(no documentation)"
-                            );
-                        })
-                        .ToList();
-                }
-                
-                return new
-                {
-                    GroupKey = GetGroupKey(type),
-                    Doc = new EventDoc(type.Name, summary, parameters)
-                };
-            })
-            .ToLookup(x => x.GroupKey, x => x.Doc);
-    }
-
-    /// <summary>
-    /// Determines the logical group for an event type based on its inheritance.
-    /// This maps to your file structure (e.g., NodeEvent -> "Node" -> events.node.json).
-    /// </summary>
-    private static string GetGroupKey(Type type)
-    {
-        // Handle special cases first
-        if (type.Name.StartsWith("Item"))
-            return "ObservableList";
-        if (type.Name == "CurrentLayerChangedEvent")
-            return "Layer";
-
-        var baseType = type.BaseType;
-        if (baseType == null)
-            return "Other";
-
-        // Check for simple inheritance (e.g., LayerAddedEvent : LayerEvent)
-        switch (baseType.Name)
-        {
-            case "LayerEvent": return "Layer";
-            case "NodeEvent": return "Node";
-            case "GroupEvent": return "Groups";
-            case "LinkEvent": return "Links";
-            case "PortEvent": return "Ports";
-            case "DiagramEvent": return "Diagram";
+                    return new
+                    {
+                        GroupKey = GetGroupKey(type),
+                        Doc = new EventDoc(type.Name, summary, parameters)
+                    };
+                })
+                .ToLookup(x => x.GroupKey, x => x.Doc);
         }
 
-        // Check for ModelInputEvent<T> inheritance
-        if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name == "ModelInputEvent`1")
+        /// <summary>
+        /// Determines the logical group for an event type based on its inheritance.
+        /// This maps to your file structure (e.g., NodeEvent -> "Node" -> events.node.json).
+        /// </summary>
+        private static string GetGroupKey(Type type)
         {
-            var modelType = baseType.GetGenericArguments()[0];
-            switch (modelType.Name)
+            // Handle special cases first
+            if (type.Name.StartsWith("Item"))
+                return "ObservableList";
+            if (type.Name == "CurrentLayerChangedEvent")
+                return "Layer";
+
+            var baseType = type.BaseType;
+            if (baseType == null)
+                return "Other";
+
+            // Check for simple inheritance (e.g., LayerAddedEvent : LayerEvent)
+            switch (baseType.Name)
             {
-                case "IDiagram": return "Diagram";
-                case "INode": return "Node";
-                case "IGroup": return "Groups";
-                case "ILink": return "Links";
-                case "IPort": return "Ports";
+                case "LayerEvent": return "Layer";
+                case "NodeEvent": return "Node";
+                case "GroupEvent": return "Groups";
+                case "LinkEvent": return "Links";
+                case "PortEvent": return "Ports";
+                case "DiagramEvent": return "Diagram";
             }
-        }
+
+            // Check for ModelInputEvent<T> inheritance
+            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name == "ModelInputEvent`1")
+            {
+                var modelType = baseType.GetGenericArguments()[0];
+                switch (modelType.Name)
+                {
+                    case "IDiagram": return "Diagram";
+                    case "INode": return "Node";
+                    case "IGroup": return "Groups";
+                    case "ILink": return "Links";
+                    case "IPort": return "Ports";
+                }
+            }
         
-        return "Other"; // Fallback
+            return "Other"; // Fallback
+        }
     }
-}
 
 // --- Documentation Records ---
 
-/// <summary>
-/// Documents a parameter from an event's constructor.
-/// </summary>
-/// <param name="Name">The name of the parameter (e.g., "Model").</param>
-/// <param name="TypeName">The C# type name of the parameter (e.g., "INode").</param>
-/// <param name="Documentation">The XML documentation for the parameter.</param>
-public record EventParameterDoc(string Name, string TypeName, string Documentation);
+    /// <summary>
+    /// Documents a parameter from an event's constructor.
+    /// </summary>
+    /// <param name="Name">The name of the parameter (e.g., "Model").</param>
+    /// <param name="TypeName">The C# type name of the parameter (e.g., "INode").</param>
+    /// <param name="Documentation">The XML documentation for the parameter.</param>
+    public record EventParameterDoc(string Name, string TypeName, string Documentation);
 
-/// <summary>
-/// Documents a single event.
-/// </summary>
-/// <param name="Name">The class name of the event (e.g., "NodeAddedEvent").</param>
-/// <param name="Summary">The XML documentation summary.</param>
-/// <param name="Parameters">A list of the event's constructor parameters.</param>
-public record EventDoc(string Name, string Summary, IEnumerable<EventParameterDoc> Parameters);
+    /// <summary>
+    /// Documents a single event.
+    /// </summary>
+    /// <param name="Name">The class name of the event (e.g., "NodeAddedEvent").</param>
+    /// <param name="Summary">The XML documentation summary.</param>
+    /// <param name="Parameters">A list of the event's constructor parameters.</param>
+    public record EventDoc(string Name, string Summary, IEnumerable<EventParameterDoc> Parameters);
+}

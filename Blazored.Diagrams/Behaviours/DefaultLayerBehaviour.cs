@@ -1,6 +1,6 @@
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Diagrams;
-using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
 

@@ -1,7 +1,7 @@
-﻿using Blazored.Diagrams.Ports;
+﻿using Blazored.Diagrams.Events;
+using Blazored.Diagrams.Ports;
 
 using Blazored.Diagrams.Interfaces;
-using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Links;

@@ -1,3 +1,5 @@
+using Blazored.Diagrams.Events;
+
 namespace Blazored.Diagrams.Services.Events;
 
 /// <summary>

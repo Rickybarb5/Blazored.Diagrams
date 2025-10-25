@@ -1,10 +1,10 @@
 ﻿
 using Blazored.Diagrams.Components.Models;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
-using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Newtonsoft.Json;
 

@@ -1,5 +1,5 @@
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Interfaces;
-using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Options.Behaviours;

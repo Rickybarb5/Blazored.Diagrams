@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
-using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Serialization;
 using Newtonsoft.Json;
 

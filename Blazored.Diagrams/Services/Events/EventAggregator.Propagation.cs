@@ -1,4 +1,5 @@
 using System.Reflection;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;

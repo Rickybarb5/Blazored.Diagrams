@@ -2,7 +2,7 @@ using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Nodes;
 
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
 // Layer Events
 

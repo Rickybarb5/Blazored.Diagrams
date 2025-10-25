@@ -1,4 +1,5 @@
-﻿using Blazored.Diagrams.Extensions;
+﻿using Blazored.Diagrams.Events;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Interfaces;
@@ -7,7 +8,6 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Diagram;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services.Events;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Diagrams;

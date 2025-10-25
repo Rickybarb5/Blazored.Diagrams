@@ -1,6 +1,6 @@
 using Blazored.Diagrams.Components.Containers;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services.Events;
 using Bunit;
 using Moq;
 

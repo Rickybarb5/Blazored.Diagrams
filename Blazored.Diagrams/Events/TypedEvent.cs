@@ -1,4 +1,4 @@
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
 /// <inheritdoc />
 public class TypedEvent<TEvent> : ITypedEvent<TEvent> where TEvent : IEvent

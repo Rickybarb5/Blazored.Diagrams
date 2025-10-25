@@ -1,6 +1,6 @@
 using Blazored.Diagrams.Interfaces;
 
-namespace Blazored.Diagrams.Services.Events;
+namespace Blazored.Diagrams.Events;
 
 /// <summary>
 /// Represents a type-safe event associated with a model that implements IId.

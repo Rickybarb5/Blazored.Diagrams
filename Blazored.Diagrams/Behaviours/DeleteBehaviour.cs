@@ -1,3 +1,4 @@
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Layers;
 using Blazored.Diagrams.Links;
@@ -5,7 +6,6 @@ using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services.Diagrams;
-using Blazored.Diagrams.Services.Events;
 
 namespace Blazored.Diagrams.Behaviours;
 

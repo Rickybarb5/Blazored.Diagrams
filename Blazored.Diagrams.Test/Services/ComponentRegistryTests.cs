@@ -1,8 +1,8 @@
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options;
 using Blazored.Diagrams.Ports;
-using Blazored.Diagrams.Services.Events;
 using Blazored.Diagrams.Services.Registry;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
