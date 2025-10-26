@@ -75,24 +75,25 @@ public class DefaultLinkBehaviour : BaseBehaviour
         obj.NewTargetPort?.IncomingLinks.AddInternal(obj.Model);
         if (obj.NewTargetPort is not null)
         {
-            obj.Model.SetTargetPosition(obj.NewTargetPort);
+            var centerCoordinates = _service.GetCenterCoordinates(obj.NewTargetPort);
+            obj.Model.SetTargetPosition(centerCoordinates.CenterX, centerCoordinates.CenterY);
         }
     }
 
-    private static void UpdateLinkPosition(IPort port)
+    private void UpdateLinkPosition(IPort port)
     {
         port.IncomingLinks.ForEach(l =>
         {
             if (l.TargetPort is not null)
             {
-                var centerCoordinates = l.TargetPort.GetCenterCoordinates();
+                var centerCoordinates = _service.GetCenterCoordinates(l.TargetPort);
                 l.SetTargetPosition(centerCoordinates.CenterX, centerCoordinates.CenterY);
             }
         });
 
         port.OutgoingLinks.ForEach(l =>
         {
-            var centerCoordinates = l.SourcePort.GetCenterCoordinates();
+            var centerCoordinates = _service.GetCenterCoordinates(l.SourcePort);
             l.SetTargetPosition(centerCoordinates.CenterX, centerCoordinates.CenterY);
         });
     }

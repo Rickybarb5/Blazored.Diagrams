@@ -32,15 +32,4 @@ public partial class Link
             OnSizeChanged.Publish(new(this, oldWidth, oldHeight, _width, _height));
         }
     }
-
-    /// <summary>
-    /// Sets the links target position to the center of a model
-    /// </summary>
-    /// TODO:Make this more customizable
-    public virtual void SetTargetPosition<TModel>(TModel model) where TModel : IPosition, ISize
-    {
-        ArgumentNullException.ThrowIfNull(model);
-        var centerCoordinates = model.GetCenterCoordinates();
-        SetTargetPosition(centerCoordinates.CenterX, centerCoordinates.CenterY);
-    }
 }

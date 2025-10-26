@@ -9,8 +9,8 @@ namespace Blazored.Diagrams.Ports;
 public interface IPort :
     IId,
     IVisible,
-    IPosition,
     ISize,
+    IPosition,
     ILinkContainer,
     ISelectable,
     IDisposable

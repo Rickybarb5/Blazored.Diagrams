@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Services.Behaviours;
 using Blazored.Diagrams.Services.Events;
 
@@ -49,4 +50,38 @@ public interface IDiagramService : IDisposable
     /// </summary>
     /// <param name="diagram">A diagram instance</param>
     void UseDiagram(IDiagram diagram);
+
+    /// <summary>
+    ///     Returns the center point of a model.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    (int CenterX, int CenterY) GetCenterCoordinates<T>(T model) where T : ISize, IPosition;
+
+    /// <summary>
+    /// Centers a model in another model
+    /// </summary>
+    /// <param name="toCenter"></param>
+    /// <param name="containerWidth"></param>
+    /// <param name="containerHeight"></param>
+    /// <param name="containerPositionX"></param>
+    /// <param name="containerPositionY"></param>
+    /// <param name="padding"></param>
+    /// <typeparam name="ToCenter"></typeparam>
+    void CenterTo<ToCenter>(
+        ToCenter toCenter,
+        int containerWidth,
+        int containerHeight,
+        int containerPositionX,
+        int containerPositionY,
+        int padding = 0)
+        where ToCenter : ISize, IPosition;
+
+    /// <summary>
+    ///     Changes the position of a model to be in the center of the diagram, accounting for pan and zoom.
+    /// </summary>
+    /// <param name="toCenter">Model to be centered.</param>
+    /// <typeparam name="ToCenter">Type of the model to be centered.</typeparam>
+    void CenterInViewport<ToCenter>(ToCenter toCenter)
+        where ToCenter : IPosition, ISize;
 }

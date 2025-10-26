@@ -72,6 +72,7 @@ public partial class DiagramService : IDiagramService
         Behaviours.RegisterBehaviour(new ZoomBehavior(this));
         Behaviours.RegisterBehaviour(new SelectBehaviour(this));
         Behaviours.RegisterBehaviour(new EventLoggingBehavior(this));
+        Behaviours.RegisterBehaviour(new DefaultCenteringBehaviour(this));
     }
     
     private void InitializeOptions()
@@ -92,6 +93,7 @@ public partial class DiagramService : IDiagramService
             new SelectBehaviourOptions(),
             new ZoomBehaviourOptions(),
             new LoggingBehaviourOptions(),
+            new DefaultCenteringBehaviourOptions(),
         ];
     }
 

@@ -42,6 +42,9 @@
         <Compile Update="Options\Behaviours\LineLinkOptions.cs">
           <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
         </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Positioning.cs">
+          <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

@@ -70,27 +70,27 @@
     /// <summary>
     /// X coordinate of the target position.
     /// </summary>
-    public int TargetX => _link.TargetPort?.GetCenterCoordinates().CenterX ?? _link.TargetPositionX;
+    public int TargetX => _link.TargetPort is not null ? DiagramService.GetCenterCoordinates(_link.TargetPort).CenterX : _link.TargetPositionX;
 
     /// <summary>
     /// Y coordinate of the end of the link.
     /// </summary>
-    public int TargetY => _link.TargetPort?.GetCenterCoordinates().CenterY ?? _link.TargetPositionY;
+    public int TargetY => _link.TargetPort is not null ? DiagramService.GetCenterCoordinates(_link.TargetPort).CenterY : _link.TargetPositionY;
 
 
     /// <summary>
     /// X coordinate of the start of the link
     /// </summary>
-    public int PositionX => Math.Min(_link.SourcePort.GetCenterCoordinates().CenterX, TargetX);
+    public int PositionX => Math.Min(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterX, TargetX);
 
     /// <summary>
     ///  Y coordinate of the start of the link
     /// </summary>
-    public int PositionY => Math.Min(_link.SourcePort.GetCenterCoordinates().CenterY, TargetY);
+    public int PositionY => Math.Min(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterX, TargetX);
 
-    private int Width => Math.Abs(_link.SourcePort.GetCenterCoordinates().CenterX - TargetX);
+    private int Width => Math.Abs(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterX - TargetX);
 
-    private int Height => Math.Abs(_link.SourcePort.GetCenterCoordinates().CenterY - TargetY);
+    private int Height => Math.Abs(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterY - TargetY);
 
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -84,7 +84,7 @@ public class DrawLinkBehavior : BaseBehaviour
 
         Link = AddLink(_sourcePort, null, _behaviourOptions.LinkType);
         _service.Events.Publish(new DrawLinkStartEvent(Link));
-        var startCoordinates = _sourcePort.GetCenterCoordinates();
+        var startCoordinates = _service.GetCenterCoordinates(_sourcePort);
         Link.SetTargetPosition(startCoordinates.CenterX, startCoordinates.CenterY);
     }
 

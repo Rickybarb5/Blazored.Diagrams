@@ -31,11 +31,6 @@ public class AddContainer : IAddContainer
         where TGroup : IGroup
     {
         parent.Groups.AddInternal(group);
-        if (group.PositionX == 0 && group.PositionY == 0 && parent is IPosition p and ISize s)
-        {
-            var padding = parent is IPadding pad ? pad.Padding : 0; 
-            group.CenterIn(s.Width, s.Height, p.PositionX, p.PositionY, padding);
-        }
         return this;
     }
 
@@ -50,11 +45,6 @@ public class AddContainer : IAddContainer
         where TNode : INode
     {
         nodeContainer.Nodes.AddInternal(node);
-        if (node.PositionX == 0 && node.PositionY == 0 && nodeContainer is IPosition p and ISize s)
-        {
-            var padding = nodeContainer is IPadding pad ? pad.Padding : 0; 
-            node.CenterIn(s.Width, s.Height, p.PositionX, p.PositionY, padding);
-        }
         return this;
     }
 
@@ -105,10 +95,6 @@ public class AddContainer : IAddContainer
     public virtual IAddContainer Node(INode node)
     {
         service.Diagram.CurrentLayer.Nodes.AddInternal(node);
-        if (node is { PositionX: 0, PositionY: 0 })
-        {
-            node.CenterIn(service.Diagram);
-        }
         return this;
     }
 
@@ -116,10 +102,6 @@ public class AddContainer : IAddContainer
     public virtual IAddContainer Group(IGroup group)
     {
         service.Diagram.CurrentLayer.Groups.AddInternal(group);
-        if (group is { PositionX: 0, PositionY: 0 })
-        {
-            group.CenterIn(service.Diagram);
-        }
         return this;
     }
 

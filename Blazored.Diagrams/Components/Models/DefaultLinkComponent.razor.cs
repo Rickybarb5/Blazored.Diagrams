@@ -147,12 +147,12 @@ public abstract partial class DefaultLinkComponent
     /// <summary>
     /// Relative start X coordinate of the link.
     /// </summary>
-    protected virtual int RelativeX1 => Link.SourcePort.GetCenterCoordinates().CenterX - Container.PositionX;
+    protected virtual int RelativeX1 => DiagramService.GetCenterCoordinates(Link.SourcePort).CenterX - Container.PositionX;
 
     /// <summary>
     /// Relative start Y coordinate of the link.
     /// </summary>
-    protected virtual int RelativeY1 => Link.SourcePort.GetCenterCoordinates().CenterY - Container.PositionY;
+    protected virtual int RelativeY1 => DiagramService.GetCenterCoordinates(Link.SourcePort).CenterY - Container.PositionY;
 
     /// <summary>
     /// Relative end X coordinate of the link.

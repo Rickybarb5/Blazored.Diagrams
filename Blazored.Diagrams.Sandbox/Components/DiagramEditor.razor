@@ -23,14 +23,12 @@
     {
         var node = new NamedNode();
         DiagramService.Add.Node(node);
-        node.CenterIn(DiagramService.Diagram);
     }
 
     private void AddGroup(MouseEventArgs obj)
     {
         var group = new Group();
         DiagramService.Add.Group(group);
-        group.CenterIn(DiagramService.Diagram);
     }
 
     private void Save(MouseEventArgs obj)

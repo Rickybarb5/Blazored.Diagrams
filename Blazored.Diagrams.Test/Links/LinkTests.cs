@@ -2,6 +2,7 @@ using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Diagrams;
 
 namespace Blazored.Diagrams.Test.Links;
 
@@ -305,14 +306,15 @@ public class LinkTests
     {
         // Arrange
         var obj = Instance;
+        var service = new DiagramService();
         var source = new Port();
-        var target = new Port { PositionX = 100, PositionY = 200 };
+        var target = new Port { PositionX = 100, PositionY = 200, Width = 100, Height = 100};
         obj.SourcePort = source;
 
         //Act
-        obj.SetTargetPosition(target);
+        var coordinates = service.GetCenterCoordinates(target);
+        obj.SetTargetPosition(coordinates.CenterX, coordinates.CenterY);
         //Assert
-        var coordinates = target.GetCenterCoordinates();
         Assert.Equal(coordinates.CenterX, obj.TargetPositionX);
         Assert.Equal(coordinates.CenterY, obj.TargetPositionY);
     }

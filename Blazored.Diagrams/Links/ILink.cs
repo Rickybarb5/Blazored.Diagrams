@@ -53,11 +53,6 @@ public interface ILink : IId,
     void SetTargetPosition(int x, int y);
 
     /// <summary>
-    /// Sets the x and y position of the target position to the center of the target port.
-    /// </summary>
-    void SetTargetPosition<TModel>(TModel model) where TModel : IPosition, ISize;
-
-    /// <summary>
     /// Event triggered when the link container size changes.
     /// </summary>
     ITypedEvent<LinkSizeChangedEvent> OnSizeChanged { get; init; }
