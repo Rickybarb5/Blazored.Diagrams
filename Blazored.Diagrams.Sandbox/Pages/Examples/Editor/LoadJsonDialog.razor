@@ -1,0 +1,113 @@
+@using System.Text.Json
+@using Blazored.Diagrams.Events
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DataObject" Class="mr-3"/> JSON Data Loader
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudText Typo="Typo.body2" Class="mb-3">Paste your JSON string below. The **Load** button will only be enabled if the JSON is valid.</MudText>
+            
+            <!-- MudTextField for multiline JSON input -->
+            <MudTextField T="string" Label="JSON Input" Lines="10" 
+                          Variant="Variant.Outlined" FullWidth="true" 
+                          Placeholder='{ "name": "Example", "value": 123 }'
+                          Required="true"
+                          AutoFocus="true"
+                          Immediate="true"
+                          @bind-Value="JsonString">
+                <Validation>
+                    @if (!IsJsonValid(JsonString))
+                    {
+                        <MudText Color="Color.Error">Invalid JSON format. Please correct the syntax.</MudText>
+                    }
+                </Validation>
+            </MudTextField>
+            <!-- Live status indicator -->
+            <MudText Typo="Typo.caption" Color="@(JsonString?.Length > 0 && IsJsonValid(JsonString) ? Color.Success : Color.Error)" Class="mt-2">
+                @if (JsonString?.Length > 0)
+                {
+                    <MudIcon Icon="@(IsJsonValid(JsonString) ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Error)" Size="Size.Small" Class="mr-1" />
+                    @(IsJsonValid(JsonString) ? "Valid JSON Detected" : "Validation Error")
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Class="mr-1" />
+                }
+            </MudText>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <!-- Cancel button -->
+        <MudButton OnClick="Cancel" Variant="Variant.Text" Color="Color.Default">Cancel</MudButton>
+        <!-- Load button - disabled if form validation (including JSON check) fails -->
+        <MudButton OnClick="Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)">Load</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    // Cascading parameter provided by the MudDialog system
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+    [Inject] ISnackbar Snackbar { get; set; }
+    
+    [Parameter]
+public IDiagramService Service { get; set; }
+
+    private string? JsonString { get; set; } = string.Empty;
+    private MudForm form = default!;
+    private bool success;
+    private string[] errors = Array.Empty<string>();
+
+    private void Submit()
+    {
+        // Force validation check before submitting
+        form.Validate();
+
+        if (success && IsJsonValid(JsonString))
+        {
+            try
+            {
+            Service.Storage.Load<Diagram>(JsonString!);
+            //Service.Diagram.AllPorts.ForEach(p=> Service.Events.Publish(new PortRedrawEvent(p)));
+            }
+            catch (Exception e)
+            {
+                Snackbar.Add("Json is not a valid diagram", Severity.Error);
+            }
+            MudDialog.Close(DialogResult.Ok(JsonString));
+        }
+    }
+
+    private void Cancel()
+    {
+        // Cancel the dialog operation
+        MudDialog.Cancel();
+    }
+
+    /// <summary>
+    /// Checks if a string is valid JSON by attempting to parse it with System.Text.Json.
+    /// </summary>
+    private bool IsJsonValid(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return false;
+        }
+
+        try
+        {
+            // Attempt to parse the JSON string.
+            using (JsonDocument.Parse(json))
+            {
+                return true;
+            }
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+}

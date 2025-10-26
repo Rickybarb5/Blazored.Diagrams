@@ -1,4 +1,5 @@
 ﻿using Blazored.Diagrams.Events;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
@@ -73,7 +74,17 @@ public class RedrawBehaviour : BaseBehaviour
             _service.Events.SubscribeTo<LinkSourcePortChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkTargetPortChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkTargetPositionChangedEvent>(e => NotifyRedraw(e.Model)),
+            _service.Events.SubscribeTo<DiagramRedrawEvent>(RedrawFullDiagram),
         ];
+    }
+
+    private void RedrawFullDiagram(DiagramRedrawEvent ev)
+    {
+        ev.Model.Layers.ForEach(l=> _service.Events.Publish(new LayerRedrawEvent(l)));
+        ev.Model.AllNodes.ForEach(n=> _service.Events.Publish(new NodeRedrawEvent(n)));
+        ev.Model.AllGroups.ForEach(g=> _service.Events.Publish(new GroupRedrawEvent(g)));
+        ev.Model.AllPorts.ForEach(p=> _service.Events.Publish(new PortRedrawEvent(p)));
+        ev.Model.AllLinks.ForEach(l=> _service.Events.Publish(new LinkRedrawEvent(l)));
     }
 
     private void NotifyRedraw(INode obj)

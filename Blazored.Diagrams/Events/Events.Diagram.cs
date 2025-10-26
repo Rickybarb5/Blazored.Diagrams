@@ -136,3 +136,10 @@ public record DiagramKeyUpEvent(IDiagram Model, KeyboardEventArgs Args) : ModelI
 /// <param name="Model">The diagram that triggered the event.</param>
 /// <param name="Args">The <see cref="KeyboardEventArgs"/>.</param>
 public record DiagramKeyDownEvent(IDiagram Model, KeyboardEventArgs Args) : ModelInputEvent<IDiagram>(Model);
+
+/// <summary>
+/// Event triggered when the diagram instance is replaced with another.
+/// </summary>
+/// <param name="OldDiagram">The diagram that was replaced.</param>
+/// <param name="NewDiagram">The current diagram in the diagram service.</param>
+public record DiagramSwitchEvent(IDiagram OldDiagram, IDiagram NewDiagram):IEvent;

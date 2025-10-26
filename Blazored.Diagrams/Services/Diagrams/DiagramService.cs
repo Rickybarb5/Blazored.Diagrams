@@ -36,25 +36,15 @@ public partial class DiagramService : IDiagramService
     /// </summary>
     public DiagramService()
     {
-        InitializeDiagram(new Diagram());
-    }
-
-    private void InitializeDiagram(IDiagram diagram)
-    {
-        Diagram = diagram;
-        InitializeServices();
-        InitializeOptions();
-        InitializeBehaviours();
-    }
-
-    private void InitializeServices()
-    {
+        Diagram = new Diagram();
         Behaviours = new BehaviourContainer(this);
         Options = new OptionsContainer(this);
         Add = new AddContainer(this);
         Remove = new DeleteContainer(this);
         Events = new EventAggregator(this);
         Storage = new SerializationContainer(this);
+        InitializeOptions();
+        InitializeBehaviours();
     }
 
     private void InitializeBehaviours()
@@ -79,7 +69,6 @@ public partial class DiagramService : IDiagramService
     {
         Diagram.Options.BehaviourOptions =
         [
-
             new DefaultGroupBehaviourOptions(),
             new DefaultLayerBehaviourOptions(),
             new DefaultLinkBehaviourOptions(),
@@ -99,8 +88,23 @@ public partial class DiagramService : IDiagramService
 
     void IDiagramService.UseDiagram(IDiagram diagram)
     {
-        Dispose();
-        InitializeDiagram(diagram);
+        Behaviours.Dispose();
+        Diagram.Dispose();
+
+        var oldDiagram = Diagram;
+        Diagram = diagram;
+        // We don't reset the entire event service
+        // This way, custom behaviours keep working!
+        //TODO: Maybe create another function with the rewire. This whole thing should reset the diagram.
+        ((EventAggregator)Events).RewireSubscriptions();
+        Behaviours = new BehaviourContainer(this);
+        Options = new OptionsContainer(this);
+        Add = new AddContainer(this);
+        Remove = new DeleteContainer(this);
+        Storage = new SerializationContainer(this);
+        InitializeOptions();
+        InitializeBehaviours();
+        Events.Publish(new DiagramSwitchEvent(oldDiagram, diagram));
         Events.Publish(new DiagramRedrawEvent(Diagram));
        
     }
@@ -110,6 +114,7 @@ public partial class DiagramService : IDiagramService
     {
         Behaviours.Dispose();
         Events.Dispose();
+        Diagram.Dispose();
     }
 }
 

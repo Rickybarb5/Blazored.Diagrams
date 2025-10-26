@@ -110,17 +110,27 @@ public partial class EventAggregator : IEventAggregator
         }
     }
 
-    /// <inheritdoc />
-    public void Dispose()
+    // Resets the aut event propagation.
+    internal void RewireSubscriptions()
     {
-        // Stop all auto-propagation
+        DisposeAutoPropagation();
+        InitializeEventPropagation();
+    }
+
+    private void DisposeAutoPropagation()
+    {
         foreach (var source in _typedEventSubscriptions.Keys.ToList())
         {
             StopAutoPropagation(source);
         }
-        
+
         _typedEventSubscriptions.Clear();
-        _subscriptions.Clear();
         _autoSubscriptions.DisposeAll();
+    }
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        DisposeAutoPropagation();
+        _subscriptions.Clear();
     }
 }

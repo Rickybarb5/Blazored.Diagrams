@@ -43,13 +43,7 @@
     
     private IDisposable? _redrawSubscription;
     private ZoomBehaviourOptions options = new(); // Initialize to prevent null
-
-    /// <inheritdoc />
-    protected override void OnInitialized()
-    {
-        _redrawSubscription = Service.Events
-            .SubscribeTo<DiagramRedrawEvent>(OnRedraw);
-    }
+    
 
     /// <inheritdoc />
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -107,12 +101,6 @@
             ZoomDirection.Out => Service.Diagram.Zoom <= options.MinZoom,
             _ => false
         };
-    }
-
-    private void OnRedraw(DiagramRedrawEvent e)
-    {
-        // Since this event might fire off-thread, ensure StateHasChanged runs on the UI thread
-        InvokeAsync(StateHasChanged);
     }
 
     /// <inheritdoc />

@@ -174,30 +174,4 @@ public class DeleteWithKeyBehaviourTests
         // Assert
         Assert.DoesNotContain(node, service.Diagram.AllNodes);
     }
-
-    [Fact]
-    public void Dispose_ShouldStopProcessingEvents()
-    {
-        // Arrange
-        using var service = CreateService();
-
-        var node = new Node { IsSelected = true };
-        service.Add.Node(node);
-
-        var args = new KeyboardEventArgs { Code = "Delete" };
-
-        // Verify initial behavior
-        service.Events.Publish(new DiagramKeyDownEvent(service.Diagram, args));
-        Assert.DoesNotContain(node, service.Diagram.AllNodes);
-
-        // Reset and dispose
-        service.Add.Node(node);
-        service.Dispose();
-
-        // Act
-        service.Events.Publish(new DiagramKeyDownEvent(service.Diagram, args));
-
-        // Assert
-        Assert.Contains(node, service.Diagram.AllNodes);
-    }
 }

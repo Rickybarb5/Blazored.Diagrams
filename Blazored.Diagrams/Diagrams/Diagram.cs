@@ -253,13 +253,14 @@ public ITypedEvent<DiagramPositionChangedEvent> OnPositionChanged { get; init; }
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<CurrentLayerChangedEvent>? OnCurrentLayerChanged { get; init; } =
+public ITypedEvent<CurrentLayerChangedEvent> OnCurrentLayerChanged { get; init; } =
         new TypedEvent<CurrentLayerChangedEvent>();
 
 
     /// <inheritdoc />
     public void Dispose()
     {
+        Layers.ForEach(l=>l.Dispose());
         _layers.OnItemAdded.Unsubscribe(HandleLayerAdded);
         _layers.OnItemRemoved.Unsubscribe(HandleLayerRemoved);
     }

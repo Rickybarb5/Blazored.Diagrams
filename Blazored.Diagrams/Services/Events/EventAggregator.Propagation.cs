@@ -25,8 +25,8 @@ public partial class EventAggregator
         _autoSubscriptions.Add(PropagateMany(_diagramService.Diagram.AllGroups));
         _autoSubscriptions.Add(PropagateMany(_diagramService.Diagram.AllPorts));
         _autoSubscriptions.Add(PropagateMany(_diagramService.Diagram.AllLinks));
-
         
+        // recently added models may already have nested models.
         _autoSubscriptions.Add(SubscribeTo<LayerAddedEvent>(e =>
         {
             _autoSubscriptions.Add(Propagate(e.Model));
