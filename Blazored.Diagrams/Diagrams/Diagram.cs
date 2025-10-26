@@ -105,7 +105,7 @@ public partial class Diagram : IDiagram
 
     /// <inheritdoc />
     [JsonIgnore]
-    int IDiagram.Width
+    public int Width
     {
         get => _width;
         set
@@ -121,15 +121,15 @@ public partial class Diagram : IDiagram
 
     /// <inheritdoc />
     [JsonIgnore]
-    int IDiagram.Height
+    public int Height
     {
-        get => _width;
+        get => _height;
         set
         {
             if (value != _height)
             {
                 var oldHeight = _height;
-                _width = value;
+                _height = value;
                 OnSizeChanged.Publish(new(this, _width, oldHeight, _width, _height));
             }
         }

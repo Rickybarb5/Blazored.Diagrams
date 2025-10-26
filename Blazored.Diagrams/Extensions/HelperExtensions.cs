@@ -59,14 +59,20 @@ public static class HelperExtensions
     public static void CenterIn<ToCenter>(this ToCenter toCenter, IDiagram diagram)
         where ToCenter : IPosition, ISize
     {
-        // Calculate the center of the viewport in world coordinates
+        // Diagram might not be rendered on screen yet.
+        if (diagram.Width == 0 || diagram.Height == 0)
+        {
+            return;
+        }
+        
+        // Calculate the center of the viewport.
         var viewportCenterX = (diagram.Width / 2 - diagram.PanX) / diagram.Zoom;
         var viewportCenterY = (diagram.Height / 2 - diagram.PanY) / diagram.Zoom;
-
+        
         // Calculate the new position for the toCenter element to center it within the viewport
         var newPositionX = (int)(viewportCenterX - toCenter.Width / 2);
         var newPositionY = (int)(viewportCenterY - toCenter.Height / 2);
-
+        
         // Set the new position of the toCenter element
         toCenter.SetPosition(newPositionX, newPositionY);
     }

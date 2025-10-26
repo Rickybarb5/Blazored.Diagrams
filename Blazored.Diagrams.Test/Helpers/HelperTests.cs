@@ -27,7 +27,11 @@ public class HelperTests
     public void Test_Center_In_Diagram()
     {
         //Arrange
-        var diagram = new Diagram();
+        var diagram = new Diagram()
+        {
+            Width = 500,
+            Height = 500,
+        };
         var group = new Group();
         var node = new Node();
 

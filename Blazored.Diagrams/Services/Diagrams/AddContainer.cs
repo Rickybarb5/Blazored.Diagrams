@@ -30,13 +30,12 @@ public class AddContainer : IAddContainer
     public IAddContainer AddGroupTo<TGroup>(IGroupContainer parent, TGroup group)
         where TGroup : IGroup
     {
+        parent.Groups.AddInternal(group);
         if (group.PositionX == 0 && group.PositionY == 0 && parent is IPosition p and ISize s)
         {
             var padding = parent is IPadding pad ? pad.Padding : 0; 
             group.CenterIn(s.Width, s.Height, p.PositionX, p.PositionY, padding);
         }
-        
-        parent.Groups.AddInternal(group);
         return this;
     }
 
@@ -50,13 +49,12 @@ public class AddContainer : IAddContainer
     public IAddContainer NodeTo<TNode>(INodeContainer nodeContainer, TNode node)
         where TNode : INode
     {
+        nodeContainer.Nodes.AddInternal(node);
         if (node.PositionX == 0 && node.PositionY == 0 && nodeContainer is IPosition p and ISize s)
         {
             var padding = nodeContainer is IPadding pad ? pad.Padding : 0; 
             node.CenterIn(s.Width, s.Height, p.PositionX, p.PositionY, padding);
         }
-        
-        nodeContainer.Nodes.AddInternal(node);
         return this;
     }
 
@@ -106,22 +104,22 @@ public class AddContainer : IAddContainer
     /// <inheritdoc />
     public virtual IAddContainer Node(INode node)
     {
-        if (node.PositionX == 0 && node.PositionY == 0)
+        service.Diagram.CurrentLayer.Nodes.AddInternal(node);
+        if (node is { PositionX: 0, PositionY: 0 })
         {
             node.CenterIn(service.Diagram);
         }
-        service.Diagram.CurrentLayer.Nodes.AddInternal(node);
         return this;
     }
 
     /// <inheritdoc />
     public virtual IAddContainer Group(IGroup group)
     {
-        if (group.PositionX == 0 && group.PositionY == 0)
+        service.Diagram.CurrentLayer.Groups.AddInternal(group);
+        if (group is { PositionX: 0, PositionY: 0 })
         {
             group.CenterIn(service.Diagram);
         }
-        service.Diagram.CurrentLayer.Groups.AddInternal(group);
         return this;
     }
 

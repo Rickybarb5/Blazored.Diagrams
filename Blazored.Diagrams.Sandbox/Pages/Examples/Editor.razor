@@ -46,7 +46,6 @@
     {
         if (firstRender)
         {
-            // _diagram.Behaviours.Add(new PortPopBehaviour(_diagram));
             GroupWithNodesAndPorts();
             Service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().MultiSelectEnabled = true;
             _subscriptions =
@@ -90,7 +89,6 @@
 
     private void GroupWithNodesAndPorts()
     {
-        // Todo user builders.
         var diagramNode1 = new Node();
         var diagramNode2 = new Node();
         Service.Add.Node(diagramNode1);

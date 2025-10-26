@@ -359,17 +359,19 @@ protected override Task OnInitializedAsync()
 
     // 4. Create Link Models
     // Using the models and their required constructors
-    var extendedLink = new ExtendedLink(null!, null!);
-    var animatedLink = new AnimatedLink(null!, null!);
+    var extendedLink = new ExtendedLink();
+    var animatedLink = new AnimatedLink();
 
 
     // 5. Add Links by connecting specific ports
     var n1RightPort = n1.Ports.First(p => p.Alignment == PortAlignment.Right);
     var n3LeftPort = n3.Ports.First(p => p.Alignment == PortAlignment.Left);
+    var n2BottomPort = n2.Ports.First(p => p.Alignment == PortAlignment.Bottom);
+    var n3TopPort = n3.Ports.First(p => p.Alignment == PortAlignment.Top);
     
     // Pass the ports and the model to AddLinkTo
     Service.Add.AddLinkTo(n1RightPort, n3LeftPort, extendedLink);
-    // ... similarly for animatedLink ...
+    Service.Add.AddLinkTo(n2BottomPort, n3TopPort, animatedLink);    
 
     return base.OnInitializedAsync();
 }
