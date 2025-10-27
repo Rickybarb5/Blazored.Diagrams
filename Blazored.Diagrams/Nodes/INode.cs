@@ -12,7 +12,6 @@ public interface INode :
     IVisible,
     ISelectable,
     IPortContainer,
-    IBounds,
     IDisposable
 {
     /// <summary>

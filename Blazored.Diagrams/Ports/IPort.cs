@@ -13,7 +13,6 @@ public interface IPort :
     IPosition,
     ILinkContainer,
     ISelectable,
-    IBounds,
     IDisposable
 {
     /// <summary>

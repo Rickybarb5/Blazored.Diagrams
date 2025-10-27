@@ -269,16 +269,4 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
             }
         }
     }
-
-    /// <inheritdoc />
-    [JsonIgnore]
-    public Rect Bounds => new()
-    {
-        Width = Width,
-        Height = Height,
-        Top = PositionX,
-        Left = PositionY,
-        Right = PositionX + Width,
-        Bottom = PositionY + Height,
-    };
 }

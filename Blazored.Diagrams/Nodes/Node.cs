@@ -178,18 +178,6 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; } =
         new TypedEvent<PortRemovedFromNodeEvent>();
 
-    /// <inheritdoc />
-    [JsonIgnore]
-    public Rect Bounds => new()
-    {
-        Width = Width,
-        Height = Height,
-        Top = PositionX,
-        Left = PositionY,
-        Right = PositionX + Width,
-        Bottom = PositionY + Height,
-    };
-
     private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
     {
         obj.Item.Dispose();

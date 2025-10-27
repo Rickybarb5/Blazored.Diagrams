@@ -17,7 +17,6 @@ public interface IGroup :
     IPortContainer,
     ISelectable,
     IPadding,
-    IBounds,
     IDisposable
 {
     /// <summary>

@@ -304,18 +304,6 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
     [JsonIgnore]
     public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
 
-    /// <inheritdoc />
-    [JsonIgnore]
-    public Rect Bounds => new()
-    {
-        Width = Width,
-        Height = Height,
-        Top = PositionX,
-        Left = PositionY,
-        Right = PositionX + Width,
-        Bottom = PositionY + Height,
-    };
-
     private void HandleGroupRemoved(ItemRemovedEvent<IGroup> obj)
     {
         OnGroupRemovedFromGroup.Publish(new(this, obj.Item));

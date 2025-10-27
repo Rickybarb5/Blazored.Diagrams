@@ -1,3 +1,5 @@
+using Blazored.Diagrams.Interfaces;
+
 namespace Blazored.Diagrams.Extensions;
 
 /// <summary>
@@ -5,6 +7,26 @@ namespace Blazored.Diagrams.Extensions;
 /// </summary>
 public static class HelperExtensions
 {
+    /// <summary>
+    /// Gets the bounds of a model.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static Rect GetBounds<T>(this T model)
+        where T : ISize, IPosition
+    {
+        return new()
+        {
+            Width = model.Width,
+            Height = model.Height,
+            Top = model.PositionX,
+            Left = model.PositionY,
+            Right = model.PositionX + model.Width,
+            Bottom = model.PositionY + model.Height,
+        };
+    }
+
     /// <summary>
     /// Disposes all subscriptions in a list.
     /// </summary>
