@@ -47,7 +47,10 @@
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == Layer.Id, Redraw);
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == Layer.Id, Redraw),
+            ];
         }
 
         return base.OnAfterRenderAsync(firstRender);
@@ -58,12 +61,12 @@
         StateHasChanged();
     }
 
-    private IDisposable? _redrawSubscription;
+    private List<IDisposable> _subscriptions = [];
 
     /// <inheritdoc />
     public void Dispose()
     {
-        _redrawSubscription?.Dispose();
+        _subscriptions.DisposeAll();
     }
 
 }

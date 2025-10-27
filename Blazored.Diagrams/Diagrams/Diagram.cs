@@ -17,19 +17,17 @@ namespace Blazored.Diagrams.Diagrams;
 /// </summary>
 public partial class Diagram : IDiagram
 {
-    /// <inheritdoc />
-    public virtual string Id { get; init; } = Guid.NewGuid().ToString();
+    private ILayer _currentLayer;
+    private int _height;
 
     private ObservableList<ILayer> _layers = [];
 
     private int _panX;
     private int _panY;
-    private decimal _zoom = 1;
     private int _positionX;
     private int _positionY;
     private int _width;
-    private int _height;
-    private ILayer _currentLayer;
+    private decimal _zoom = 1;
 
     /// <summary>
     /// Instantiates a new <see cref="Diagram"/>
@@ -41,29 +39,9 @@ public partial class Diagram : IDiagram
         // Always ensure a default layer exists
         EnsureDefaultLayer();
     }
-    
-    private void EnsureDefaultLayer()
-    {
-        if (_layers.All(l=>l.Id != Guid.Empty.ToString()))
-        {
-            var defaultLayer = new Layer
-            {
-                Id = Guid.Empty.ToString(),
-            };
-            _layers.AddInternal(defaultLayer);
-            _currentLayer = defaultLayer;
-        }
-    }
 
-    private void HandleLayerRemoved(ItemRemovedEvent<ILayer> ev)
-    {
-        OnLayerRemoved.Publish(new(ev.Item));
-    }
-
-    private void HandleLayerAdded(ItemAddedEvent<ILayer> ev)
-    {
-        OnLayerAdded.Publish(new(ev.Item));
-    }
+    /// <inheritdoc />
+    public virtual string Id { get; init; } = Guid.NewGuid().ToString();
 
     /// <inheritdoc />
     public virtual decimal Zoom
@@ -142,11 +120,11 @@ public partial class Diagram : IDiagram
         set
         {
             _layers.ClearInternal();
-            value.ForEach(l=> _layers.AddInternal(l));
+            value.ForEach(l => _layers.AddInternal(l));
             EnsureDefaultLayer();
         }
     }
-    
+
     /// <inheritdoc />
     [JsonIgnore]
     public virtual IReadOnlyList<INode> AllNodes => _layers.SelectMany(layer => layer.AllNodes).ToList().AsReadOnly();
@@ -168,6 +146,7 @@ public partial class Diagram : IDiagram
     [JsonIgnore]
     public IReadOnlyList<ISelectable> SelectedModels =>
         Layers.SelectMany(l => l.SelectedModels).ToList().AsReadOnly();
+
     /// <inheritdoc />
     public virtual ILayer CurrentLayer
     {
@@ -226,42 +205,65 @@ public partial class Diagram : IDiagram
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<DiagramSizeChangedEvent> OnSizeChanged { get; init; } =
+    public ITypedEvent<DiagramSizeChangedEvent> OnSizeChanged { get; init; } =
         new TypedEvent<DiagramSizeChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<DiagramZoomChangedEvent> OnZoomChanged { get; init; } =
+    public ITypedEvent<DiagramZoomChangedEvent> OnZoomChanged { get; init; } =
         new TypedEvent<DiagramZoomChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<DiagramPanChangedEvent> OnPanChanged { get; init; } = new TypedEvent<DiagramPanChangedEvent>();
+    public ITypedEvent<DiagramPanChangedEvent> OnPanChanged { get; init; } = new TypedEvent<DiagramPanChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<LayerAddedEvent> OnLayerAdded { get; init; } = new TypedEvent<LayerAddedEvent>();
+    public ITypedEvent<LayerAddedEvent> OnLayerAdded { get; init; } = new TypedEvent<LayerAddedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<LayerRemovedEvent> OnLayerRemoved { get; init; } = new TypedEvent<LayerRemovedEvent>();
+    public ITypedEvent<LayerRemovedEvent> OnLayerRemoved { get; init; } = new TypedEvent<LayerRemovedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<DiagramPositionChangedEvent> OnPositionChanged { get; init; } =
+    public ITypedEvent<DiagramPositionChangedEvent> OnPositionChanged { get; init; } =
         new TypedEvent<DiagramPositionChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<CurrentLayerChangedEvent> OnCurrentLayerChanged { get; init; } =
+    public ITypedEvent<CurrentLayerChangedEvent> OnCurrentLayerChanged { get; init; } =
         new TypedEvent<CurrentLayerChangedEvent>();
 
 
     /// <inheritdoc />
     public void Dispose()
     {
-        Layers.ForEach(l=>l.Dispose());
+        Layers.ForEach(l => l.Dispose());
         _layers.OnItemAdded.Unsubscribe(HandleLayerAdded);
         _layers.OnItemRemoved.Unsubscribe(HandleLayerRemoved);
+    }
+
+    private void EnsureDefaultLayer()
+    {
+        if (_layers.All(l => l.Id != Guid.Empty.ToString()))
+        {
+            var defaultLayer = new Layer
+            {
+                Id = Guid.Empty.ToString(),
+            };
+            Layers.AddInternal(defaultLayer);
+            _currentLayer = defaultLayer;
+        }
+    }
+
+    private void HandleLayerRemoved(ItemRemovedEvent<ILayer> ev)
+    {
+        OnLayerRemoved.Publish(new(ev.Item));
+    }
+
+    private void HandleLayerAdded(ItemAddedEvent<ILayer> ev)
+    {
+        OnLayerAdded.Publish(new(ev.Item));
     }
 }

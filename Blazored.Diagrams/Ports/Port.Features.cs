@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Events;
+using Blazored.Diagrams.Interfaces;
 using Blazored.Diagrams.Links;
 
 namespace Blazored.Diagrams.Ports;
@@ -41,14 +42,14 @@ public partial class Port
     }
 
     /// <inheritdoc />
-    public virtual bool CanConnectTo(IPort port)
+    public virtual bool CanConnectTo(IPort targetPort)
     {
         var canConnect =
-            Id != port.Id &&
-            Parent.Id != port.Parent.Id;
+            Id != targetPort.Id &&
+            Parent.Id != targetPort.Parent.Id;
         return canConnect;
     }
-    
+
     /// <inheritdoc />
     void IPort.SetPositionInternal(int x, int y)
     {
@@ -61,6 +62,13 @@ public partial class Port
     {
         _width = width;
         _height = height;
+    }
+
+    /// <inheritdoc />
+    /// <returns> <see cref="PositionX"/> and <see cref="PositionY"/>.</returns>
+    public virtual (int PositionX, int PositionY) CustomPositioning()
+    {
+        return (PositionX, PositionY);
     }
 
     private void HandleOutgoingLinkRemoved(ItemRemovedEvent<ILink> obj)
@@ -83,59 +91,5 @@ public partial class Port
     private void HandleIncomingLinkAdded(ItemAddedEvent<ILink> obj)
     {
         OnIncomingLinkAdded.Publish(new(this, obj.Item));
-    }
-
-    /// <inheritdoc />
-    public virtual (int PositionX, int PositionY) CalculatePosition()
-    {
-        var (x, y) = (Position: Alignment, Alignment: Justification) switch
-        {
-            (PortAlignment.Left, PortJustification.Start) => (Parent.PositionX - Width / 2,
-                Parent.PositionY - Height / 2),
-            (PortAlignment.Left, PortJustification.Center) => (Parent.PositionX - Width / 2,
-                Parent.PositionY + Parent.Height / 2 - Height / 2),
-            (PortAlignment.Left, PortJustification.End) => (Parent.PositionX - Width / 2,
-                Parent.PositionY + Parent.Height - Height / 2),
-
-            (PortAlignment.Right, PortJustification.Start) => (
-                Parent.PositionX + Parent.Width - Width / 2,
-                Parent.PositionY - Height / 2),
-            (PortAlignment.Right, PortJustification.Center) => (
-                Parent.PositionX + Parent.Width - Width / 2,
-                Parent.PositionY + Parent.Height / 2 - Height / 2),
-            (PortAlignment.Right, PortJustification.End) => (Parent.PositionX + Parent.Width - Width / 2,
-                Parent.PositionY + Parent.Height - Height / 2),
-
-            (PortAlignment.Top, PortJustification.Start) =>
-                (Parent.PositionX - Width / 2, Parent.PositionY - Height / 2),
-            (PortAlignment.Top, PortJustification.Center) => (
-                Parent.PositionX + Parent.Width / 2 - Width / 2,
-                Parent.PositionY - Height / 2),
-            (PortAlignment.Top, PortJustification.End) => (Parent.PositionX + Parent.Width - Width / 2,
-                Parent.PositionY - Height / 2),
-
-            (PortAlignment.Bottom, PortJustification.Start) => (Parent.PositionX - Width / 2,
-                Parent.PositionY + Parent.Height - Height / 2),
-            (PortAlignment.Bottom, PortJustification.Center) => (
-                Parent.PositionX + Parent.Width / 2 - Width / 2,
-                Parent.PositionY + Parent.Height - Height / 2),
-            (PortAlignment.Bottom, PortJustification.End) => (
-                Parent.PositionX + Parent.Width - Width / 2,
-                Parent.PositionY + Parent.Height - Height / 2),
-            (PortAlignment.Custom, _) => (PositionX, PositionY),
-            (PortAlignment.CenterParent, _) => (
-                Parent.PositionX + (Parent.Width / 2) - (Width / 2),
-                Parent.PositionY + (Parent.Height / 2) - (Height / 2)
-            ),
-            _ => (PositionX, PositionY)
-        };
-        return (x, y);
-    }
-
-    /// <inheritdoc />
-    public virtual void RefreshPositionCoordinates()
-    {
-        var newPosition = CalculatePosition();
-        SetPosition(newPosition.PositionX, newPosition.PositionY);
     }
 }

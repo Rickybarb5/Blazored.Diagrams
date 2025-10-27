@@ -1,5 +1,4 @@
-﻿
-using Blazored.Diagrams.Components.Models;
+﻿using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
@@ -17,17 +16,17 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
 {
     private readonly ObservableList<ILink> _incomingLinks = [];
     private readonly ObservableList<ILink> _outgoingLinks = [];
-    private PortJustification _justification = PortJustification.Center;
+    private PortAlignment _alignment = PortAlignment.Left;
     private int _height;
     private bool _isVisible = true;
+    private PortJustification _justification = PortJustification.Center;
+    private int _offsetX;
+    private int _offsetY;
     private IPortContainer _parent;
-    private PortAlignment _alignment = PortAlignment.Left;
-    private int _width;
     private int _positionX;
     private int _positionY;
     private bool _selected;
-    private int _offsetX;
-    private int _offsetY;
+    private int _width;
 
     /// <summary>
     ///     Instantiates a new <see cref="Port" />
@@ -42,6 +41,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
 
     /// <inheritdoc />
     public virtual string Id { get; init; } = Guid.NewGuid().ToString();
+
     /// <inheritdoc />
     [JsonIgnore]
     public virtual bool HasLinks => HasOutGoingLinks || HasIncomingLinks;
@@ -53,68 +53,6 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     /// <inheritdoc />
     [JsonIgnore]
     public virtual bool HasOutGoingLinks => _outgoingLinks.Count != 0;
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; } =
-        new TypedEvent<PortJustificationChangedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged { get; init; } =
-        new TypedEvent<PortAlignmentChangedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortPositionChangedEvent> OnPositionChanged { get; init; } =
-        new TypedEvent<PortPositionChangedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<PortSizeChangedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortParentChangedEvent> OnPortParentChanged { get; init; } =
-        new TypedEvent<PortParentChangedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
-        new TypedEvent<PortVisibilityChangedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded { get; init; } =
-        new TypedEvent<IncomingLinkAddedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved { get; init; } =
-        new TypedEvent<IncomingLinkRemovedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded { get; init; } =
-        new TypedEvent<OutgoingLinkAddedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved { get; init; } =
-        new TypedEvent<OutgoingLinkRemovedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; } = new TypedEvent<LinkRemovedEvent>();
-
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<LinkAddedEvent>();
-    
-    
-    /// <inheritdoc />
-    [JsonIgnore]
-    public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; } = new TypedEvent<PortSelectionChangedEvent>();
 
     /// <inheritdoc />
     public virtual int Width
@@ -153,7 +91,7 @@ public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<L
         get => _positionX + OffSetX;
         set
         {
-            if (value!= _positionX)
+            if (value != _positionX)
             {
                 var oldX = _positionX;
                 _positionX = value;
@@ -168,7 +106,7 @@ public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<L
         get => _positionY + OffsetY;
         set
         {
-            if (value!= _positionY)
+            if (value != _positionY)
             {
                 var oldY = _positionY;
                 _positionY = value;
@@ -176,15 +114,15 @@ public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<L
             }
         }
     }
-    
+
 
     /// <inheritdoc />
-    public int OffSetX  
+    public int OffSetX
     {
         get => _offsetX;
         set
         {
-            if (value!= _offsetX)
+            if (value != _offsetX)
             {
                 var oldX = _positionX;
                 _offsetX = value;
@@ -194,12 +132,12 @@ public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<L
     }
 
     /// <inheritdoc />
-    public int OffsetY  
+    public int OffsetY
     {
         get => _offsetY;
         set
         {
-            if (value!= _positionY)
+            if (value != _positionY)
             {
                 var oldY = _positionY;
                 _positionY = value;
@@ -319,14 +257,28 @@ public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<L
         _outgoingLinks.OnItemRemoved.Unsubscribe(HandleOutgoingLinkRemoved);
     }
 
-    public bool IsSelected { get=> _selected;
+    public bool IsSelected
+    {
+        get => _selected;
         set
         {
             if (value != _selected)
             {
                 _selected = value;
-                OnSelectionChanged.Publish(new (this));
+                OnSelectionChanged.Publish(new(this));
             }
         }
     }
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public Rect Bounds => new()
+    {
+        Width = Width,
+        Height = Height,
+        Top = PositionX,
+        Left = PositionY,
+        Right = PositionX + Width,
+        Bottom = PositionY + Height,
+    };
 }

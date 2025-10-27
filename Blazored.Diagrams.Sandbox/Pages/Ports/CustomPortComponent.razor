@@ -1,0 +1,77 @@
+@using System.Text
+
+<!-- This div is the custom port, styled as a diamond -->
+<div class="@GetClass()">
+</div>
+
+@code {
+    [CascadingParameter] public required IDiagramService DiagramService { get; init; }
+
+    /// <summary>
+    /// The parameter MUST be named 'Port' for the PortContainer to inject it.
+    /// The type is our new custom class.
+    /// </summary>
+    [Parameter]
+    public required CustomPort Port { get; init; }
+
+    private StringBuilder _builder = new();
+    private const string DefaultCssClass = "custom-port";
+
+    /// <summary>
+    /// This logic dynamically applies CSS classes for selection and link status.
+    /// </summary>
+    private string GetClass()
+    {
+        _builder.Clear();
+        _builder.Append(DefaultCssClass);
+        if (Port.IsSelected)
+        {
+            _builder.Append(" selected");
+        }
+
+        if (Port.HasLinks)
+        {
+            _builder.Append(" linked");
+        }
+
+        return _builder.ToString();
+    }
+
+}
+
+<style>
+    .custom-port {
+        /* Base diamond shape */
+        width: 20px;
+        height: 20px;
+        background-color: whitesmoke;
+        border: 2px solid #673ab7; /* Deep Purple */
+        transform: rotate(45deg); /* This creates the diamond shape */
+
+        /* Copied from default port for behavior */
+        -webkit-user-drag: none;
+        cursor: grab;
+        transition: all 0.15s ease;
+    }
+
+    .custom-port:hover {
+        cursor: grab;
+        background-color: #ede7f6; /* Light purple */
+        filter: drop-shadow(0 0 4px rgba(103, 58, 183, 0.8));
+    }
+
+    .custom-port:active {
+        cursor: grabbing;
+    }
+
+    /* Style for when the port is selected */
+    .custom-port.selected {
+        background: #9575cd; /* Lighter purple */
+        border-color: #311b92; /* Darker purple */
+    }
+
+    /* Style for when the port has at least one link */
+    .custom-part.linked {
+        background-color: #673ab7; /* Deep Purple */
+    }
+</style>

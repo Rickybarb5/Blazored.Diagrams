@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Events;
+using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Options;
@@ -12,8 +13,8 @@ namespace Blazored.Diagrams.Test.Services;
 
 public class ComponentRegistryTests
 {
-    private readonly Mock<IOptions<BlazoredDiagramsOptions>> _optionsMock;
     private readonly BlazoredDiagramsOptions _options;
+    private readonly Mock<IOptions<BlazoredDiagramsOptions>> _optionsMock;
 
     public ComponentRegistryTests()
     {
@@ -89,14 +90,14 @@ public class ComponentRegistryTests
 
     private class UnregisteredTestNode : INode
     {
-        private ITypedEvent<NodeSizeChangedEvent> _sizeChanged;
+        private ITypedEvent<PortAddedToNodeEvent> _portAdded;
+        private ITypedEvent<PortAddedEvent> _portAdded1;
+        private ITypedEvent<PortRemovedFromNodeEvent> _portRemoved;
+        private ITypedEvent<PortRemovedEvent> _portRemoved1;
         private ITypedEvent<NodePositionChangedEvent> _positionChanged;
         private ITypedEvent<NodeSelectionChangedEvent> _selectionChanged;
+        private ITypedEvent<NodeSizeChangedEvent> _sizeChanged;
         private ITypedEvent<NodeVisibilityChangedEvent> _visibilityChanged;
-        private ITypedEvent<PortAddedToNodeEvent> _portAdded;
-        private ITypedEvent<PortRemovedFromNodeEvent> _portRemoved;
-        private ITypedEvent<PortAddedEvent> _portAdded1;
-        private ITypedEvent<PortRemovedEvent> _portRemoved1;
         public string Id { get; init; }
         public bool IsVisible { get; set; }
         public bool IsSelected { get; set; }
@@ -176,6 +177,7 @@ public class ComponentRegistryTests
         }
 
         public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
+        public Rect Bounds { get; }
     }
 
     private abstract class BaseTestNode : Node, IHasComponent<TestComponent>;

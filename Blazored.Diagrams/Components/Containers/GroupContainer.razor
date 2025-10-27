@@ -58,7 +58,6 @@
 
     private Dictionary<string, object> Parameters => new() { { nameof(Group), Group } };
     private List<IDisposable> _subscriptions = [];
-    private IDisposable? _redrawSubscription;
 
     /// <summary>
     /// ID of the group container
@@ -67,7 +66,6 @@
 
     void IDisposable.Dispose()
     {
-        _redrawSubscription?.Dispose();
         _subscriptions.DisposeAll();
     }
 
@@ -76,13 +74,14 @@
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService.Events.SubscribeWhere<GroupRedrawEvent>(p => p.Model.Id == Group.Id, Redraw);
             _subscriptions =
             [
+                DiagramService.Events.SubscribeWhere<GroupRedrawEvent>(p => p.Model.Id == Group.Id, Redraw),
                 DiagramService.Events.SubscribeWhere<NodeSizeChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllNodes.Contains(p.Model)), Resize),
                 DiagramService.Events.SubscribeWhere<NodePositionChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllNodes.Contains(p.Model)), Resize),
                 DiagramService.Events.SubscribeWhere<NodeAddedToGroupEvent>(p => p.Model.Id == Group.Id, Resize),
                 DiagramService.Events.SubscribeWhere<NodeRemovedFromGroupEvent>(p => p.Model.Id == Group.Id, Resize),
+
                 DiagramService.Events.SubscribeWhere<GroupAddedToGroupEvent>(p => p.ParentModel.Id == Group.Id, Resize),
                 DiagramService.Events.SubscribeWhere<GroupRemovedFromGroupEvent>(p => p.ParentModel.Id == Group.Id, Resize),
                 DiagramService.Events.SubscribeWhere<GroupPaddingChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllGroups.Contains(p.Model)), Resize),
@@ -146,8 +145,6 @@
         
         // Redraw ports manually, as we are not triggering group events
         group.Ports.ForEach(p => DiagramService.Events.Publish(new PortRedrawEvent(p)));
-        
         StateHasChanged();
     }
-
 }

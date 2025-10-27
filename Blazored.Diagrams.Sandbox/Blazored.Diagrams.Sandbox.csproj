@@ -20,7 +20,6 @@
         <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Pages\Ports\" />
       <Folder Include="wwwroot\docs\" />
     </ItemGroup>
     <ItemGroup>

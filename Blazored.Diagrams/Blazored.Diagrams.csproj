@@ -45,6 +45,9 @@
         <Compile Update="Services\Diagrams\DiagramService.Positioning.cs">
           <DependentUpon>DiagramService.cs</DependentUpon>
         </Compile>
+        <Compile Update="Ports\Port.Events.cs">
+            <DependentUpon>Port.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

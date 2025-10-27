@@ -1,4 +1,5 @@
-﻿using Blazored.Diagrams.Events;
+﻿using Blazored.Diagrams.Diagrams;
+using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Groups;
 using Blazored.Diagrams.Links;
@@ -33,7 +34,7 @@ public class RedrawBehaviour : BaseBehaviour
     {
         OnEnabledChanged(ev.IsEnabled);
     }
-    
+
     private void OnEnabledChanged(bool isEnabled)
     {
         if (isEnabled)
@@ -75,16 +76,27 @@ public class RedrawBehaviour : BaseBehaviour
             _service.Events.SubscribeTo<LinkTargetPortChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkTargetPositionChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<DiagramRedrawEvent>(RedrawFullDiagram),
+            _service.Events.SubscribeTo<DiagramSwitchEvent>(RedrawFullDiagram),
         ];
     }
 
-    private void RedrawFullDiagram(DiagramRedrawEvent ev)
+    private void RedrawFullDiagram(DiagramRedrawEvent obj)
     {
-        ev.Model.Layers.ForEach(l=> _service.Events.Publish(new LayerRedrawEvent(l)));
-        ev.Model.AllNodes.ForEach(n=> _service.Events.Publish(new NodeRedrawEvent(n)));
-        ev.Model.AllGroups.ForEach(g=> _service.Events.Publish(new GroupRedrawEvent(g)));
-        ev.Model.AllPorts.ForEach(p=> _service.Events.Publish(new PortRedrawEvent(p)));
-        ev.Model.AllLinks.ForEach(l=> _service.Events.Publish(new LinkRedrawEvent(l)));
+        RedrawFullDiagram(obj.Model);
+    }
+
+    private void RedrawFullDiagram(DiagramSwitchEvent obj)
+    {
+        RedrawFullDiagram(obj.NewDiagram);
+    }
+
+    private void RedrawFullDiagram(IDiagram Model)
+    {
+        Model.Layers.ForEach(l => _service.Events.Publish(new LayerRedrawEvent(l)));
+        Model.AllNodes.ForEach(n => _service.Events.Publish(new NodeRedrawEvent(n)));
+        Model.AllGroups.ForEach(g => _service.Events.Publish(new GroupRedrawEvent(g)));
+        Model.AllPorts.ForEach(p => _service.Events.Publish(new PortRedrawEvent(p)));
+        Model.AllLinks.ForEach(l => _service.Events.Publish(new LinkRedrawEvent(l)));
     }
 
     private void NotifyRedraw(INode obj)

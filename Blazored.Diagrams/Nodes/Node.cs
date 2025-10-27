@@ -30,30 +30,6 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
         _ports.OnItemRemoved.Subscribe(HandlePortRemoved);
     }
 
-    private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
-    {
-        obj.Item.Dispose();
-        OnPortRemovedFromNode.Publish(new(this, obj.Item));
-        OnPortRemoved.Publish(new PortRemovedEvent(obj.Item));
-    }
-
-    private void HandlePortAdded(ItemAddedEvent<IPort> obj)
-    {
-        obj.Item.Parent = this;
-        OnPortAddedToNode.Publish(new(this, obj.Item));
-        OnPortAdded.Publish(new PortAddedEvent(obj.Item));
-    }
-    
-    /// <summary>
-    /// Adds a port to the port list.
-    /// This method is useful if you want to initialize a node with default ports.
-    /// </summary>
-    /// <param name="port"></param>
-    protected void AddPortInternal(IPort port)
-    {
-        Ports.AddInternal(port);
-    }
-
     /// <inheritdoc />
     public virtual string Id { get; init; } = Guid.NewGuid().ToString();
 
@@ -201,4 +177,40 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     [JsonIgnore]
     public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; } =
         new TypedEvent<PortRemovedFromNodeEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public Rect Bounds => new()
+    {
+        Width = Width,
+        Height = Height,
+        Top = PositionX,
+        Left = PositionY,
+        Right = PositionX + Width,
+        Bottom = PositionY + Height,
+    };
+
+    private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
+    {
+        obj.Item.Dispose();
+        OnPortRemovedFromNode.Publish(new(this, obj.Item));
+        OnPortRemoved.Publish(new PortRemovedEvent(obj.Item));
+    }
+
+    private void HandlePortAdded(ItemAddedEvent<IPort> obj)
+    {
+        obj.Item.Parent = this;
+        OnPortAddedToNode.Publish(new(this, obj.Item));
+        OnPortAdded.Publish(new PortAddedEvent(obj.Item));
+    }
+
+    /// <summary>
+    /// Adds a port to the port list.
+    /// This method is useful if you want to initialize a node with default ports.
+    /// </summary>
+    /// <param name="port"></param>
+    protected void AddPortInternal(IPort port)
+    {
+        Ports.AddInternal(port);
+    }
 }

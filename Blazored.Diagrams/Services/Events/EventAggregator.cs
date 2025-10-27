@@ -7,29 +7,14 @@ namespace Blazored.Diagrams.Services.Events;
 /// <inheritdoc />
 public partial class EventAggregator : IEventAggregator
 {
-    private IDiagramService _diagramService;
     private readonly Dictionary<Type, List<Subscription>> _subscriptions = [];
+    private IDiagramService _diagramService;
     private long _subscriptionCount;
 
     public EventAggregator(IDiagramService diagramService)
     {
         _diagramService = diagramService;
         InitializeEventPropagation();
-    }
-    private class Subscription
-    {
-        public long Id { get; }
-        public Delegate Handler { get; }
-        public Func<object, bool>? Predicate { get; }
-        public object? Model { get; }
-
-        public Subscription(long id, Delegate handler, Func<object, bool>? predicate = null, object? model = null)
-        {
-            Id = id;
-            Handler = handler;
-            Predicate = predicate;
-            Model = model;
-        }
     }
 
     /// <inheritdoc />
@@ -68,19 +53,47 @@ public partial class EventAggregator : IEventAggregator
         PublishToSubscriptions(@event, eventType);
     }
 
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        DisposeAutoPropagation();
+        _subscriptions.Clear();
+    }
+
     private void PublishToSubscriptions<TEvent>(TEvent eventData, Type eventType)
         where TEvent : notnull
     {
-        if (!_subscriptions.TryGetValue(eventType, out var subs)) return;
+        // 1. Get the list of types/interfaces to check for subscriptions
+        var typesToCheck = new List<Type> { eventType };
+        // Add all interfaces that the event implements (IEvent, IModelEvent<TModel>, etc.)
+        typesToCheck.AddRange(eventType.GetInterfaces());
 
-        // Create a copy to avoid collection modified exceptions
-        var subscriptionsCopy = subs.ToList();
-        
-        foreach (var sub in subscriptionsCopy)
+        // Use Distinct() to handle cases where an interface might be listed multiple times
+        foreach (var t in typesToCheck.Distinct())
         {
-            if (sub.Predicate == null || sub.Predicate(eventData))
+            if (!_subscriptions.TryGetValue(t, out var subs)) continue;
+
+            // Create a copy to avoid collection modified exceptions
+            var subscriptionsCopy = subs.ToList();
+
+            foreach (var sub in subscriptionsCopy)
             {
-                ((Action<TEvent>)sub.Handler)(eventData);
+                if (sub.Predicate == null || sub.Predicate(eventData))
+                {
+                    // If 't' is the exact type (TEvent), we can use the fast direct cast.
+                    // If 't' is a base interface (like IEvent), we must use DynamicInvoke 
+                    // because we cannot cast Action<IEvent> to Action<TEvent>.
+                    if (t == eventType)
+                    {
+                        ((Action<TEvent>)sub.Handler)(eventData);
+                    }
+                    else
+                    {
+                        // This covers subscriptions to base types/interfaces like IEvent
+                        // 'eventData' is guaranteed to be assignable to the type 't'.
+                        sub.Handler.DynamicInvoke(eventData);
+                    }
+                }
             }
         }
     }
@@ -127,10 +140,20 @@ public partial class EventAggregator : IEventAggregator
         _typedEventSubscriptions.Clear();
         _autoSubscriptions.DisposeAll();
     }
-    /// <inheritdoc />
-    public void Dispose()
+
+    private class Subscription
     {
-        DisposeAutoPropagation();
-        _subscriptions.Clear();
+        public Subscription(long id, Delegate handler, Func<object, bool>? predicate = null, object? model = null)
+        {
+            Id = id;
+            Handler = handler;
+            Predicate = predicate;
+            Model = model;
+        }
+
+        public long Id { get; }
+        public Delegate Handler { get; }
+        public Func<object, bool>? Predicate { get; }
+        public object? Model { get; }
     }
 }

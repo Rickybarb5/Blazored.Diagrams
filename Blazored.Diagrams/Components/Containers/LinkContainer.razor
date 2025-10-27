@@ -36,7 +36,7 @@
     public required ILink Link { get; set; }
 
     private ElementReference _componentRef;
-    private IDisposable? _redrawSubscription;
+    private List<IDisposable> _subscriptions = [];
     private Dictionary<string, object> Parameters => new() { { nameof(Link), Link } };
 
     /// <summary>
@@ -81,8 +81,11 @@
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService.Events
-                .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == Link.Id, Redraw);
+            _subscriptions =
+            [
+                    DiagramService.Events
+                            .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == Link.Id, Redraw),
+            ];
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var size = await Js.GetBoundingClientRect(_componentRef);
             Link.SetSize((int)(size.Width), (int)(size.Height));
@@ -105,7 +108,7 @@
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        _redrawSubscription?.Dispose();
+        _subscriptions.DisposeAll();
         await ResizeObserverService.DisposeAsync();
     }
 

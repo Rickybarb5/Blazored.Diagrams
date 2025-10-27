@@ -95,7 +95,8 @@
 </div>
 @code
 {
-DiagramService Service = new();
+    [Inject]
+    IDiagramService Service {get;set;}
 }
 ";
 

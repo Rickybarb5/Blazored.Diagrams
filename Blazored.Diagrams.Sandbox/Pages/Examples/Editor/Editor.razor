@@ -44,6 +44,22 @@
                             {
                                 <MudCheckBox @bind-Value="sel.IsSelected" Label="Is Selected" Color="Color.Warning" />
                             }
+                            @* ISelectable Interface *@
+                            @if (SelectedModel is IPort p)
+                            {
+                                <MudSelect T="PortAlignment" @bind-Value="p.Alignment" Label="Align">
+                                    <MudSelectItem Value="PortAlignment.Left">Left</MudSelectItem>
+                                    <MudSelectItem Value="PortAlignment.Right">Right</MudSelectItem>
+                                    <MudSelectItem Value="PortAlignment.Top">Top</MudSelectItem>
+                                    <MudSelectItem Value="PortAlignment.Bottom">Bottom</MudSelectItem>
+                                </MudSelect>
+
+                                <MudSelect T="PortJustification" @bind-Value="p.Justification" Label="Justify">
+                                    <MudSelectItem Value="PortJustification.Start">Start</MudSelectItem>
+                                    <MudSelectItem Value="PortJustification.End">End</MudSelectItem>
+                                    <MudSelectItem Value="PortJustification.Center">Center</MudSelectItem>
+                                </MudSelect>
+                            }
                             
                             @* INodeContainer Interface (for nodes) *@
                             @if (SelectedModel is INodeContainer nc)
@@ -306,9 +322,11 @@
 
         if (container.Ports.Count < 4)
         {
+            var port = new Port { Alignment = nextAlignment };
             // Add a new Port with the found alignment
-            DiagramService.Add.PortTo(container, new Port { Alignment = nextAlignment });
+            DiagramService.Add.PortTo(container, port);
             Snackbar.Add($"Port added to {container.GetType().Name}", Severity.Info);
+            SelectModel(port);
         }
         else if (container.Ports.Count == 4)
         {

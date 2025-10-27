@@ -13,8 +13,8 @@ namespace Blazored.Diagrams.Behaviours;
 [ExcludeFromCodeCoverage]
 public class EventLoggingBehavior : BaseBehaviour
 {
-    private readonly IDiagramService _diagramService;
     private readonly LoggingBehaviourOptions _behaviourOptions;
+    private readonly IDiagramService _diagramService;
 
     /// <summary>
     /// Instantiates a new <see cref="EventLoggingBehavior"/>
@@ -32,7 +32,7 @@ public class EventLoggingBehavior : BaseBehaviour
     {
         OnEnabledChanged(ev.IsEnabled);
     }
-    
+
     private void OnEnabledChanged(bool isEnabled)
     {
         if (isEnabled)
@@ -51,61 +51,59 @@ public class EventLoggingBehavior : BaseBehaviour
         [
             _diagramService.Events.SubscribeTo<IEvent>(Log),
         ];
-        
     }
 
     private void Log(IEvent e)
     {
-            var eventType = e.GetType();
-            var properties = eventType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var eventType = e.GetType();
+        var properties = eventType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            var logMessage = new StringBuilder();
-    
-            // Header for the event
-            logMessage.AppendLine($"--- Event Log: {eventType.Name} ---");
+        var logMessage = new StringBuilder();
 
-            // Check if the event has any public properties to log
-            if (properties.Length == 0)
+        // Header for the event
+        logMessage.AppendLine($"--- Event Log: {eventType.Name} ---");
+
+        // Check if the event has any public properties to log
+        if (properties.Length == 0)
+        {
+            logMessage.AppendLine("  No public parameters found.");
+        }
+        else
+        {
+            foreach (var prop in properties)
             {
-                logMessage.AppendLine("  No public parameters found.");
-            }
-            else
-            {
-                foreach (var prop in properties)
+                try
                 {
-                    try
+                    // Get the value of the property from the event instance
+                    var value = prop.GetValue(e);
+
+                    // Use the property name and its value in the log message
+                    logMessage.AppendLine($"  {prop.Name}: {value ?? "null"}");
+
+                    // Special handling for nested complex types (like Args) is optional but helpful
+                    if (prop.Name == "Args" && value != null)
                     {
-                        // Get the value of the property from the event instance
-                        var value = prop.GetValue(e);
-
-                        // Use the property name and its value in the log message
-                        logMessage.AppendLine($"  {prop.Name}: {value ?? "null"}");
-
-                        // Special handling for nested complex types (like Args) is optional but helpful
-                        if (prop.Name == "Args" && value != null)
+                        // If it's a Blazor EventArgs, log a few key details
+                        var argsType = value.GetType();
+                        if (argsType.Name.Contains("EventArgs"))
                         {
-                            // If it's a Blazor EventArgs, log a few key details
-                            var argsType = value.GetType();
-                            if (argsType.Name.Contains("EventArgs"))
+                            var clientX = argsType.GetProperty("ClientX")?.GetValue(value);
+                            var clientY = argsType.GetProperty("ClientY")?.GetValue(value);
+
+                            if (clientX != null && clientY != null)
                             {
-                                var clientX = argsType.GetProperty("ClientX")?.GetValue(value);
-                                var clientY = argsType.GetProperty("ClientY")?.GetValue(value);
-                        
-                                if (clientX != null && clientY != null)
-                                {
-                                    logMessage.AppendLine($"    - Client Coordinates: ({clientX}, {clientY})");
-                                }
+                                logMessage.AppendLine($"    - Client Coordinates: ({clientX}, {clientY})");
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        logMessage.AppendLine($"  {prop.Name}: ERROR retrieving value ({ex.Message})");
-                    }
+                }
+                catch (Exception ex)
+                {
+                    logMessage.AppendLine($"  {prop.Name}: ERROR retrieving value ({ex.Message})");
                 }
             }
+        }
 
-            Console.WriteLine(logMessage.ToString());
-        
+        Console.WriteLine(logMessage.ToString());
     }
 }

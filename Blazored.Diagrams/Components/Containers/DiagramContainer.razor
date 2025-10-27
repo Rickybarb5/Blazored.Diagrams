@@ -40,7 +40,7 @@
     readonly NumberFormatInfo _nfi = new();
     readonly StringBuilder _sb = new();
     private ElementReference _componentRef;
-    private IDisposable? _redrawSubscription;
+    private List<IDisposable> _subscriptions = [];
     private IDiagramService _diagramService = null!;
     
     
@@ -71,11 +71,13 @@
             ArgumentNullException.ThrowIfNull(value);
             if (_diagramService?.Diagram.Id != value.Diagram.Id)
             {
-                _redrawSubscription?.Dispose();
+                _subscriptions.DisposeAll();
                 _diagramService?.Dispose();
                 _diagramService = value;
-                _redrawSubscription = _diagramService.Events
-                    .SubscribeTo<DiagramRedrawEvent>(Redraw);
+                _subscriptions =
+                [
+                    _diagramService.Events.SubscribeTo<DiagramRedrawEvent>(Redraw),
+                ];
                 InvokeAsync(StateHasChanged);
             }
         }
@@ -130,7 +132,7 @@
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        _redrawSubscription?.Dispose();
+        _subscriptions.DisposeAll();
         await ResizeObserverService.UnobserveAsync(ContainerId);
     }
 

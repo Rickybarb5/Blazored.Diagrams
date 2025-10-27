@@ -13,18 +13,19 @@ public interface IPort :
     IPosition,
     ILinkContainer,
     ISelectable,
+    IBounds,
     IDisposable
 {
     /// <summary>
     /// Offset of the port position on the X axis in pixels.
     /// </summary>
     int OffSetX { get; set; }
-    
+
     /// <summary>
     /// Offset of the port position on the Y axis in pixels.
     /// </summary>
     int OffsetY { get; set; }
-    
+
     /// <summary>
     ///     Where the port will be aligned
     /// </summary>
@@ -58,6 +59,71 @@ public interface IPort :
     bool HasOutGoingLinks { get; }
 
     /// <summary>
+    ///     Event triggered when the port alignment changes.
+    /// </summary>
+    ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; }
+
+    /// <summary>
+    ///     Event triggered when PortPosition changes.
+    /// </summary>
+    ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged { get; init; }
+
+    /// <summary>
+    ///     Event triggered when the position is changed.
+    /// </summary>
+    ITypedEvent<PortPositionChangedEvent> OnPositionChanged { get; init; }
+
+    /// <summary>
+    ///     Event triggered when the size changes.
+    /// </summary>
+    ITypedEvent<PortSizeChangedEvent> OnSizeChanged { get; init; }
+
+    /// <summary>
+    /// Event triggered when the port is assigned to a container.
+    /// </summary>
+    ITypedEvent<PortParentChangedEvent> OnPortParentChanged { get; init; }
+
+    /// <summary>
+    ///     Event triggered when the <see cref="IVisible.IsVisible" /> flag is changed.
+    /// </summary>
+    ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged { get; init; }
+
+    /// <summary>
+    ///     Event triggered when a incoming link is attached to the port.
+    /// </summary>
+    ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded { get; init; }
+
+    /// <summary>
+    ///     Event triggered when a incoming link is detached to the port.
+    /// </summary>
+    ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved { get; init; }
+
+    /// <summary>
+    ///     Event triggered when a outgoing link is attached to the port.
+    /// </summary>
+    ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded { get; init; }
+
+    /// <summary>
+    ///     Event triggered when a outgoing link is detached to the port.
+    /// </summary>
+    ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved { get; init; }
+
+    /// <summary>
+    ///     Event triggered when a link removed from the port.
+    /// </summary>
+    ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; }
+
+    /// <summary>
+    ///     Event triggered when a link is added the port.
+    /// </summary>
+    ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; }
+
+    /// <summary>
+    /// Event triggered when a port is selected/unselected.
+    /// </summary>
+    public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; }
+
+    /// <summary>
     /// Indicates if link creation is possible from this port.
     /// </summary>
     bool CanCreateLink();
@@ -66,9 +132,9 @@ public interface IPort :
     /// <summary>
     ///     Indicates if this port can connect to another port.
     /// </summary>
-    /// <param name="port">Port to evaluate if connection is possible</param>
+    /// <param name="targetPort">Port to evaluate if connection is possible</param>
     /// <returns>True if the link can connect to the input port, false otherwise.</returns>
-    bool CanConnectTo(IPort port);
+    bool CanConnectTo(IPort targetPort);
 
     /// <summary>
     ///     Sets the X and Y coordinates on the screen.
@@ -87,78 +153,9 @@ public interface IPort :
     void SetSizeInternal(int width, int height);
 
     /// <summary>
-    ///     Event triggered when the port alignment changes.
+    /// Custom function that is used when <see cref="PortAlignment"/> is <see cref="PortAlignment.Custom"/>.
     /// </summary>
-    ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; }
-
-    /// <summary>
-    ///     Event triggered when PortPosition changes.
-    /// </summary>
-    ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when the position is changed.
-    /// </summary>
-    ITypedEvent<PortPositionChangedEvent> OnPositionChanged{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when the size changes.
-    /// </summary>
-    ITypedEvent<PortSizeChangedEvent> OnSizeChanged{ get; init; }
-
-    /// <summary>
-    /// Event triggered when the port is assigned to a container.
-    /// </summary>
-    ITypedEvent<PortParentChangedEvent> OnPortParentChanged{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when the <see cref="IVisible.IsVisible" /> flag is changed.
-    /// </summary>
-    ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when a incoming link is attached to the port.
-    /// </summary>
-    ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when a incoming link is detached to the port.
-    /// </summary>
-    ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when a outgoing link is attached to the port.
-    /// </summary>
-    ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded{ get; init; }
-
-    /// <summary>
-    ///     Event triggered when a outgoing link is detached to the port.
-    /// </summary>
-    ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved{ get; init; }
-    
-    /// <summary>
-    ///     Event triggered when a link removed from the port.
-    /// </summary>
-    ITypedEvent<LinkRemovedEvent> OnLinkRemoved{ get; init; }
-    
-    /// <summary>
-    ///     Event triggered when a link is added the port.
-    /// </summary>
-    ITypedEvent<LinkAddedEvent> OnLinkAdded{ get; init; }
-    /// <summary>
-    /// Event triggered when a port is selected/unselected.
-    /// </summary>
-    public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; }
-
-
-    /// <summary>
-    ///     Calculates the x and y coordinates based on the position and alignment.
-    /// </summary>
-    /// <returns>The x and y coordinates</returns>
-    (int PositionX, int PositionY) CalculatePosition();
-
-    /// <summary>
-    /// Recalculates the port position
-    /// </summary>
-    void RefreshPositionCoordinates();
+    /// <param name="parent">The bounds of the parent</param>.
+    /// <returns></returns>
+    public (int PositionX, int PositionY) CustomPositioning();
 }

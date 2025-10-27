@@ -6,9 +6,9 @@ public class OperatorOutputPort : Port
 {
     public new required Nodes.OperatorNode Parent { get; set; }
     public Nodes.OperatorNode? Target => OutgoingLinks.FirstOrDefault()?.TargetPort?.Parent as Nodes.OperatorNode;
-    
-    public override bool CanConnectTo(IPort port)
+
+    public override bool CanConnectTo(IPort targetPort)
     {
-        return port is OperatorInputPort;
+        return targetPort is OperatorInputPort;
     }
 }

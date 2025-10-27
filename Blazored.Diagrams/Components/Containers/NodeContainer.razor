@@ -39,7 +39,7 @@
     ///     Cascading diagram from <see cref="DiagramContainer"/>
     /// </summary>
     [CascadingParameter]
-    public required IDiagramService? DiagramService { get; set; }
+    public required IDiagramService DiagramService { get; set; }
 
     /// <summary>
     ///     Node instance to be presented in the UI.
@@ -56,7 +56,7 @@
 
 
     private ElementReference _componentRef;
-    private IDisposable? _redrawSubscription;
+    private List<IDisposable> _subscriptions = [];
     private Dictionary<string, object> Parameters => new() { { nameof(Node), Node } };
 
     /// <summary>
@@ -69,10 +69,14 @@
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService?.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == Node.Id, Redraw);
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == Node.Id, Redraw),
+            ];
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
-            var size = await Js.GetBoundingClientRect(_componentRef);
-            Node.SetSize((int)(size.Width), (int)(size.Height));
+            var bounds = await Js.GetBoundingClientRect(_componentRef);
+            Bounds = bounds;
+            Node.SetSize((int)(bounds.Width), (int)(bounds.Height));
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -85,14 +89,23 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        Node.SetSize((int)(obj.Width), (int)(obj.Height));
+        InvokeAsync(async () =>
+        {
+            var bounds = await Js.GetBoundingClientRect(_componentRef);
+            Bounds = bounds;
+            Node.SetSize((int)(obj.Width), (int)(obj.Height));
+            Console.Write("Started");
+        });
     }
 
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        _redrawSubscription?.Dispose();
+        _subscriptions.DisposeAll();
         await ResizeObserverService.UnobserveAsync(ContainerId);
     }
+
+    /// <inheritdoc />
+    public Rect Bounds { get; private set; } = new();
 
 }

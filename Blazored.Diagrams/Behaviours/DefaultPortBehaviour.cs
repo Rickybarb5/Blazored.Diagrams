@@ -10,8 +10,8 @@ namespace Blazored.Diagrams.Behaviours;
 /// </summary>
 public class DefaultPortBehaviour : BaseBehaviour
 {
-    private readonly IDiagramService _service;
     private readonly DefaultPortBehaviourOptions _behaviourOptions;
+    private readonly IDiagramService _service;
 
     /// <summary>
     /// Instantiates a new <see cref="DefaultPortBehaviour"/>
@@ -29,7 +29,7 @@ public class DefaultPortBehaviour : BaseBehaviour
     {
         OnEnabledChanged(ev.IsEnabled);
     }
-    
+
     private void OnEnabledChanged(bool isEnabled)
     {
         if (isEnabled)
@@ -46,19 +46,6 @@ public class DefaultPortBehaviour : BaseBehaviour
     {
         Subscriptions =
         [
-            // Change port position.
-            _service.Events.SubscribeTo<PortJustificationChangedEvent>(HandleJustificationUpdate),
-            _service.Events.SubscribeTo<PortAlignmentChangedEvent>(HandleAlignmentUpdate),
-            _service.Events.SubscribeTo<PortRedrawEvent>(HandleRedraw),
-            _service.Events.SubscribeWhere<GroupPositionChangedEvent>(p => p.Model.Ports.Count != 0,
-                HandleParentPositionChange),
-            _service.Events.SubscribeWhere<GroupSizeChangedEvent>(p => p.Model.Ports.Count != 0,
-                HandleParentSizeChange),
-            _service.Events.SubscribeWhere<NodePositionChangedEvent>(p => p.Model.Ports.Count != 0,
-                HandleParentPositionChange),
-            _service.Events.SubscribeWhere<NodeSizeChangedEvent>(p => p.Model.Ports.Count != 0,
-                HandleParentSizeChange),
-
             // Link management
             _service.Events.SubscribeTo<IncomingLinkAddedEvent>(HandleIncomingLinkAdded),
             _service.Events.SubscribeTo<IncomingLinkRemovedEvent>(HandleIncomingLinkRemoved),
@@ -69,41 +56,6 @@ public class DefaultPortBehaviour : BaseBehaviour
             _service.Events.SubscribeTo<PortAddedToNodeEvent>(HandlePortAddedToNodeEvent),
             _service.Events.SubscribeTo<PortAddedToGroupEvent>(HandlePortAddedToGroupEvent),
         ];
-    }
-
-    private void HandleRedraw(PortRedrawEvent obj)
-    {
-        obj.Model.RefreshPositionCoordinates();
-    }
-
-    private void HandleParentSizeChange(GroupSizeChangedEvent obj)
-    {
-        obj.Model.Ports.ForEach(x => x.RefreshPositionCoordinates());
-    }
-
-    private void HandleParentPositionChange(GroupPositionChangedEvent obj)
-    {
-        obj.Model.Ports.ForEach(x => x.RefreshPositionCoordinates());
-    }
-
-    private void HandleParentSizeChange(NodeSizeChangedEvent obj)
-    {
-        obj.Model.Ports.ForEach(x => x.RefreshPositionCoordinates());
-    }
-
-    private void HandleParentPositionChange(NodePositionChangedEvent obj)
-    {
-        obj.Model.Ports.ForEach(x => x.RefreshPositionCoordinates());
-    }
-
-    private void HandleAlignmentUpdate(PortAlignmentChangedEvent ev)
-    {
-        ev.Model.RefreshPositionCoordinates();
-    }
-
-    private void HandleJustificationUpdate(PortJustificationChangedEvent obj)
-    {
-        obj.Model.RefreshPositionCoordinates();
     }
 
     private void HandlePortAddedToGroupEvent(PortAddedToGroupEvent obj)

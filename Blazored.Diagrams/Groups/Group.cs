@@ -1,5 +1,4 @@
-﻿
-using Blazored.Diagrams.Components.Models;
+﻿using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Helpers;
@@ -39,74 +38,6 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
         _ports.OnItemRemoved.Subscribe(HandlePortRemoved);
     }
 
-    private void HandleGroupRemoved(ItemRemovedEvent<IGroup> obj)
-    {
-        OnGroupRemovedFromGroup.Publish(new(this, obj.Item));
-        OnGroupRemoved.Publish(new(obj.Item));
-    }
-
-    private void HandleGroupAdded(ItemAddedEvent<IGroup> obj)
-    {
-        OnGroupAddedToGroup.Publish(new(this, obj.Item));
-        OnGroupAdded.Publish(new(obj.Item));
-    }
-
-    private void HandleNodeRemoved(ItemRemovedEvent<INode> obj)
-    {
-        OnNodeRemovedFromGroup.Publish(new(this, obj.Item));
-        OnNodeRemoved.Publish(new(obj.Item));
-    }
-
-    private void HandleNodeAdded(ItemAddedEvent<INode> obj)
-    {
-        OnNodeAddedToGroup.Publish(new(this, obj.Item));
-        OnNodeAdded.Publish(new(obj.Item));
-    }
-
-    private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
-    {
-        obj.Item.Dispose();
-        OnPortRemovedFromGroup.Publish(new(this, obj.Item));
-        OnPortRemoved.Publish(new(obj.Item));
-    }
-
-    private void HandlePortAdded(ItemAddedEvent<IPort> obj)
-    {
-        obj.Item.Parent = this;
-        OnPortAddedToGroup?.Publish(new(this, obj.Item));
-        OnPortAdded.Publish(new(obj.Item));
-    }
-    
-    /// <summary>
-    /// Adds a port to the port list.
-    /// This method is useful if you want to initialize a node with default ports.
-    /// </summary>
-    /// <param name="port">The port that will be added.</param>
-    protected void AddPortInternal(IPort port)
-    {
-        Ports.AddInternal(port);
-    }
-    
-    /// <summary>
-    /// Adds a node to the node list.
-    /// This method is useful if you want to initialize a node with default ports.
-    /// </summary>
-    /// <param name="node">Node to be added</param>
-    protected void AddNodeInternal(INode node)
-    {
-        Nodes.AddInternal(node);
-    }
-
-    /// <summary>
-    /// Adds a group to the group list.
-    /// This method is useful if you want to initialize a node with default ports.
-    /// </summary>
-    /// <param name="group"></param>
-    protected void AddGroupInternal(IGroup group)
-    {
-        Groups.AddInternal(group);
-    }
-    
     /// <inheritdoc />
     public virtual void Dispose()
     {
@@ -199,7 +130,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
             if (_isSelected != value)
             {
                 _isSelected = value;
-                OnSelectionChanged?.Publish(new (this));
+                OnSelectionChanged?.Publish(new(this));
             }
         }
     }
@@ -243,7 +174,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
         set
         {
             _ports.ClearInternal();
-            value.ForEach(p=>_ports.AddInternal(p));
+            value.ForEach(p => _ports.AddInternal(p));
         }
     }
 
@@ -254,7 +185,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
         set
         {
             _nodes.ClearInternal();
-            value.ForEach(n=>_nodes.AddInternal(n));
+            value.ForEach(n => _nodes.AddInternal(n));
         }
     }
 
@@ -265,7 +196,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
         set
         {
             _groups.ClearInternal();
-            value.ForEach(g=>_groups.AddInternal(g));
+            value.ForEach(g => _groups.AddInternal(g));
         }
     }
 
@@ -297,72 +228,159 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<GroupSizeChangedEvent>();
+    public ITypedEvent<GroupSizeChangedEvent> OnSizeChanged { get; init; } = new TypedEvent<GroupSizeChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; } =
+    public ITypedEvent<GroupPositionChangedEvent> OnPositionChanged { get; init; } =
         new TypedEvent<GroupPositionChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; } =
+    public ITypedEvent<GroupSelectionChangedEvent> OnSelectionChanged { get; init; } =
         new TypedEvent<GroupSelectionChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
+    public ITypedEvent<GroupVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
         new TypedEvent<GroupVisibilityChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } = new TypedEvent<PortAddedToGroupEvent>();
+    public ITypedEvent<PortAddedToGroupEvent> OnPortAddedToGroup { get; init; } =
+        new TypedEvent<PortAddedToGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; } =
+    public ITypedEvent<PortRemovedFromGroupEvent> OnPortRemovedFromGroup { get; init; } =
         new TypedEvent<PortRemovedFromGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; } = new TypedEvent<NodeAddedToGroupEvent>();
+    public ITypedEvent<NodeAddedToGroupEvent> OnNodeAddedToGroup { get; init; } =
+        new TypedEvent<NodeAddedToGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; } =
+    public ITypedEvent<NodeRemovedFromGroupEvent> OnNodeRemovedFromGroup { get; init; } =
         new TypedEvent<NodeRemovedFromGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedToGroup { get; init; } = new TypedEvent<GroupAddedToGroupEvent>();
+    public ITypedEvent<GroupAddedToGroupEvent> OnGroupAddedToGroup { get; init; } =
+        new TypedEvent<GroupAddedToGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; } =
+    public ITypedEvent<GroupRemovedFromGroupEvent> OnGroupRemovedFromGroup { get; init; } =
         new TypedEvent<GroupRemovedFromGroupEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; } =
+    public ITypedEvent<GroupPaddingChangedEvent> OnPaddingChanged { get; init; } =
         new TypedEvent<GroupPaddingChangedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } =  new TypedEvent<NodeAddedEvent>();
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } =   new TypedEvent<NodeRemovedEvent>();
-    /// <inheritdoc />
-    [JsonIgnore]
-public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } =  new TypedEvent<GroupAddedEvent>();
+    public ITypedEvent<PortAddedEvent> OnPortAdded { get; init; } = new TypedEvent<PortAddedEvent>();
 
     /// <inheritdoc />
     [JsonIgnore]
-public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
+    public ITypedEvent<PortRemovedEvent> OnPortRemoved { get; init; } = new TypedEvent<PortRemovedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<NodeAddedEvent> OnNodeAdded { get; init; } = new TypedEvent<NodeAddedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<NodeRemovedEvent> OnNodeRemoved { get; init; } = new TypedEvent<NodeRemovedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; } = new TypedEvent<GroupAddedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public Rect Bounds => new()
+    {
+        Width = Width,
+        Height = Height,
+        Top = PositionX,
+        Left = PositionY,
+        Right = PositionX + Width,
+        Bottom = PositionY + Height,
+    };
+
+    private void HandleGroupRemoved(ItemRemovedEvent<IGroup> obj)
+    {
+        OnGroupRemovedFromGroup.Publish(new(this, obj.Item));
+        OnGroupRemoved.Publish(new(obj.Item));
+    }
+
+    private void HandleGroupAdded(ItemAddedEvent<IGroup> obj)
+    {
+        OnGroupAddedToGroup.Publish(new(this, obj.Item));
+        OnGroupAdded.Publish(new(obj.Item));
+    }
+
+    private void HandleNodeRemoved(ItemRemovedEvent<INode> obj)
+    {
+        OnNodeRemovedFromGroup.Publish(new(this, obj.Item));
+        OnNodeRemoved.Publish(new(obj.Item));
+    }
+
+    private void HandleNodeAdded(ItemAddedEvent<INode> obj)
+    {
+        OnNodeAddedToGroup.Publish(new(this, obj.Item));
+        OnNodeAdded.Publish(new(obj.Item));
+    }
+
+    private void HandlePortRemoved(ItemRemovedEvent<IPort> obj)
+    {
+        obj.Item.Dispose();
+        OnPortRemovedFromGroup.Publish(new(this, obj.Item));
+        OnPortRemoved.Publish(new(obj.Item));
+    }
+
+    private void HandlePortAdded(ItemAddedEvent<IPort> obj)
+    {
+        obj.Item.Parent = this;
+        OnPortAddedToGroup?.Publish(new(this, obj.Item));
+        OnPortAdded.Publish(new(obj.Item));
+    }
+
+    /// <summary>
+    /// Adds a port to the port list.
+    /// This method is useful if you want to initialize a node with default ports.
+    /// </summary>
+    /// <param name="port">The port that will be added.</param>
+    protected void AddPortInternal(IPort port)
+    {
+        Ports.AddInternal(port);
+    }
+
+    /// <summary>
+    /// Adds a node to the node list.
+    /// This method is useful if you want to initialize a node with default ports.
+    /// </summary>
+    /// <param name="node">Node to be added</param>
+    protected void AddNodeInternal(INode node)
+    {
+        Nodes.AddInternal(node);
+    }
+
+    /// <summary>
+    /// Adds a group to the group list.
+    /// This method is useful if you want to initialize a node with default ports.
+    /// </summary>
+    /// <param name="group"></param>
+    protected void AddGroupInternal(IGroup group)
+    {
+        Groups.AddInternal(group);
+    }
 }
