@@ -58,7 +58,7 @@
                             <MudSwitch @bind-Value="@Service.Options.Styling.GridEnabled"
                                        Color="Color.Primary"
                                        Label="Show/Hide Grid"
-                                       LabelPosition="LabelPosition.Start"/>
+                                       LabelPlacement="Placement.Start"/>
                         </MudStack>
 
                         <MudDivider Class="my-4"/>
@@ -68,7 +68,7 @@
                             Allows you to enable/disable virtualization.
                         </MudText>
                         <MudStack Spacing="3">
-                            <MudSwitch Immediate="true" Label="Enable virtualization" @bind-Value="Service.Options.Virtualization.IsEnabled" Color="Color.Primary"/>
+                            <MudSwitch Label="Enable virtualization" @bind-Value="Service.Options.Virtualization.IsEnabled" Color="Color.Primary"/>
                             <MudNumericField T="int" Immediate="true" Label="Buffer size" HelperText="Bigger allows more items further offscreen."
                                              @bind-Value="Service.Options.Virtualization.BufferSize"/>
                         </MudStack>
@@ -99,7 +99,7 @@ DiagramService Service = new();
 }
 ";
 
-    [Inject] public IDiagramService Service { get; set; }
+    [Inject] public IDiagramService Service { get; set; } = null!;
 
     private void OnTextChanged(string hex)
     {

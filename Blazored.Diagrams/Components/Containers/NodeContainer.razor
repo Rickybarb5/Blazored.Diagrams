@@ -2,23 +2,23 @@
 @using Blazored.Diagrams.Services.Observers
 @using Blazored.Diagrams.Services.Registry
 @implements IAsyncDisposable
-@if (_node is not null && Node.IsVisible)
+@if (Node is not null && Node.IsVisible)
 {
     <div style="@($"left:{Node.PositionX}px;top:{Node.PositionY}px;position:absolute;")"
-         @onpointerleave="ctx => DiagramService?.Events.Publish(new NodePointerLeaveEvent(_node, ctx))"
-         @onpointerdown="ctx => DiagramService?.Events.Publish(new NodePointerDownEvent(_node, ctx))"
-         @onpointerenter="ctx => DiagramService?.Events.Publish(new NodePointerEnterEvent(_node, ctx))"
-         @onpointermove="ctx => DiagramService?.Events.Publish(new NodePointerMoveEvent(_node, ctx))"
-         @onpointerup="ctx => DiagramService?.Events.Publish(new NodePointerUpEvent(_node, ctx))"
-         @onwheel="ctx => DiagramService?.Events.Publish(new NodeWheelEvent(_node, ctx))"
-         @onclick="ctx => DiagramService?.Events.Publish(new NodeClickedEvent(_node, ctx))"
-         @ondblclick="ctx => DiagramService?.Events.Publish(new NodeDoubleClickedEvent(_node, ctx))"
+         @onpointerleave="ctx => DiagramService?.Events.Publish(new NodePointerLeaveEvent(Node, ctx))"
+         @onpointerdown="ctx => DiagramService?.Events.Publish(new NodePointerDownEvent(Node, ctx))"
+         @onpointerenter="ctx => DiagramService?.Events.Publish(new NodePointerEnterEvent(Node, ctx))"
+         @onpointermove="ctx => DiagramService?.Events.Publish(new NodePointerMoveEvent(Node, ctx))"
+         @onpointerup="ctx => DiagramService?.Events.Publish(new NodePointerUpEvent(Node, ctx))"
+         @onwheel="ctx => DiagramService?.Events.Publish(new NodeWheelEvent(Node, ctx))"
+         @onclick="ctx => DiagramService?.Events.Publish(new NodeClickedEvent(Node, ctx))"
+         @ondblclick="ctx => DiagramService?.Events.Publish(new NodeDoubleClickedEvent(Node, ctx))"
          @onpointerdown:stopPropagation
          @ref="_componentRef" id="@(ContainerId)">
         <DynamicComponent Type=@(ComponentRegistry.GetComponentType(Node.GetType())) Parameters="@(Parameters)"></DynamicComponent>
     </div>
     
-    @foreach (var port in _node.Ports)
+    @foreach (var port in Node.Ports)
     {
         <PortContainer Port="port"></PortContainer>
     }
@@ -48,20 +48,9 @@
     [EditorRequired]
     public required INode Node
     {
-        get => _node;
-        set
-        {
-            if (_node != value)
-            {
-                _redrawSubscription?.Dispose();
-                _node = value;
-                _redrawSubscription = DiagramService?.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == _node.Id, Redraw);
-                StateHasChanged();
-            }
-        }
+        get;
+        set;
     }
-
-    private INode _node = null!;
 
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
 
@@ -73,17 +62,17 @@
     /// <summary>
     /// ID of the node container
     /// </summary>
-    public string ContainerId => $"node-container-{_node.Id}";
+    public string ContainerId => $"node-container-{Node.Id}";
 
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService?.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == _node.Id, Redraw);
+            _redrawSubscription = DiagramService?.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == Node.Id, Redraw);
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var size = await Js.GetBoundingClientRect(_componentRef);
-            _node.SetSize((int)(size.Width), (int)(size.Height));
+            Node.SetSize((int)(size.Width), (int)(size.Height));
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -96,7 +85,7 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        _node.SetSize((int)(obj.Width), (int)(obj.Height));
+        Node.SetSize((int)(obj.Width), (int)(obj.Height));
     }
 
     /// <inheritdoc />

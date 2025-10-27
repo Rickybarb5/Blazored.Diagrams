@@ -17,7 +17,7 @@
                 {
                         <MudStack Spacing="2">
                             <MudStack Spacing="1">
-                                <MudText Typo="Typo.caption" Class="font-mono text-xs">ID: @((SelectedModel as IId).Id)...</MudText>
+                                <MudText Typo="Typo.caption" Class="font-mono text-xs">ID: @((SelectedModel as IId)!.Id)...</MudText>
                                 <MudText Typo="Typo.caption" Class="font-mono text-xs">Type: @SelectedModel.GetType().Name</MudText>
                                 <MudButton OnClick="DeleteModel" Variant="Variant.Filled" Color="Color.Error" Class="mt-2" FullWidth="true" StartIcon="@Icons.Material.Filled.Delete">Delete Model</MudButton>
 
@@ -127,7 +127,7 @@
                         var layerIndex = DiagramService.Diagram.Layers.IndexOf(layer);
                         <MudExpansionPanel Text="@($"Layer {layerIndex + 1} ({(layer.IsVisible ? "Visible" : "Hidden")})")" 
                                            Icon="@Icons.Material.Filled.Layers" 
-                                           IsExpanded="@(layer == DiagramService.Diagram.CurrentLayer)"
+                                           Expanded="@(layer == DiagramService.Diagram.CurrentLayer)"
                                            Class="border border-solid border-gray-300 rounded-lg my-1">
                             <!-- VISIBILITY TOGGLE -->
                             <MudSwitch @bind-Value="layer.IsVisible" 
@@ -146,7 +146,7 @@
                             </MudExpansionPanel>
                             
                             <!-- Nested Panel for Nodes -->
-                            <MudExpansionPanel Text="Nodes" Icon="@Icons.Material.Filled.Square" IsExpanded="true" Dense="true" Class="my-1">
+                            <MudExpansionPanel Text="Nodes" Icon="@Icons.Material.Filled.Square" Expanded="true" Dense="true" Class="my-1">
                                 @foreach (var node in layer.AllNodes)
                                 {
                                     <MudListItem T="object" Icon="@Icons.Material.Filled.Square" OnClick="@(() => SelectModel(node))" Class="text-sm">
@@ -223,16 +223,6 @@
         StateHasChanged();
     }
     
-    private void DeselectModel()
-    {
-        if (SelectedModel is ISelectable s)
-        {
-            s.IsSelected = false;
-            SelectedModel = null; 
-            StateHasChanged();
-        }
-    }
-    
     private void DeleteModel()
     {
         if (SelectedModel is null) return;
@@ -302,13 +292,13 @@
     private void AddPortToContainer(IPortContainer container)
     { 
         // Available port alignments to cycle through
-         List<PortAlignment> _portAlignments = new()
-            {
-                PortAlignment.Left,
-                PortAlignment.Top,
-                PortAlignment.Right,
-                PortAlignment.Bottom
-            };
+         List<PortAlignment> _portAlignments =
+         [
+             PortAlignment.Left,
+             PortAlignment.Top,
+             PortAlignment.Right,
+             PortAlignment.Bottom
+         ];
 
         // Find the next available side to add a port to
         var nextAlignment = _portAlignments.FirstOrDefault(alignment =>

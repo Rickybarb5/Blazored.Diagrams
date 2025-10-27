@@ -71,7 +71,7 @@ public class OperatorNode : Node, IHasComponent<OperatorNodeComponent>, INumberR
                 {
                     NumberResult = numbers.Aggregate((i, j) => i /j);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     NumberResult = null;
                 }

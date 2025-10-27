@@ -2,7 +2,7 @@
 @using Blazored.Diagrams.Services.Observers
 @using Blazored.Diagrams.Services.Registry
 @implements IAsyncDisposable
-@if (_link is { IsVisible: true, SourcePort: not null })
+@if (Link is { IsVisible: true, SourcePort: not null })
 {
     <CascadingValue Value=@(this) TValue="LinkContainer" >
         <div style="@ContainerStyle" id="@(ContainerId)" @ref="_componentRef">
@@ -33,24 +33,8 @@
     ///     Link instance to be presented in the UI.
     /// </summary>
     [Parameter]
-    public required ILink Link
-    {
-        get => _link;
-        set
-        {
-            if (_link != value)
-            {
-                _redrawSubscription?.Dispose();
-                _link = value;
-                _redrawSubscription = DiagramService?
-                    .Events
-                    .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == _link.Id, Redraw);
-                StateHasChanged();
-            }
-        }
-    }
+    public required ILink Link { get; set; }
 
-    private ILink _link = null!;
     private ElementReference _componentRef;
     private IDisposable? _redrawSubscription;
     private Dictionary<string, object> Parameters => new() { { nameof(Link), Link } };
@@ -58,7 +42,7 @@
     /// <summary>
     /// ID of the link container
     /// </summary>
-    public string ContainerId => $"link-container-{_link.Id}";
+    public string ContainerId => $"link-container-{Link.Id}";
 
 
     /// <summary>
@@ -70,39 +54,38 @@
     /// <summary>
     /// X coordinate of the target position.
     /// </summary>
-    public int TargetX => _link.TargetPort is not null ? DiagramService.GetCenterCoordinates(_link.TargetPort).CenterX : _link.TargetPositionX;
+    public int TargetX => Link.TargetPort is not null ? DiagramService.GetCenterCoordinates(Link.TargetPort).CenterX : Link.TargetPositionX;
 
     /// <summary>
     /// Y coordinate of the end of the link.
     /// </summary>
-    public int TargetY => _link.TargetPort is not null ? DiagramService.GetCenterCoordinates(_link.TargetPort).CenterY : _link.TargetPositionY;
+    public int TargetY => Link.TargetPort is not null ? DiagramService.GetCenterCoordinates(Link.TargetPort).CenterY : Link.TargetPositionY;
 
 
     /// <summary>
     /// X coordinate of the start of the link
     /// </summary>
-    public int PositionX => Math.Min(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterX, TargetX);
+    public int PositionX => Math.Min(DiagramService.GetCenterCoordinates(Link.SourcePort).CenterX, TargetX);
 
     /// <summary>
     ///  Y coordinate of the start of the link
     /// </summary>
-    public int PositionY => Math.Min(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterY, TargetY);
+    public int PositionY => Math.Min(DiagramService.GetCenterCoordinates(Link.SourcePort).CenterY, TargetY);
 
-    private int Width => Math.Clamp(Math.Abs(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterX - TargetX),1,int.MaxValue);
+    private int Width => Math.Clamp(Math.Abs(DiagramService.GetCenterCoordinates(Link.SourcePort).CenterX - TargetX),1,int.MaxValue);
 
-    private int Height => Math.Clamp(Math.Abs(DiagramService.GetCenterCoordinates(_link.SourcePort).CenterY - TargetY),1,int.MaxValue);
+    private int Height => Math.Clamp(Math.Abs(DiagramService.GetCenterCoordinates(Link.SourcePort).CenterY - TargetY),1,int.MaxValue);
 
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService?
-                .Events
-                .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == _link.Id, Redraw);
+            _redrawSubscription = DiagramService.Events
+                .SubscribeWhere<LinkRedrawEvent>(p => p.Model.Id == Link.Id, Redraw);
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var size = await Js.GetBoundingClientRect(_componentRef);
-            _link.SetSize((int)(size.Width), (int)(size.Height));
+            Link.SetSize((int)(size.Width), (int)(size.Height));
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -116,7 +99,7 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        _link.SetSize((int)(obj.Width), (int)(obj.Height));
+        Link.SetSize((int)(obj.Width), (int)(obj.Height));
     }
 
     /// <inheritdoc />

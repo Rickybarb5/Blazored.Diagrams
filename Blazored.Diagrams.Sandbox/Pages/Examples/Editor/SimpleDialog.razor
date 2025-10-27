@@ -11,15 +11,12 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
-    [Parameter]
-    public string Text { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string Text { get; set; } = string.Empty;
     
     [Parameter]
-    public string Title { get; set; }
-
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    public string Title { get; set; }= string.Empty;
 
     private void Cancel() => MudDialog.Cancel();
 }

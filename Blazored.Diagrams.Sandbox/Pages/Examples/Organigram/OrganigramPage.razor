@@ -1,12 +1,10 @@
 @page "/organogram-example"
 @using Blazored.Diagrams.Options.Behaviours
-<DiagramContainer DiagramService="Service">
-    <SaveButton></SaveButton>
-</DiagramContainer>
+<DiagramContainer DiagramService="Service"></DiagramContainer>
 
 @code {
 
-    [Inject] public IDiagramService Service { get; set; }
+    [Inject] public IDiagramService Service { get; set; } = null!;
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {

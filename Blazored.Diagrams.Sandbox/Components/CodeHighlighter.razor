@@ -3,11 +3,17 @@
     </pre>
 
 @code {
-    [Inject] IJSRuntime Js { get; set; }
+    [Inject] IJSRuntime Js { get; set; } = null!;
 
-    [Parameter] public string Code { get; set; }
-    [Parameter] public string Style { get; set; }
-    [Parameter] public string Language { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public required string Code { get; set; }
+
+    [Parameter] public string Style { get; set; } = string.Empty;
+    
+    [Parameter] 
+    [EditorRequired]
+    public required string Language { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {

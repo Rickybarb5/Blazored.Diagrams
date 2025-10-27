@@ -1,5 +1,4 @@
 @using System.Text.Json
-@using Blazored.Diagrams.Events
 
 <MudDialog>
     <TitleContent>
@@ -18,15 +17,10 @@
                           Required="true"
                           AutoFocus="true"
                           Immediate="true"
-                          @bind-Value="JsonString">
-                <Validation>
-                    @if (!IsJsonValid(JsonString))
-                    {
-                        <MudText Color="Color.Error">Invalid JSON format. Please correct the syntax.</MudText>
-                    }
-                </Validation>
+                          @bind-Value="JsonString"
+                          Validation="IsJsonValid(JsonString)"
+                          ErrorText="Invalid JSON format. Please correct the syntax.">
             </MudTextField>
-            <!-- Live status indicator -->
             <MudText Typo="Typo.caption" Color="@(JsonString?.Length > 0 && IsJsonValid(JsonString) ? Color.Success : Color.Error)" Class="mt-2">
                 @if (JsonString?.Length > 0)
                 {
@@ -51,10 +45,10 @@
 @code {
     // Cascading parameter provided by the MudDialog system
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
-    [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; } = null!;
     
     [Parameter]
-public IDiagramService Service { get; set; }
+public required IDiagramService Service { get; set; }
 
     private string? JsonString { get; set; } = string.Empty;
     private MudForm form = default!;
@@ -73,9 +67,9 @@ public IDiagramService Service { get; set; }
             Service.Storage.Load<Diagram>(JsonString!);
             //Service.Diagram.AllPorts.ForEach(p=> Service.Events.Publish(new PortRedrawEvent(p)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Snackbar.Add("Json is not a valid diagram", Severity.Error);
+                Snackbar.Add("Json does not contain a valid diagram.", Severity.Error);
             }
             MudDialog.Close(DialogResult.Ok(JsonString));
         }

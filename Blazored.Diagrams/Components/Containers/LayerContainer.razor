@@ -2,20 +2,20 @@
 @using Blazored.Diagrams.Services.Virtualization
 @inject IVirtualizationService VirtualizationService
 @implements IDisposable
-@if (_layer is not null && _layer.IsVisible)
+@if (Layer is not null && Layer.IsVisible)
 {
     <div id="@(ContainerId)">
-            @foreach (var node in VirtualizationService.Virtualize(DiagramService.Diagram, _layer.Nodes))
+            @foreach (var node in VirtualizationService.Virtualize(DiagramService.Diagram, Layer.Nodes))
             {
                 <NodeContainer Node="node"></NodeContainer>
             }
 
-            @foreach (var group in VirtualizationService.Virtualize(DiagramService.Diagram, _layer.Groups))
+            @foreach (var group in VirtualizationService.Virtualize(DiagramService.Diagram, Layer.Groups))
             {
                 <GroupContainer Group="group"></GroupContainer>
             }
 
-            @foreach (var link in _layer.AllLinks)
+            @foreach (var link in Layer.AllLinks)
             {
                 <LinkContainer Link="link"></LinkContainer>
             }
@@ -24,37 +24,30 @@
 
 @code {
 
-    [CascadingParameter] public required IDiagramService? DiagramService { get; set; }
+    /// <summary>
+    /// Cascading from <see cref="DiagramContainer"/>.
+    /// </summary>
+    [CascadingParameter] public required IDiagramService DiagramService { get; set; }
 
+    /// <summary>
+    /// Layer to be rendered.
+    /// </summary>
     [Parameter]
     [EditorRequired]
-    public required ILayer Layer
-    {
-        get => _layer;
-        set
-        {
-            if (_layer != value)
-            {
-                _redrawSubscription?.Dispose();
-                _layer = value;
-                _redrawSubscription = DiagramService?.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == _layer.Id, Redraw);
-                InvokeAsync(StateHasChanged);
-            }
-        }
-    }
+    public required ILayer Layer { get; set; }
 
     
     /// <summary>
     /// ID of the node container
     /// </summary>
-    public string ContainerId => $"layer-container-{_layer.Id}";
+    public string ContainerId => $"layer-container-{Layer.Id}";
     
     /// <inheritdoc />
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService?.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == _layer.Id, Redraw);
+            _redrawSubscription = DiagramService.Events.SubscribeWhere<LayerRedrawEvent>(p => p.Model.Id == Layer.Id, Redraw);
         }
 
         return base.OnAfterRenderAsync(firstRender);
@@ -66,7 +59,6 @@
     }
 
     private IDisposable? _redrawSubscription;
-    private ILayer _layer = null!;
 
     /// <inheritdoc />
     public void Dispose()

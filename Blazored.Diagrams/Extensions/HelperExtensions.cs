@@ -1,6 +1,3 @@
-using Blazored.Diagrams.Diagrams;
-using Blazored.Diagrams.Interfaces;
-
 namespace Blazored.Diagrams.Extensions;
 
 /// <summary>

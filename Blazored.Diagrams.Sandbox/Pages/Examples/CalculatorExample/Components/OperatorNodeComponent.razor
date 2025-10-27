@@ -24,7 +24,6 @@
                    Label="Operator" 
                    Margin="Margin.Dense"
                    Dense="true"
-                   Icon="@Icons.Material.Filled.Functions"
                    Variant="Variant.Filled"
                    Immediate="true">
             @foreach (var value in Enum.GetValues<Operator>())
@@ -63,9 +62,11 @@
 </MudCard>
 
 @code {
-    [CascadingParameter] public IDiagramService Service { get; set; }
-    [Inject] ISnackbar Snackbar { get; set; }
-    [Parameter] public OperatorNode Node { get; set; }
+    [CascadingParameter] 
+    public required IDiagramService Service { get; set; }
+
+    [Inject] ISnackbar Snackbar { get; set; } = null!;
+    [Parameter] public required OperatorNode Node { get; set; }
 
     private List<IDisposable> _subscriptions = null!;
 

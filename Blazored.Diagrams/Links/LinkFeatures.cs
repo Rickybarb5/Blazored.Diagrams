@@ -1,6 +1,3 @@
-using Blazored.Diagrams.Extensions;
-using Blazored.Diagrams.Interfaces;
-
 namespace Blazored.Diagrams.Links;
 
 public partial class Link

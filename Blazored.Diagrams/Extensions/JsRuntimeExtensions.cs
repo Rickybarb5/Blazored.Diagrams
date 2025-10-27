@@ -15,8 +15,8 @@ public static class JsRuntimeExtensions
     /// <summary>
     ///     Fetches the size of a html element.
     /// </summary>
-    /// <param name="jsRuntime"></param>
-    /// <param name="element"></param>
+    /// <param name="jsRuntime"><see cref="IJSRuntime"/>.</param>
+    /// <param name="element">Reference to the desired element.</param>
     /// <returns></returns>
     public static async Task<Rect> GetBoundingClientRect(this IJSRuntime jsRuntime, ElementReference element)
     {
@@ -25,27 +25,27 @@ public static class JsRuntimeExtensions
     }
 
     /// <summary>
-    /// Check if a click was on a svg path
+    /// Check if a click was on a svg path.
     /// </summary>
-    /// <param name="jsRuntime"></param>
-    /// <param name="e"></param>
-    /// <param name="pathId"></param>
+    /// <param name="jsRuntime"><see cref="IJSRuntime"/>.</param>
+    /// <param name="args">Mouse event arguments from the click.</param>
+    /// <param name="pathId">Id of the path</param>
     /// <returns></returns>
-    public static async Task<bool> IsClickOnPath(this IJSRuntime jsRuntime, MouseEventArgs e, string pathId)
+    public static async Task<bool> IsClickOnPath(this IJSRuntime jsRuntime, MouseEventArgs args, string pathId)
     {
-        return await jsRuntime.InvokeAsync<bool>(JsFunctionConstants.IsClickOnPathFunctionName, pathId, e.ClientX,
-            e.ClientY);
+        return await jsRuntime.InvokeAsync<bool>(JsFunctionConstants.IsClickOnPathFunctionName, pathId, args.ClientX,
+            args.ClientY);
     }
 
     /// <summary>
     ///  Prevents scrolling when focused on an element.
     /// </summary>
-    /// <param name="jsRuntime"></param>
-    /// <param name="containerId"></param>
-    /// <param name="reference"></param>
+    /// <param name="jsRuntime"><see cref="IJSRuntime"/>.</param>
+    /// <param name="containerId">ID of the container element</param>
+    /// <param name="reference">Reference to the container where the wheel event occured.</param>
     public static async Task HandleWheelEvent(this IJSRuntime jsRuntime, string containerId,
         DotNetObjectReference<DiagramContainer> reference)
     {
-        await jsRuntime.InvokeVoidAsync("BlazoredDiagrams.handleZoom", containerId, reference);
+        await jsRuntime.InvokeVoidAsync(JsFunctionConstants.HandleZoomFunctionName, containerId, reference);
     }
 }

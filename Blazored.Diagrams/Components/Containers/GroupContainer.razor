@@ -4,30 +4,30 @@
 @if (Group is not null && Group.IsVisible)
 {
     <div style="@($"left:{Group.PositionX}px;top:{Group.PositionY}px;position:absolute;width:{Group.Width}px;height:{Group.Height}px")"
-         @onpointerleave="ctx => DiagramService.Events.Publish(new GroupPointerLeaveEvent(_group, ctx))"
-         @onpointerdown="ctx => DiagramService.Events.Publish(new GroupPointerDownEvent(_group, ctx))"
-         @onpointerenter="ctx => DiagramService.Events.Publish(new GroupPointerEnterEvent(_group, ctx))"
-         @onpointermove="ctx => DiagramService.Events.Publish(new GroupPointerMoveEvent(_group, ctx))"
-         @onpointerup="ctx => DiagramService.Events.Publish(new GroupPointerUpEvent(_group, ctx))"
-         @onwheel="ctx => DiagramService.Events.Publish(new GroupWheelEvent(_group, ctx))"
-         @onclick="ctx => DiagramService.Events.Publish(new GroupClickedEvent(_group, ctx))"
-         @ondblclick="ctx => DiagramService.Events.Publish(new GroupDoubleClickedEvent(_group, ctx))"
+         @onpointerleave="ctx => DiagramService.Events.Publish(new GroupPointerLeaveEvent(Group, ctx))"
+         @onpointerdown="ctx => DiagramService.Events.Publish(new GroupPointerDownEvent(Group, ctx))"
+         @onpointerenter="ctx => DiagramService.Events.Publish(new GroupPointerEnterEvent(Group, ctx))"
+         @onpointermove="ctx => DiagramService.Events.Publish(new GroupPointerMoveEvent(Group, ctx))"
+         @onpointerup="ctx => DiagramService.Events.Publish(new GroupPointerUpEvent(Group, ctx))"
+         @onwheel="ctx => DiagramService.Events.Publish(new GroupWheelEvent(Group, ctx))"
+         @onclick="ctx => DiagramService.Events.Publish(new GroupClickedEvent(Group, ctx))"
+         @ondblclick="ctx => DiagramService.Events.Publish(new GroupDoubleClickedEvent(Group, ctx))"
          @onpointerdown:stopPropagation
          id="@(ContainerId)">
         <DynamicComponent Type="@(ComponentRegistry.GetComponentType(Group.GetType()))" Parameters="Parameters"></DynamicComponent>
     </div>
     
-    @foreach (var node in _group.Nodes)
+    @foreach (var node in Group.Nodes)
     {
         <NodeContainer Node="node"></NodeContainer>
     }
 
-    @foreach (var port in _group.Ports)
+    @foreach (var port in Group.Ports)
     {
         <PortContainer Port="port"></PortContainer>
     }
 
-    @foreach (var group in _group.Groups)
+    @foreach (var group in Group.Groups)
     {
         <GroupContainer Group="group"></GroupContainer>
     }
@@ -49,20 +49,7 @@
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public required IGroup Group
-    {
-        get => _group;
-        set
-        {
-            if (_group != value)
-            {
-                _redrawSubscription?.Dispose();
-                _group = value;
-                _redrawSubscription = DiagramService?.Events.SubscribeWhere<GroupRedrawEvent>(p => p.Model.Id == _group.Id, Redraw);
-                StateHasChanged();
-            }
-        }
-    }
+    public required IGroup Group { get; set; }
 
     private void Redraw(GroupRedrawEvent e)
     {
@@ -70,14 +57,13 @@
     }
 
     private Dictionary<string, object> Parameters => new() { { nameof(Group), Group } };
-    private IGroup _group = null!;
     private List<IDisposable> _subscriptions = [];
     private IDisposable? _redrawSubscription;
 
     /// <summary>
     /// ID of the group container
     /// </summary>
-    public string ContainerId => $"group-container-{_group.Id}";
+    public string ContainerId => $"group-container-{Group.Id}";
 
     void IDisposable.Dispose()
     {
@@ -90,7 +76,7 @@
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService?.Events.SubscribeWhere<GroupRedrawEvent>(p => p.Model.Id == _group.Id, Redraw);
+            _redrawSubscription = DiagramService.Events.SubscribeWhere<GroupRedrawEvent>(p => p.Model.Id == Group.Id, Redraw);
             _subscriptions =
             [
                 DiagramService.Events.SubscribeWhere<NodeSizeChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllNodes.Contains(p.Model)), Resize),
@@ -159,7 +145,7 @@
         group.SetSizeInternal(newWidth, newHeight);
         
         // Redraw ports manually, as we are not triggering group events
-        group.Ports.ForEach(p => DiagramService?.Events.Publish(new PortRedrawEvent(p)));
+        group.Ports.ForEach(p => DiagramService.Events.Publish(new PortRedrawEvent(p)));
         
         StateHasChanged();
     }

@@ -56,14 +56,14 @@
     ///     Used to add additional components on top of the diagram.
     /// </summary>
     [Parameter]
-    public RenderFragment? ChildContent { get; set; } = null!;
+    public RenderFragment? ChildContent { get; set; }
     
     /// <summary>
     /// Diagram instance to show in the UI.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public required IDiagramService? DiagramService
+    public required IDiagramService DiagramService
     {
         get => _diagramService;
         set
@@ -84,7 +84,7 @@
     /// <summary>
     /// ID of the diagram container
     /// </summary>
-    public string ContainerId => $"diagram-container-{_diagramService?.Diagram.Id}";
+    public string ContainerId => $"diagram-container-{_diagramService.Diagram.Id}";
 
     /// <inheritdoc />
     protected override Task OnInitializedAsync()

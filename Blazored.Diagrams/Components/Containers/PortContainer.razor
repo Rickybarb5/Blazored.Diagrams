@@ -2,17 +2,17 @@
 @using Blazored.Diagrams.Services.Registry
 @using Blazored.Diagrams.Services.Diagrams
 @implements IAsyncDisposable;
-@if (_port is not null && _port.IsVisible)
+@if (Port is not null && Port.IsVisible)
 {
-    <div style="@($"left:{_port.PositionX}px;top:{_port.PositionY}px;position:absolute;")"
-         @onpointerleave="ctx => DiagramService.Events.Publish(new PortPointerLeaveEvent(_port, ctx))"
-         @onpointerdown="ctx => DiagramService.Events.Publish(new PortPointerDownEvent(_port, ctx))"
-         @onpointerenter="ctx => DiagramService.Events.Publish(new PortPointerEnterEvent(_port, ctx))"
-         @onpointermove="ctx => DiagramService.Events.Publish(new PortPointerMoveEvent(_port, ctx))"
-         @onpointerup="ctx => DiagramService.Events.Publish(new PortPointerUpEvent(_port, ctx))"
-         @onwheel="ctx => DiagramService.Events.Publish(new PortWheelEvent(_port, ctx))"
-         @onclick="ctx => DiagramService.Events.Publish(new PortClickedEvent(_port, ctx))"
-         @ondblclick="ctx => DiagramService.Events.Publish(new PortDoubleClickedEvent(_port, ctx))"
+    <div style="@($"left:{Port.PositionX}px;top:{Port.PositionY}px;position:absolute;")"
+         @onpointerleave="ctx => DiagramService.Events.Publish(new PortPointerLeaveEvent(Port, ctx))"
+         @onpointerdown="ctx => DiagramService.Events.Publish(new PortPointerDownEvent(Port, ctx))"
+         @onpointerenter="ctx => DiagramService.Events.Publish(new PortPointerEnterEvent(Port, ctx))"
+         @onpointermove="ctx => DiagramService.Events.Publish(new PortPointerMoveEvent(Port, ctx))"
+         @onpointerup="ctx => DiagramService.Events.Publish(new PortPointerUpEvent(Port, ctx))"
+         @onwheel="ctx => DiagramService.Events.Publish(new PortWheelEvent(Port, ctx))"
+         @onclick="ctx => DiagramService.Events.Publish(new PortClickedEvent(Port, ctx))"
+         @ondblclick="ctx => DiagramService.Events.Publish(new PortDoubleClickedEvent(Port, ctx))"
          @onpointerdown:stopPropagation
          @ref="_componentRef" id="@(ContainerId)">
         <DynamicComponent Type="@(ComponentRegistry.GetComponentType(Port.GetType()))" Parameters="@(Parameters)"></DynamicComponent>
@@ -33,7 +33,7 @@
     ///     Cascading diagram from <see cref="DiagramContainer"/>
     /// </summary>
     [CascadingParameter]
-    public required IDiagramService? DiagramService { get; set; }
+    public required IDiagramService DiagramService { get; set; }
 
     /// <summary>
     ///     Port instance to be rendered in the UI.
@@ -42,18 +42,8 @@
     [EditorRequired]
     public required IPort Port
     {
-        get => _port;
-        set
-        {
-            if (_port != value)
-            {
-                _redrawSubscription?.Dispose();
-                _visibilitySubscription?.Dispose();
-                _port = value;
-                _redrawSubscription = DiagramService?.Events.SubscribeWhere<PortRedrawEvent>(p => p.Model.Id == _port.Id, Redraw);
-                StateHasChanged();
-            }
-        }
+        get;
+        set;
     }
 
     private void Redraw(PortRedrawEvent e)
@@ -61,10 +51,9 @@
         StateHasChanged();
     }
 
-    private IPort _port = null!;
     private IDisposable? _redrawSubscription;
-    private IDisposable? _visibilitySubscription;
     private Dictionary<string, object> Parameters => new() { { nameof(Port), Port } };
+    private ElementReference _componentRef;
 
     /// <summary>
     /// <see cref="IJSRuntime"/>
@@ -73,17 +62,13 @@
     public required IJSRuntime Js { get; set; }
 
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
-
-    private string Style { get; set; } = null!;
     
-    private ElementReference _componentRef;
-
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _redrawSubscription = DiagramService?.Events.SubscribeWhere<PortRedrawEvent>(p => p.Model.Id == _port.Id, Redraw);
+            _redrawSubscription = DiagramService.Events.SubscribeWhere<PortRedrawEvent>(p => p.Model.Id == Port.Id, Redraw);
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var size = await Js.GetBoundingClientRect(_componentRef);
             SetSize((int)size.Width, (int)size.Height);
@@ -99,14 +84,13 @@
 
     private void SetSize(int width, int height)
     {
-        _port.SetSize(width, height);
+        Port.SetSize(width, height);
     }
 
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         _redrawSubscription?.Dispose();
-        _visibilitySubscription?.Dispose();
         await ResizeObserverService.UnobserveAsync(ContainerId);
     }
 

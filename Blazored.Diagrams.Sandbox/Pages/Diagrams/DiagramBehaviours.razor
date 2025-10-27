@@ -20,7 +20,7 @@
                         <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.IsEnabled"
                                    Color="Color.Primary"
                                    Label="Zooming enabled"
-                                   LabelPosition="LabelPosition.Start"/>
+                                   LabelPlacement="Placement.Start"/>
                     </div>
 
                     <MudNumericField T="decimal" Immediate="true" Label="Max zoom value" @bind-Value="Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!.MaxZoom"/>
@@ -35,7 +35,7 @@
                         <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<PanBehaviourOptions>()!.IsEnabled"
                                    Color="Color.Primary"
                                    Label="Panning enabled"
-                                   LabelPosition="LabelPosition.Start"/>
+                                   LabelPlacement="Placement.Start"/>
                     </div>
                     <MudText Typo="Typo.body2" Class="mud-text-secondary">
                         Drag the canvas to pan the view.
@@ -49,7 +49,7 @@
                         <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled"
                                    Color="Color.Primary"
                                    Label="Moving enabled"
-                                   LabelPosition="LabelPosition.Start"/>
+                                   LabelPlacement="Placement.Start"/>
                     </div>
                     <MudText Typo="Typo.body2" Class="mud-text-secondary">
                         Click and drag a model to move it within the diagram.
@@ -66,12 +66,12 @@
                     <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().SelectionEnabled"
                                Color="Color.Primary"
                                Label="Selection enabled"
-                               LabelPosition="LabelPosition.Start"/>
+                               LabelPlacement="Placement.Start"/>
 
                     <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().MultiSelectEnabled"
                                Color="Color.Primary"
                                Label="Multiselect enabled (Ctrl+Click)"
-                               LabelPosition="LabelPosition.Start"/>
+                               LabelPlacement="Placement.Start"/>
                 </MudStack>
                 <MudDivider Class="my-4"/>
 
@@ -84,7 +84,7 @@
                     <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().IsEnabled"
                                Color="Color.Primary"
                                Label="Link creation enabled"
-                               LabelPosition="LabelPosition.Start"/>
+                               LabelPlacement="Placement.Start"/>
 
                     <MudSelect T="Type" Label="Default Link Type"
                                @bind-Value="@(Service.Behaviours.GetBehaviourOptions<DrawLinkBehaviourOptions>().LinkType)">
@@ -105,7 +105,7 @@
                         <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled"
                                    Color="Color.Primary"
                                    Label="Delete enabled"
-                                   LabelPosition="LabelPosition.Start"/>
+                                   LabelPlacement="Placement.Start"/>
                     </div>
                     <MudTextField Style="max-width: 150px" Immediate="true" Label="Delete key code" @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().DeleteKeyCode"/>
                 </MudStack>
@@ -123,5 +123,5 @@
 </MudContainer>
 
 @code {
-    [Inject] public IDiagramService Service { get; set; }
+    [Inject] public IDiagramService Service { get; set; } = null!;
 }
