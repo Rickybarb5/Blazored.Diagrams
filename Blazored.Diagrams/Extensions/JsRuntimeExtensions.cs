@@ -48,4 +48,9 @@ public static class JsRuntimeExtensions
     {
         await jsRuntime.InvokeVoidAsync("BlazoredDiagrams.handleZoom", containerId, reference);
     }
+    
+    public static async Task CaptureAndDownload(this IJSRuntime jsRuntime, string elementId, string fileName, double scaleFactor)
+    {
+        await jsRuntime.InvokeVoidAsync(JsFunctionConstants.CaptureAndDownload, elementId, fileName, new { scale = scaleFactor });
+    }
 }

@@ -1,0 +1,23 @@
+@using Blazored.Diagrams.Services.Diagrams
+@using Blazored.Diagrams.Services.Serialization
+<div class="capture-container">
+    
+    <button @onclick="Capture" 
+            title="Capture screenshot"
+            class="capture-button ">
+        📸
+    </button>
+</div>
+@code {
+    [CascadingParameter]
+    public IDiagramService Service { get; set; }
+    [Inject]
+    public IJSRuntime Js { get; set; }
+
+    
+    private async Task Capture()
+    {
+       await Js.CaptureAndDownload($"#diagram-container-{Service.Diagram.Id}", "myimage.png", 5.0);
+    }
+
+}

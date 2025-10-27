@@ -4,12 +4,14 @@ using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Options.Behaviours;
 using Blazored.Diagrams.Services.Behaviours;
 using Blazored.Diagrams.Services.Events;
+using Microsoft.JSInterop;
 
 namespace Blazored.Diagrams.Services.Diagrams;
 
 /// <inheritdoc />
 public partial class DiagramService : IDiagramService
 {
+    private IJSRuntime _jsRuntime;
     /// <inheritdoc />
     public IEventAggregator Events { get; set; } = null!;
 
@@ -34,15 +36,16 @@ public partial class DiagramService : IDiagramService
     /// <summary>
     /// Initializes a new instance of <see cref="DiagramService"/>.
     /// </summary>
-    public DiagramService()
+    public DiagramService(IJSRuntime  jsRuntime)
     {
+        _jsRuntime = jsRuntime;
         Diagram = new Diagram();
         Behaviours = new BehaviourContainer(this);
         Options = new OptionsContainer(this);
         Add = new AddContainer(this);
         Remove = new DeleteContainer(this);
         Events = new EventAggregator(this);
-        Storage = new SerializationContainer(this);
+        Storage = new SerializationContainer(this, jsRuntime);
         InitializeOptions();
         InitializeBehaviours();
     }
@@ -101,7 +104,7 @@ public partial class DiagramService : IDiagramService
         Options = new OptionsContainer(this);
         Add = new AddContainer(this);
         Remove = new DeleteContainer(this);
-        Storage = new SerializationContainer(this);
+        Storage = new SerializationContainer(this,_jsRuntime);
         InitializeOptions();
         InitializeBehaviours();
         Events.Publish(new DiagramSwitchEvent(oldDiagram, diagram));

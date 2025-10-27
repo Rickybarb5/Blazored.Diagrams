@@ -1,5 +1,6 @@
 using Blazored.Diagrams.Diagrams;
 using Blazored.Diagrams.Services.Serialization;
+using Microsoft.JSInterop;
 
 namespace Blazored.Diagrams.Services.Diagrams;
 
@@ -13,10 +14,10 @@ public class SerializationContainer : ISerializationContainer
     /// 
     /// </summary>
     /// <param name="service"></param>
-    public SerializationContainer(IDiagramService service)
+    public SerializationContainer(IDiagramService service, IJSRuntime jsRuntime)
     {
         _diagramService = service;
-        _serializationService = new SerializationService();
+        _serializationService = new SerializationService(jsRuntime);
     }
 
     /// <inheritdoc />

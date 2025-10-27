@@ -86,4 +86,49 @@ window.BlazoredDiagrams = {
             }, {passive: false});
         }
     },
+    /**
+     * Capture the element matched by selector and return a data URL (PNG).
+     * options: { scale, backgroundColor, scrollX, scrollY, useCORS }
+     */
+    captureComponentAsDataUrl: async function(selector, options) {
+        const el = document.querySelector(selector);
+        if (!el) throw `No element found for selector: ${selector}`;
+
+        // Default sensible options:
+        const defaultOptions = {
+            scale: window.devicePixelRatio || 1,
+            backgroundColor: null,
+            useCORS: true,
+            logging: false
+        };
+        const opts = Object.assign({}, defaultOptions, options || {});
+
+        // Ensure the element is visible / layout settled
+        await new Promise(r => requestAnimationFrame(r));
+
+        const canvas = await html2canvas(el, opts);
+        // toDataURL might be heavy for large canvases; you can use canvas.toBlob if needed
+        const dataUrl = canvas.toDataURL("image/png");
+        return dataUrl;
+    },
+
+    /**
+     * Trigger download of a dataUrl (data:image/png;base64,...)
+     */
+    downloadDataUrl: function(dataUrl, filename) {
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = filename || 'capture.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    },
+
+    /**
+     * Capture and immediately download
+     */
+    captureAndDownload: async function(selector, filename, options) {
+        const dataUrl = await this.captureComponentAsDataUrl(selector, options);
+        this.downloadDataUrl(dataUrl, filename);
+    }
 };

@@ -1,4 +1,5 @@
 using Blazored.Diagrams.Diagrams;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Services.Serialization;
@@ -16,4 +17,7 @@ public interface ISerializationService
     /// </summary>
     /// <returns></returns>
     JsonSerializerSettings CreateSettings();
+
+    Task ToImage(string selector, string filename);
+    Task ToImage(ElementReference element, string filename);
 }

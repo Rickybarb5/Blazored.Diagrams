@@ -38,5 +38,7 @@ public static class JsFunctionConstants
     /// <summary>
     /// Name of the js function that handles zoom event properly.
     /// </summary>
-    public const string HandleZoomFunctionName = "BlazoredDiagrams.handleZoom";
+    public const string CaptureComponentAsDataUrl = "BlazoredDiagrams.captureComponentAsDataUrl";
+    public const string DownloadDataUrl = "BlazoredDiagrams.downloadDataUrl";
+    public const string CaptureAndDownload = "BlazoredDiagrams.captureAndDownload";
 }

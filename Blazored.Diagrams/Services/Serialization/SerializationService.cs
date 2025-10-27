@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
-using Blazored.Diagrams.Diagrams; // Assuming IDiagram is here
+using Blazored.Diagrams.Diagrams;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop; // Assuming IDiagram is here
 
 namespace Blazored.Diagrams.Services.Serialization;
 
@@ -7,7 +9,11 @@ namespace Blazored.Diagrams.Services.Serialization;
 public class SerializationService : ISerializationService
 {
     private JsonSerializerSettings? _settings;
-    
+    private IJSRuntime _jsRuntime;
+    public SerializationService(IJSRuntime  jsRuntime)
+    {
+        this._jsRuntime = jsRuntime;
+    }
     /// <inheritdoc />
     public virtual string ToJson<TDiagram>(TDiagram diagram)
         where TDiagram : IDiagram
@@ -45,5 +51,17 @@ public class SerializationService : ISerializationService
         };
 
         return settings;
+    }
+
+    /// <inheritdoc />
+    public async Task ToImage(string selector, string filename)
+    {
+        await _jsRuntime.InvokeVoidAsync("captureHelper.captureAndDownload", selector, filename);
+    }
+
+    /// <inheritdoc />
+    public async Task ToImage(ElementReference element, string filename)
+    {
+        await _jsRuntime.InvokeVoidAsync("captureHelper.captureAndDownload", element, filename);
     }
 }
