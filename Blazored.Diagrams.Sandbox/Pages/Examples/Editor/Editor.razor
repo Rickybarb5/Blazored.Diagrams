@@ -92,7 +92,8 @@
                 <MudButton OnClick="AddGroup" StartIcon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Color="Color.Tertiary" Size="Size.Small">Add Group</MudButton>
                 <MudIconButton OnClick="FitToScreen" Icon="@Icons.Material.Filled.FitScreen" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
                 <MudIconButton OnClick="SaveDiagram" Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
-                <MudIconButton OnClick="LoadDiagram" Icon="@Icons.Material.Filled.FolderOpen" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
+                <MudIconButton OnClick="LoadDiagram" Icon="@Icons.Material.Filled.Upload" Variant="Variant.Filled"
+                               Size="Size.Small" Color="Color.Dark"></MudIconButton>
             </MudPaper>
 
             <!-- DIAGRAM CONTAINER -->
@@ -249,17 +250,17 @@
 
         if (SelectedModel is Node node)
         {
-            DiagramService.Remove.Node(node);
+            DiagramService.RemoveNode(node);
             Snackbar.Add($"Node deleted: {node.Id}", Severity.Error);
         }
         else if (SelectedModel is Group group)
         {
-            DiagramService.Remove.Group(group);
+            DiagramService.RemoveGroup(group);
             Snackbar.Add($"Group deleted: {group.Id}", Severity.Error);
         }
         else if (SelectedModel is Link link)
         {
-            DiagramService.Remove.Link(link);
+            DiagramService.RemoveLink(link);
             Snackbar.Add($"Link deleted: {link.Id}", Severity.Error);
         }
 
@@ -270,7 +271,7 @@
     private void AddNode()
     {
         var newNode = new Node();
-        DiagramService.Add.Node(newNode);
+        DiagramService.AddNode(newNode);
         Snackbar.Add("Node added!", Severity.Success);
         SelectModel(newNode);
     }
@@ -280,12 +281,12 @@
         var newNode = new Node();
         if (container is Group group)
         {
-             DiagramService.Add.NodeTo(group, newNode);
+            DiagramService.AddNodeTo(group, newNode);
              Snackbar.Add($"Child Node added to Group", Severity.Info);
         }
         else
         {
-            DiagramService.Add.Node(newNode);
+            DiagramService.AddNode(newNode);
             Snackbar.Add("Node added to Diagram", Severity.Info);
         }
         SelectModel(newNode);
@@ -297,12 +298,12 @@
 
         if (container is Group group)
         {
-            DiagramService.Add.GroupTo(group, newGroup);
+            DiagramService.AddGroupTo(group, newGroup);
             Snackbar.Add($"Child Group added to Group", Severity.Info);
         }
         else
         {
-            DiagramService.Add.Group(newGroup);
+            DiagramService.AddGroup(newGroup);
             Snackbar.Add("Node added to Diagram", Severity.Info);
         }
 
@@ -328,7 +329,7 @@
         {
             var port = new Port { Alignment = nextAlignment };
             // Add a new Port with the found alignment
-            DiagramService.Add.PortTo(container, port);
+            DiagramService.AddPortTo(container, port);
             Snackbar.Add($"Port added to {container.GetType().Name}", Severity.Info);
             SelectModel(port);
         }
@@ -343,8 +344,8 @@
     private void AddGroup()
     {
         var newGroup = new Group();
-        
-        DiagramService.Add.Group(newGroup);
+
+        DiagramService.AddGroup(newGroup);
         Snackbar.Add("Group added!", Severity.Success);
         SelectModel(newGroup);
     }
@@ -352,7 +353,7 @@
     private void AddNewLayer()
     {
         var newLayer = new Layer();
-        DiagramService.Add.Layer(newLayer);
+        DiagramService.AddLayer(newLayer);
         Snackbar.Add("New layer added!", Severity.Success);
     }
     
@@ -364,7 +365,7 @@
 
     private async Task SaveDiagram()
     {
-        var json = DiagramService.Storage.Save(DiagramService.Diagram);
+        var json = DiagramService.Save(DiagramService.Diagram);
         await DialogService.ShowAsync<SimpleDialog>(string.Empty, new DialogParameters()
         {
             { nameof(SimpleDialog.Text), json },

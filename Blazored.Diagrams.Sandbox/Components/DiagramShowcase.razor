@@ -19,10 +19,10 @@
             var port2 = new Port();
             port2.Alignment = PortAlignment.Left;
             node2.SetPosition(400, 100);
-            Service.Add.PortTo(node1, port1);
-            Service.Add.PortTo(node2, port2);
-            Service.Add.Node(node1);
-            Service.Add.Node(node2);
+            Service.AddPortTo(node1, port1);
+            Service.AddPortTo(node2, port2);
+            Service.AddNode(node1);
+            Service.AddNode(node2);
 
             var group = new Group();
             var groupPort = new Port();
@@ -32,18 +32,18 @@
             node1Port.Alignment = PortAlignment.Right;
             var groupNode1 = new Node();
             groupNode1.SetPosition(700, 700);
-            Service.Add.PortTo(groupNode1, node1Port);
+            Service.AddPortTo(groupNode1, node1Port);
 
             var node2Port = new Port();
             node2Port.Alignment = PortAlignment.Left;
             var groupNode2 = new Node();
             groupNode2.SetPosition(900, 900);
-            Service.Add.PortTo(groupNode2, node2Port);
-            Service.Add.NodeTo(group, groupNode1);
-            Service.Add.NodeTo(group, groupNode1);
-            Service.Add.NodeTo(group, groupNode2);
-            Service.Add.PortTo(group, groupPort);
-            Service.Add.Group(group);
+            Service.AddPortTo(groupNode2, node2Port);
+            Service.AddNodeTo(group, groupNode1);
+            Service.AddNodeTo(group, groupNode1);
+            Service.AddNodeTo(group, groupNode2);
+            Service.AddPortTo(group, groupPort);
+            Service.AddGroup(group);
         }
 
         return base.OnAfterRenderAsync(firstRender);

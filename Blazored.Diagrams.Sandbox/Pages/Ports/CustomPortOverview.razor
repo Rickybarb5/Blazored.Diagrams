@@ -67,22 +67,22 @@
         // 1. Create a node with a DEFAULT port
         var node1 = new Node();
         node1.SetPosition(50, 150);
-        Service.Add.Node(node1);
+        Service.AddNode(node1);
 
         var defaultPort = new Port { Alignment = PortAlignment.Right, Justification = PortJustification.Center };
-        Service.Add.PortTo(node1, defaultPort);
+        Service.AddPortTo(node1, defaultPort);
 
         // 2. Create a node with a CUSTOM port
         var node2 = new Node();
         node2.SetPosition(400, 150);
-        Service.Add.Node(node2);
+        Service.AddNode(node2);
 
         // Use the new CustomPort model
         var customPort = new CustomPort { Alignment = PortAlignment.Left, Justification = PortJustification.Center };
-        Service.Add.PortTo(node2, customPort);
+        Service.AddPortTo(node2, customPort);
 
         // 3. Add a link between them
-        Service.Add.LinkTo(defaultPort, customPort, new LineLink());
+        Service.AddLinkTo(defaultPort, customPort, new LineLink());
 
         return base.OnInitializedAsync();
     }
@@ -184,7 +184,7 @@
             // Create a node
             var node = new Node();
             node.SetPosition(50, 50);
-            Service.Add.Node(node);
+            Service.AddNode(node);
             
             // 2. Define the CUSTOM port
             var port = new CustomPort 
@@ -194,6 +194,6 @@
             };
             
             // 3. Add the port to the node
-            Service.Add.PortTo(node, port);";
+            Service.AddPortTo(node, port);";
 
 }

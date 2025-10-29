@@ -101,7 +101,7 @@ var node = new Node()
 };
 
 // 2. Add to the diagram using the service
-Service.Add.Node(node);
+Service.AddNode(node);
 
 // The DiagramContainer will automatically render the built-in DefaultNodeComponent.";
 
@@ -115,12 +115,12 @@ Service.Add.Node(node);
             // Add the node
             _mainNode = new Node();
             _mainNode.SetPosition(300, 200); // Set a starting position
-            Service.Add.Node(_mainNode);
+            Service.AddNode(_mainNode);
         }
         else
         {
             // Remove the node
-            Service.Remove.Node(_mainNode);
+            Service.RemoveNode(_mainNode);
             _mainNode = null; // Clear the reference
         }
 
@@ -148,7 +148,7 @@ Service.Add.Node(node);
         if (_mainNode.Ports.Count < 4)
         {
             // Add a new Port with the found alignment
-            Service.Add.PortTo(_mainNode, new Port { Alignment = nextAlignment });
+            Service.AddPortTo(_mainNode, new Port { Alignment = nextAlignment });
         }
 
         // This is important to update the port count in the button text

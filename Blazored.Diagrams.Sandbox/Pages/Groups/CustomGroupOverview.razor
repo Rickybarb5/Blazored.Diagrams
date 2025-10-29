@@ -34,7 +34,8 @@
                     
                     <MudExpansionPanel Text="3. Initialization & Usage">
                         <MudText Typo="Typo.body1" Class="mb-4">
-                            To use the custom group, instantiate your new <code>CustomGroup</code> model and add it to the Diagram Service. Note that nodes must be explicitly added **to the group** using <code>Service.Add.NodeTo()</code>.
+                            To use the custom group, instantiate your new <code>CustomGroup</code> model and add it to
+                            the Diagram Service. Note that nodes must be explicitly added **to the group** using <code>Service.AddNodeTo()</code>.
                         </MudText>
                         
                         <CodeHighlighter Language="csharp" Code="@InitializationCode" />
@@ -69,22 +70,22 @@
         };
         customGroup.SetPosition(50, 50);
 
-        Service.Add.Group(customGroup);
+        Service.AddGroup(customGroup);
 
         var node1 = new Node(); 
         node1.SetPosition(50, 80); 
         node1.SetSize(100, 50);
-        
-        Service.Add.NodeTo(customGroup, node1);
+
+        Service.AddNodeTo(customGroup, node1);
         
         var node2 = new Node();
         node2.SetPosition(250, 150);
         node2.SetSize(100, 50);
-        Service.Add.NodeTo(customGroup, node2);
+        Service.AddNodeTo(customGroup, node2);
         
         var outsideNode = new Node();
         outsideNode.SetPosition(500, 150);
-        Service.Add.Node(outsideNode);
+        Service.AddNode(outsideNode);
 
         return base.OnInitializedAsync();
     }
@@ -148,21 +149,21 @@ protected override Task OnInitializedAsync()
         Height = 300
     };
     customGroup.SetPosition(50, 50);
-    Service.Add.Group(customGroup);
+    Service.AddGroup(customGroup);
 
     // 2. Create nodes inside the group
     var node1 = new Node(); 
     node1.SetPosition(50, 80); 
     node1.SetSize(100, 50);
-    Service.Add.NodeTo(customGroup, node1);
+    Service.AddNodeTo(customGroup, node1);
     
     // 3. Create nodes outside the group
     var outsideNode = new Node();
     outsideNode.SetPosition(500, 150);
-    Service.Add.Node(outsideNode);
+    Service.AddNode(outsideNode);
     
     // ... add link between inner node and outer node
-    Service.Add.Link(node1.GetPort(PortAnchor.Bottom), outsideNode.GetPort(PortAnchor.Top));
+    Service.AddLink(node1.GetPort(PortAnchor.Bottom), outsideNode.GetPort(PortAnchor.Top));
 
     return base.OnInitializedAsync();
 }

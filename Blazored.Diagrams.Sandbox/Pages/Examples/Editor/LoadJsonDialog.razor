@@ -64,8 +64,7 @@ public required IDiagramService Service { get; set; }
         {
             try
             {
-            Service.Storage.Load<Diagram>(JsonString!);
-            //Service.Diagram.AllPorts.ForEach(p=> Service.Events.Publish(new PortRedrawEvent(p)));
+                Service.LoadAndUse<Diagram>(JsonString!);
             }
             catch (Exception)
             {

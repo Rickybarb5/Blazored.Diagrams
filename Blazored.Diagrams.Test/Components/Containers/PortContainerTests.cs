@@ -11,6 +11,7 @@ namespace Blazored.Diagrams.Test.Components;
 public class PortContainerTests : ContainerTestBase<PortContainer>
 {
     private DiagramService _service = new();
+
     public IRenderedComponent<PortContainer> CreateComponent(IPort port)
     {
         return RenderComponent<PortContainer>(parameters => parameters
@@ -23,7 +24,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
     {
         // Arrange
         var port = new Port { IsVisible = false };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         //Assert
@@ -35,7 +36,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
     {
         // Arrange
         var port = new Port { PositionX = 100, PositionY = 200, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         //Act
@@ -52,7 +53,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortPointerDownEvent>(_ => { eventTriggered = true; });
         var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -69,7 +70,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortPointerUpEvent>(_ => { eventTriggered = true; });
         var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -86,7 +87,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortPointerEnterEvent>(_ => { eventTriggered = true; });
         var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -103,7 +104,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortPointerLeaveEvent>(_ => { eventTriggered = true; });
         var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -120,7 +121,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortPointerMoveEvent>(_ => { eventTriggered = true; });
         var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -136,8 +137,8 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         // Arrange
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortWheelEvent>(_ => { eventTriggered = true; });
-        var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true};
-        _service.Add.PortTo(new Node(), port);
+        var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -154,7 +155,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var eventTriggered = false;
         _service.Events.SubscribeTo<PortClickedEvent>(_ => { eventTriggered = true; });
         var port = new Port { PositionX = 0, PositionY = 0, IsVisible = true };
-        _service.Add.PortTo(new Node(), port);
+        _service.AddPortTo(new Node(), port);
         var cut = CreateComponent(port);
 
         // Act
@@ -176,12 +177,12 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
             Alignment = PortAlignment.Right,
             Justification = PortJustification.Center
         };
-        _service.Add.Node(parentNode);
-        _service.Add.PortTo(parentNode, port);
+        _service.AddNode(parentNode);
+        _service.AddPortTo(parentNode, port);
         var cut = CreateComponent(port);
 
         var initialX = port.PositionX;
-        var initialY = port.PositionY; 
+        var initialY = port.PositionY;
 
         // Act
         parentNode.SetPosition(200, 200);
@@ -200,15 +201,15 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
         var targetPort = new Port();
         var sourceNode = new Node();
         var targetNode = new Node();
-        _service.Add.Node(sourceNode);
-        _service.Add.Node(targetNode);
-        _service.Add.PortTo(sourceNode, sourcePort);
-        _service.Add.PortTo(targetNode, targetPort);
+        _service.AddNode(sourceNode);
+        _service.AddNode(targetNode);
+        _service.AddPortTo(sourceNode, sourcePort);
+        _service.AddPortTo(targetNode, targetPort);
         // SourcePort must be set for the Link model to initialize OutgoingLinks correctly
         var link = new LineLink { SourcePort = sourcePort };
 
         // Act
-        _service.Add.LinkTo(sourcePort, targetPort, link);
+        _service.AddLinkTo(sourcePort, targetPort, link);
         link.TargetPort = targetPort;
 
         // Assert
@@ -219,61 +220,21 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
     }
 
     [Theory]
-    [InlineData(PortAlignment.Left, PortJustification.Start,PortAlignment.Right)]
-    [InlineData(PortAlignment.Left, PortJustification.Center,PortAlignment.Right)]
-    [InlineData(PortAlignment.Left, PortJustification.End,PortAlignment.Right)]
-    [InlineData(PortAlignment.Right, PortJustification.End,PortAlignment.Left)]
-    [InlineData(PortAlignment.Right, PortJustification.Center,PortAlignment.Left)]
-    [InlineData(PortAlignment.Right, PortJustification.Start,PortAlignment.Left)]
-    [InlineData(PortAlignment.Top, PortJustification.Center,PortAlignment.Bottom)]
-    [InlineData(PortAlignment.Top, PortJustification.Start,PortAlignment.Bottom)]
-    [InlineData(PortAlignment.Top, PortJustification.End,PortAlignment.Bottom)]
-    [InlineData(PortAlignment.Bottom, PortJustification.Start,PortAlignment.Top)]
-    [InlineData(PortAlignment.Bottom, PortJustification.Center,PortAlignment.Top)]
-    [InlineData(PortAlignment.Bottom, PortJustification.End,PortAlignment.Top)]
-    [InlineData(PortAlignment.CenterParent, PortJustification.Center,PortAlignment.Right)]
-    public void WhenPortAlignmentChanges_ShouldUpdatePosition(PortAlignment alignment, PortJustification justification,PortAlignment alignmentTo)
-    {
-        // Arrange
-        var parentNode = new Node { Width = 100, Height = 100, PositionX = 50, PositionY = 50 };
-        var port = new Port
-        {
-            Width = 10,
-            Height = 10,
-            Alignment =alignment,
-            Justification = justification
-        };
-
-        _service.Add.Node(parentNode);
-        _service.Add.PortTo(parentNode, port);
-        var cut = CreateComponent(port);
-
-        var initialX = port.PositionX;
-        var initialY = port.PositionY;
-
-        // Act
-        port.Alignment = alignmentTo;
-        cut.Render(); 
-
-        // Assert
-        Assert.True(port.PositionX != initialX || port.PositionY != initialY,
-            $"Port position did not update after changing alignment to {alignment}/{justification}.");
-    }
-    
-     [Theory]
-    [InlineData(PortAlignment.Left, PortJustification.Start,PortJustification.End)]
-    [InlineData(PortAlignment.Left, PortJustification.Center,PortJustification.End)]
-    [InlineData(PortAlignment.Left, PortJustification.End,PortJustification.Start)]
-    [InlineData(PortAlignment.Right, PortJustification.End,PortJustification.Start)]
-    [InlineData(PortAlignment.Right, PortJustification.Center,PortJustification.Start)]
-    [InlineData(PortAlignment.Right, PortJustification.Start,PortJustification.End)]
-    [InlineData(PortAlignment.Top, PortJustification.Center,PortJustification.Start)]
-    [InlineData(PortAlignment.Top, PortJustification.Start,PortJustification.End)]
-    [InlineData(PortAlignment.Top, PortJustification.End,PortJustification.Start)]
-    [InlineData(PortAlignment.Bottom, PortJustification.Start,PortJustification.End)]
-    [InlineData(PortAlignment.Bottom, PortJustification.Center,PortJustification.Start)]
-    [InlineData(PortAlignment.Bottom, PortJustification.End,PortJustification.Start)]
-    public void WhenPortJustificationChanges_ShouldUpdatePosition(PortAlignment alignment, PortJustification justification,PortJustification justificationTo)
+    [InlineData(PortAlignment.Left, PortJustification.Start, PortAlignment.Right)]
+    [InlineData(PortAlignment.Left, PortJustification.Center, PortAlignment.Right)]
+    [InlineData(PortAlignment.Left, PortJustification.End, PortAlignment.Right)]
+    [InlineData(PortAlignment.Right, PortJustification.End, PortAlignment.Left)]
+    [InlineData(PortAlignment.Right, PortJustification.Center, PortAlignment.Left)]
+    [InlineData(PortAlignment.Right, PortJustification.Start, PortAlignment.Left)]
+    [InlineData(PortAlignment.Top, PortJustification.Center, PortAlignment.Bottom)]
+    [InlineData(PortAlignment.Top, PortJustification.Start, PortAlignment.Bottom)]
+    [InlineData(PortAlignment.Top, PortJustification.End, PortAlignment.Bottom)]
+    [InlineData(PortAlignment.Bottom, PortJustification.Start, PortAlignment.Top)]
+    [InlineData(PortAlignment.Bottom, PortJustification.Center, PortAlignment.Top)]
+    [InlineData(PortAlignment.Bottom, PortJustification.End, PortAlignment.Top)]
+    [InlineData(PortAlignment.CenterParent, PortJustification.Center, PortAlignment.Right)]
+    public void WhenPortAlignmentChanges_ShouldUpdatePosition(PortAlignment alignment, PortJustification justification,
+        PortAlignment alignmentTo)
     {
         // Arrange
         var parentNode = new Node { Width = 100, Height = 100, PositionX = 50, PositionY = 50 };
@@ -285,8 +246,50 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
             Justification = justification
         };
 
-        _service.Add.Node(parentNode);
-        _service.Add.PortTo(parentNode, port);
+        _service.AddNode(parentNode);
+        _service.AddPortTo(parentNode, port);
+        var cut = CreateComponent(port);
+
+        var initialX = port.PositionX;
+        var initialY = port.PositionY;
+
+        // Act
+        port.Alignment = alignmentTo;
+        cut.Render();
+
+        // Assert
+        Assert.True(port.PositionX != initialX || port.PositionY != initialY,
+            $"Port position did not update after changing alignment to {alignment}/{justification}.");
+    }
+
+    [Theory]
+    [InlineData(PortAlignment.Left, PortJustification.Start, PortJustification.End)]
+    [InlineData(PortAlignment.Left, PortJustification.Center, PortJustification.End)]
+    [InlineData(PortAlignment.Left, PortJustification.End, PortJustification.Start)]
+    [InlineData(PortAlignment.Right, PortJustification.End, PortJustification.Start)]
+    [InlineData(PortAlignment.Right, PortJustification.Center, PortJustification.Start)]
+    [InlineData(PortAlignment.Right, PortJustification.Start, PortJustification.End)]
+    [InlineData(PortAlignment.Top, PortJustification.Center, PortJustification.Start)]
+    [InlineData(PortAlignment.Top, PortJustification.Start, PortJustification.End)]
+    [InlineData(PortAlignment.Top, PortJustification.End, PortJustification.Start)]
+    [InlineData(PortAlignment.Bottom, PortJustification.Start, PortJustification.End)]
+    [InlineData(PortAlignment.Bottom, PortJustification.Center, PortJustification.Start)]
+    [InlineData(PortAlignment.Bottom, PortJustification.End, PortJustification.Start)]
+    public void WhenPortJustificationChanges_ShouldUpdatePosition(PortAlignment alignment,
+        PortJustification justification, PortJustification justificationTo)
+    {
+        // Arrange
+        var parentNode = new Node { Width = 100, Height = 100, PositionX = 50, PositionY = 50 };
+        var port = new Port
+        {
+            Width = 10,
+            Height = 10,
+            Alignment = alignment,
+            Justification = justification
+        };
+
+        _service.AddNode(parentNode);
+        _service.AddPortTo(parentNode, port);
         var cut = CreateComponent(port);
 
         var initialX = port.PositionX;
@@ -294,7 +297,7 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
 
         // Act
         port.Justification = justificationTo;
-        cut.Render(); 
+        cut.Render();
 
         // Assert
         Assert.True(port.PositionX != initialX || port.PositionY != initialY,
@@ -312,15 +315,15 @@ public class PortContainerTests : ContainerTestBase<PortContainer>
             Height = 10,
             Alignment = PortAlignment.Right,
         };
-        _service.Add.Node(node);
-        _service.Add.PortTo(node, port);
+        _service.AddNode(node);
+        _service.AddPortTo(node, port);
         var cut = CreateComponent(port);
 
         var initialX = port.PositionX;
 
         // Act
         node.SetSize(200, 100);
-        cut.Render(); 
+        cut.Render();
 
         // Assert
         Assert.NotEqual(initialX, port.PositionX);

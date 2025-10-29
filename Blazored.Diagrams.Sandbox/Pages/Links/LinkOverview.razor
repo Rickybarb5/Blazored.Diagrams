@@ -76,18 +76,18 @@
         var n4 = new Node { PositionX = 600, PositionY = 150 };
 
         // Add the nodes.
-        Service.Add.Node(n1);
-        Service.Add.Node(n2);
-        Service.Add.Node(n3);
-        Service.Add.Node(n4);
+        Service.AddNode(n1);
+        Service.AddNode(n2);
+        Service.AddNode(n3);
+        Service.AddNode(n4);
         
         // Create the ports.
-        Service.Add.PortTo(n1, new Port{ Alignment = PortAlignment.Right});
-        Service.Add.PortTo(n2, new Port{ Alignment = PortAlignment.Left});
-        Service.Add.PortTo(n2, new Port{ Alignment = PortAlignment.Right});
-        Service.Add.PortTo(n3, new Port{ Alignment = PortAlignment.Left});
-        Service.Add.PortTo(n3, new Port{ Alignment = PortAlignment.Right});
-        Service.Add.PortTo(n4, new Port{ Alignment = PortAlignment.Left});
+        Service.AddPortTo(n1, new Port { Alignment = PortAlignment.Right });
+        Service.AddPortTo(n2, new Port { Alignment = PortAlignment.Left });
+        Service.AddPortTo(n2, new Port { Alignment = PortAlignment.Right });
+        Service.AddPortTo(n3, new Port { Alignment = PortAlignment.Left });
+        Service.AddPortTo(n3, new Port { Alignment = PortAlignment.Right });
+        Service.AddPortTo(n4, new Port { Alignment = PortAlignment.Left });
 
         // Create the links.
         var lineLink = new LineLink();
@@ -95,9 +95,9 @@
         var orthogonalLink = new OrthogonalLink();
 
         // Add the links.
-        Service.Add.LinkTo(n1.Ports.First(), n2.Ports.First(), lineLink);
-        Service.Add.LinkTo(n2.Ports.Last(), n3.Ports.First(), curvedLink);
-        Service.Add.LinkTo(n3.Ports.Last(), n4.Ports.First(), orthogonalLink);
+        Service.AddLinkTo(n1.Ports.First(), n2.Ports.First(), lineLink);
+        Service.AddLinkTo(n2.Ports.Last(), n3.Ports.First(), curvedLink);
+        Service.AddLinkTo(n3.Ports.Last(), n4.Ports.First(), orthogonalLink);
        
         return base.OnInitializedAsync();
     }
@@ -129,18 +129,18 @@ public class OrthogonalLink : Link, IHasComponent<OrthogonalLinkComponent>;
         var n4 = new Node { PositionX = 600, PositionY = 150 };
 
         // Add the nodes.
-        Service.Add.Node(n1);
-        Service.Add.Node(n2);
-        Service.Add.Node(n3);
-        Service.Add.Node(n4);
+        Service.AddNode(n1);
+        Service.AddNode(n2);
+        Service.AddNode(n3);
+        Service.AddNode(n4);
         
         // Create the ports.
-        Service.Add.PortTo(n1, new Port{ Alignment = PortAlignment.Right});
-        Service.Add.PortTo(n2, new Port{ Alignment = PortAlignment.Left});
-        Service.Add.PortTo(n2, new Port{ Alignment = PortAlignment.Right});
-        Service.Add.PortTo(n3, new Port{ Alignment = PortAlignment.Left});
-        Service.Add.PortTo(n3, new Port{ Alignment = PortAlignment.Right});
-        Service.Add.PortTo(n4, new Port{ Alignment = PortAlignment.Left});
+        Service.AddPortTo(n1, new Port{ Alignment = PortAlignment.Right});
+        Service.AddPortTo(n2, new Port{ Alignment = PortAlignment.Left});
+        Service.AddPortTo(n2, new Port{ Alignment = PortAlignment.Right});
+        Service.AddPortTo(n3, new Port{ Alignment = PortAlignment.Left});
+        Service.AddPortTo(n3, new Port{ Alignment = PortAlignment.Right});
+        Service.AddPortTo(n4, new Port{ Alignment = PortAlignment.Left});
 
         // Create the links.
         var lineLink = new LineLink();
@@ -148,9 +148,9 @@ public class OrthogonalLink : Link, IHasComponent<OrthogonalLinkComponent>;
         var orthogonalLink = new OrthogonalLink();
 
         // Add the links.
-        Service.Add.AddLinkTo(n1.Ports.First(), n2.Ports.First(), lineLink);
-        Service.Add.AddLinkTo(n2.Ports.Last(), n3.Ports.First(), curvedLink);
-        Service.Add.AddLinkTo(n3.Ports.Last(), n4.Ports.First(), orthogonalLink);
+        Service.AddAddLinkTo(n1.Ports.First(), n2.Ports.First(), lineLink);
+        Service.AddAddLinkTo(n2.Ports.Last(), n3.Ports.First(), curvedLink);
+        Service.AddAddLinkTo(n3.Ports.Last(), n4.Ports.First(), orthogonalLink);
        
 ";
 }

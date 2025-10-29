@@ -25,8 +25,8 @@ public class DeleteWithKeyBehaviourTests
 
         var node1 = new Node { IsSelected = true };
         var node2 = new Node { IsSelected = false };
-        service.Add.Node(node1);
-        service.Add.Node(node2);
+        service.AddNode(node1);
+        service.AddNode(node2);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -46,8 +46,8 @@ public class DeleteWithKeyBehaviourTests
 
         var group1 = new Group { IsSelected = true };
         var group2 = new Group { IsSelected = false };
-        service.Add.Group(group1);
-        service.Add.Group(group2);
+        service.AddGroup(group1);
+        service.AddGroup(group2);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -69,12 +69,12 @@ public class DeleteWithKeyBehaviourTests
         var group1 = new Group { IsSelected = true };
         var group2 = new Group { IsSelected = false };
 
-        service.Add.PortTo(group1, sourcePort);
-        service.Add.PortTo(group2, targetPort);
-        
+        service.AddPortTo(group1, sourcePort);
+        service.AddPortTo(group2, targetPort);
+
         var link1 = new LineLink { IsSelected = true, SourcePort = sourcePort, TargetPort = targetPort };
-        service.Add.Group(group1);
-        service.Add.Group(group2);
+        service.AddGroup(group1);
+        service.AddGroup(group2);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -93,15 +93,15 @@ public class DeleteWithKeyBehaviourTests
 
         var node = new Node { IsSelected = true };
         var group = new Group { IsSelected = true };
-        
-        service.Add.Node(node);
-        service.Add.Group(group);
+
+        service.AddNode(node);
+        service.AddGroup(group);
         var sourcePort = new Port();
         var targetPort = new Port();
-        service.Add.PortTo(node, sourcePort);
-        service.Add.PortTo(group, targetPort);
+        service.AddPortTo(node, sourcePort);
+        service.AddPortTo(group, targetPort);
         var link = new LineLink();
-        service.Add.LinkTo(sourcePort, targetPort, link);
+        service.AddLinkTo(sourcePort, targetPort, link);
         link.IsSelected = true;
 
         var args = new KeyboardEventArgs { Code = "Backspace" };
@@ -123,7 +123,7 @@ public class DeleteWithKeyBehaviourTests
         service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().DeleteKeyCode = "Backspace";
 
         var node = new Node { IsSelected = true };
-        service.Add.Node(node);
+        service.AddNode(node);
 
         var args = new KeyboardEventArgs { Code = "Backspace" };
 
@@ -143,7 +143,7 @@ public class DeleteWithKeyBehaviourTests
 
 
         var node = new Node { IsSelected = true };
-        service.Add.Node(node);
+        service.AddNode(node);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 
@@ -164,7 +164,7 @@ public class DeleteWithKeyBehaviourTests
 
 
         var node = new Node { IsSelected = true };
-        service.Add.Node(node);
+        service.AddNode(node);
 
         var args = new KeyboardEventArgs { Code = "Delete" };
 

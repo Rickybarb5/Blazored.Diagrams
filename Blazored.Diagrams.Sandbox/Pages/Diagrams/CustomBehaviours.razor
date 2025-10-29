@@ -90,15 +90,15 @@
         // 3. Add demo nodes and links
         var node1 = new Node();
         node1.SetPosition(100, 100);
-        Service.Add.Node(node1);
-        Service.Add.PortTo(node1, new Port { Alignment = PortAlignment.Right });
+        Service.AddNode(node1);
+        Service.AddPortTo(node1, new Port { Alignment = PortAlignment.Right });
 
         var node2 = new Node();
         node2.SetPosition(400, 300);
-        Service.Add.Node(node2);
-        Service.Add.PortTo(node2, new Port { Alignment = PortAlignment.Left });
+        Service.AddNode(node2);
+        Service.AddPortTo(node2, new Port { Alignment = PortAlignment.Left });
 
-        Service.Add.LinkTo(node1.Ports.First(), node2.Ports.First(), new LineLink());
+        Service.AddLinkTo(node1.Ports.First(), node2.Ports.First(), new LineLink());
 
         return base.OnInitializedAsync();
     }

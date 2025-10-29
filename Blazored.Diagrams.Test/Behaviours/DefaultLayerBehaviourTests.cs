@@ -20,7 +20,7 @@ public class DefaultLayerBehaviourTests
         using var service = CreateService();
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => service.Remove.Layer(service.Diagram.Layers.First()));
+        Assert.Throws<InvalidOperationException>(() => service.RemoveLayer(service.Diagram.Layers.First()));
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class DefaultLayerBehaviourTests
         service.Diagram.CurrentLayer = secondLayer;
 
         // Act
-        service.Remove.Layer(secondLayer);
+        service.RemoveLayer(secondLayer);
 
         // Assert
         Assert.Same(service.Diagram.Layers.First(), service.Diagram.CurrentLayer);

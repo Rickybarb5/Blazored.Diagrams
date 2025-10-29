@@ -79,13 +79,6 @@ public partial class DiagramService
         toCenter.SetPosition(newPositionX, newPositionY);
     }
 
-    /// <summary>
-    /// Collection of options to use on the <see cref="DiagramService.FitToScreen"/> method.
-    /// </summary>
-    /// <param name="Margin">Margin in pixels between the models and the edge of the diagram container.</param>
-    /// <param name="IncludeInvisible">If true, invisible components will also be taken into account.</param>
-    public record FitToScreenParameters(int Margin, bool IncludeInvisible);
-
 
     /// <inheritdoc />
     // TODO: This is bugged!
@@ -123,6 +116,7 @@ public partial class DiagramService
 
         var newZoom = Math.Min(zoomX, zoomY);
         var zoomOptions = Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>();
+
         newZoom = Math.Min(newZoom, zoomOptions.MaxZoom);
 
         // Compute world center and target pan
@@ -138,4 +132,11 @@ public partial class DiagramService
         Diagram.SetZoom(newZoom);
         Diagram.SetPan((int)newPanX, (int)newPanY);
     }
+
+    /// <summary>
+    /// Collection of options to use on the <see cref="DiagramService.FitToScreen"/> method.
+    /// </summary>
+    /// <param name="Margin">Margin in pixels between the models and the edge of the diagram container.</param>
+    /// <param name="IncludeInvisible">If true, invisible components will also be taken into account.</param>
+    public record FitToScreenParameters(int Margin, bool IncludeInvisible);
 }

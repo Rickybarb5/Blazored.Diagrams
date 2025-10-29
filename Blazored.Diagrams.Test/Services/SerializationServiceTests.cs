@@ -4,7 +4,6 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services.Diagrams;
-
 using Blazored.Diagrams.Services.Serialization;
 
 namespace Blazored.Diagrams.Test.Services;
@@ -16,10 +15,10 @@ public class SerializationServiceTests
 
     public SerializationServiceTests()
     {
-       diagramService = new DiagramService();
+        diagramService = new DiagramService();
         serializationService = new SerializationService();
     }
-    
+
     [Fact]
     public void Serialization_Works()
     {
@@ -31,20 +30,19 @@ public class SerializationServiceTests
         var groupPort = new Port();
         var link = new LineLink();
         diagramService
-            .Add
-            .Node(node)
-            .Group(group)
-            .NodeTo(group, groupNode)
-            .PortTo(node, nodePort)
-            .PortTo(group, groupPort)
-            .LinkTo(nodePort, groupPort, link);
-        
+            .AddNode(node)
+            .AddGroup(group)
+            .AddNodeTo(group, groupNode)
+            .AddPortTo(node, nodePort)
+            .AddPortTo(group, groupPort)
+            .AddLinkTo(nodePort, groupPort, link);
+
         var expected = serializationService.ToJson(diagramService.Diagram);
-        
+
         // Act
         var diagram = serializationService.FromJson<Diagram>(expected);
         var actual = serializationService.ToJson<Diagram>(diagram);
-        
+
         Assert.Equal(expected, actual);
     }
 }

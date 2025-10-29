@@ -18,10 +18,7 @@ public partial class DiagramService : IDiagramService
         Diagram = new Diagram();
         Behaviours = new BehaviourContainer(this);
         Options = new OptionsContainer(this);
-        Add = new AddContainer(this);
-        Remove = new DeleteContainer(this);
         Events = new EventAggregator(this);
-        Storage = new SerializationContainer(this);
         InitializeOptions();
         InitializeBehaviours();
     }
@@ -32,22 +29,15 @@ public partial class DiagramService : IDiagramService
     /// <inheritdoc />
     public IBehaviourContainer Behaviours { get; set; } = null!;
 
-    /// <inheritdoc />
-    public ISerializationContainer Storage { get; set; } = null!;
 
     /// <inheritdoc />
     public IOptionsContainer Options { get; set; } = null!;
 
     /// <inheritdoc />
-    public IAddContainer Add { get; set; } = null!;
-
-    /// <inheritdoc />
-    public IDeleteContainer Remove { get; set; } = null!;
-
-    /// <inheritdoc />
     public IDiagram Diagram { get; private set; } = null!;
 
-    void IDiagramService.UseDiagram(IDiagram diagram)
+    /// <inheritdoc />
+    public void UseDiagram(IDiagram diagram)
     {
         Behaviours.Dispose();
         Diagram.Dispose();
@@ -60,9 +50,6 @@ public partial class DiagramService : IDiagramService
         ((EventAggregator)Events).RewireSubscriptions();
         Behaviours = new BehaviourContainer(this);
         Options = new OptionsContainer(this);
-        Add = new AddContainer(this);
-        Remove = new DeleteContainer(this);
-        Storage = new SerializationContainer(this);
         InitializeOptions();
         InitializeBehaviours();
         Events.Publish(new DiagramSwitchEvent(oldDiagram, diagram));

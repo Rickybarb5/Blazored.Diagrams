@@ -12,14 +12,14 @@ public class DefaultNodeComponentTests : TestContext
     private const string DefaultCssClass = "default-node";
 
     // Mocks for dependencies
-    private readonly IDiagramService _diagramService= new DiagramService();
+    private readonly IDiagramService _diagramService = new DiagramService();
     private readonly Node _testNode;
 
     public DefaultNodeComponentTests()
     {
         Services.AddSingleton(_diagramService);
-        _testNode = new Node(); 
-        _diagramService.Add.Node(_testNode);
+        _testNode = new Node();
+        _diagramService.AddNode(_testNode);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class DefaultNodeComponentTests : TestContext
             .Add(p => p.Node, _testNode)
             .AddCascadingValue(_diagramService)
         );
-        
+
         // Act
         // Assert
         cut.Find("div").MarkupMatches($@"<div class=""{DefaultCssClass}""></div>");
@@ -82,7 +82,7 @@ public class DefaultNodeComponentTests : TestContext
             .Add(p => p.Node, _testNode)
             .AddCascadingValue(_diagramService)
         );
-        
+
         // Act
         _testNode.IsSelected = false;
         cut.Render();

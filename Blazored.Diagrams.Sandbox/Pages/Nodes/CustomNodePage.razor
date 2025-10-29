@@ -127,14 +127,14 @@
         var node = new MyCustomNode { Name = $"Node #{_nodeCount}" };
         node.SetPosition(100 + (_nodeCount % 5) * 50, 100 + (_nodeCount / 5) * 50);
 
-        Service.Add.Node(node);
+        Service.AddNode(node);
     }
     
     private void RemoveSelectedNode()
     {
         if (_selectedNode != null)
         {
-            Service.Remove.Node(_selectedNode);
+            Service.RemoveNode(_selectedNode);
             _selectedNode = null;
             InvokeAsync(StateHasChanged);
         }
@@ -152,7 +152,7 @@
 
         if (_selectedNode.Ports.Count!=4)
         {
-            Service.Add.PortTo(_selectedNode, new Port{Alignment = nextSide});
+            Service.AddPortTo(_selectedNode, new Port { Alignment = nextSide });
         }
         return InvokeAsync(StateHasChanged);
     }

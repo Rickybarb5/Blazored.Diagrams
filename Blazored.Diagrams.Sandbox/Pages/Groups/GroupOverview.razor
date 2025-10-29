@@ -110,23 +110,23 @@
         _outerGroup = new Group();
         _outerGroup.SetPosition(100, 100);
         _outerGroup.SetSize(600, 400);
-        Service.Add.Group(_outerGroup);
+        Service.AddGroup(_outerGroup);
 
         // 2. Create the Child Group (Nested)
         _childGroup = new Group();
         _childGroup.SetPosition(150, 150);
         _childGroup.SetSize(300, 200);
-        Service.Add.GroupTo(_outerGroup, _childGroup);
+        Service.AddGroupTo(_outerGroup, _childGroup);
 
         // 3. Create the Child Node (Nested inside the Child Group)
         _childNode = new Node();
         _childNode.SetPosition(200, 200);
-        Service.Add.NodeTo(_childGroup, _childNode);
+        Service.AddNodeTo(_childGroup, _childNode);
 
         // 4. Add a Node directly to the Outer Group
         var siblingNode = new Node();
         siblingNode.SetPosition(500, 150);
-        Service.Add.NodeTo(_outerGroup, siblingNode);
+        Service.AddNodeTo(_outerGroup, siblingNode);
         
         // 5. Subscribe to Group Selection Changes to update the UI
         _selectionSubscription = Service.Events.SubscribeTo<GroupSelectionChangedEvent>(e => UpdateSelectedGroup());
@@ -164,7 +164,7 @@
             newNode.SetPosition(x, y);
             
             // Add the new node to the selected group's collection
-            Service.Add.NodeTo(_selectedGroup, newNode);
+            Service.AddNodeTo(_selectedGroup, newNode);
             
             // Force the group component to redraw to account for the new child
             Service.Events.Publish(new GroupRedrawEvent(_selectedGroup)); 
@@ -179,7 +179,7 @@
             var newPort = new Port{Alignment = PortAlignment.Right};
             
             // Add the new port to the selected group's port collection
-            Service.Add.PortTo(_selectedGroup, newPort);
+            Service.AddPortTo(_selectedGroup, newPort);
             
             // Force the group component to redraw to account for the new port
             Service.Events.Publish(new GroupRedrawEvent(_selectedGroup)); 
@@ -205,7 +205,7 @@
     {
         if (_childNode != null)
         {
-            Service.Remove.Node(_childNode);
+            Service.RemoveNode(_childNode);
             _childNode = null;
         }
     }
@@ -218,11 +218,11 @@ var childGroup = new Group();
 var node = new Node();
 
 // 2. Add to the Diagram Layer
-Service.Add.Group(outerGroup); 
+Service.AddGroup(outerGroup); 
 
 // 3. Nest the models
-Service.Add.AddGroupTo(outerGroup, childGroup);
-Service.Add.NodeTo(childGroup, node);
+Service.AddAddGroupTo(outerGroup, childGroup);
+Service.AddNodeTo(childGroup, node);
 
 // Now, dragging 'outerGroup' will drag all other models.";
     

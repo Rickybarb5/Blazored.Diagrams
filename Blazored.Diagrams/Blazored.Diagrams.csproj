@@ -66,6 +66,21 @@
         <Compile Update="Diagrams\Diagram.Events.cs">
           <DependentUpon>Diagram.cs</DependentUpon>
         </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Addcs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Removecs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Add.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Remove.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Serialization">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

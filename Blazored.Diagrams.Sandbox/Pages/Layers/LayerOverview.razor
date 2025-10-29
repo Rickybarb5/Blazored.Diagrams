@@ -133,14 +133,14 @@
     protected override Task OnInitializedAsync()
     {
         var layer2 = new Layer();
-        Service.Add.Layer(layer2);
+        Service.AddLayer(layer2);
 
         // Add nodes to Layer 1 (index 0)
         for (var i = 0; i < 4; i++)
         {
             var node = new NamedNode { Name = "Layer 1 Node" };
             node.SetPosition(50 + 200 * i, 100);
-            Service.Add.Node(node);
+            Service.AddNode(node);
         }
 
         // Set Layer 2 as active and add nodes
@@ -150,7 +150,7 @@
         {
             var node = new NamedNode { Name = "Layer 2 Node" };
             node.SetPosition(50 + 200 * i, 300);
-            Service.Add.Node(node);
+            Service.AddNode(node);
         }
 
         // Set Layer 1 back as the active layer
@@ -163,7 +163,7 @@
     private Task CreateNewLayer()
     {
         var newLayer = new Layer();
-        Service.Add.Layer(newLayer);
+        Service.AddLayer(newLayer);
         // Optional: Make the new layer active after creation
         // Service.Diagram.UseLayer(newLayer); 
         return InvokeAsync(StateHasChanged);
@@ -179,8 +179,8 @@
         node.SetPosition(newX, newY);
         
         // This will add the node to the current active layer
-        Service.Add.Node(node); 
-        
+        Service.AddNode(node);
+
         _newNodeCount++;
         return InvokeAsync(StateHasChanged);
     }

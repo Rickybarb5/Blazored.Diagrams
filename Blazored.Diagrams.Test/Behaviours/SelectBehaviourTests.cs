@@ -25,8 +25,8 @@ public class SelectBehaviourTests
         using var service = CreateService();
         var node = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
 
         var args = new PointerEventArgs { Button = 0 };
 
@@ -44,8 +44,8 @@ public class SelectBehaviourTests
         using var service = CreateService();
         var node = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
 
         var args = new PointerEventArgs { Button = 2 }; // Right click
 
@@ -64,9 +64,9 @@ public class SelectBehaviourTests
         var node1 = new Node();
         var node2 = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node1);
-        service.Add.NodeTo(layer, node2);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
 
         var args = new PointerEventArgs { Button = 0, CtrlKey = true };
 
@@ -96,9 +96,9 @@ public class SelectBehaviourTests
         var node1 = new Node();
         var node2 = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node1);
-        service.Add.NodeTo(layer, node2);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
 
         var args = new PointerEventArgs { Button = 0, CtrlKey = true };
 
@@ -119,9 +119,9 @@ public class SelectBehaviourTests
         var node1 = new Node { IsSelected = true };
         var node2 = new Node { IsSelected = true };
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node1);
-        service.Add.NodeTo(layer, node2);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
 
         var args = new PointerEventArgs { Button = 0 };
 
@@ -141,9 +141,9 @@ public class SelectBehaviourTests
         var node1 = new Node { IsSelected = true };
         var node2 = new Node { IsSelected = true };
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node1);
-        service.Add.NodeTo(layer, node2);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
 
         var args = new PointerEventArgs { Button = 0, CtrlKey = true };
 
@@ -164,8 +164,8 @@ public class SelectBehaviourTests
 
         var node = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
 
         var args = new PointerEventArgs { Button = 0 };
 
@@ -188,11 +188,11 @@ public class SelectBehaviourTests
         var link = new LineLink { SourcePort = sourcePort, TargetPort = targetPort };
 
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
-        service.Add.GroupTo(layer, group);
-        service.Add.PortTo(node, sourcePort);
-        service.Add.PortTo(group, targetPort);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+        service.AddGroupTo(layer, group);
+        service.AddPortTo(node, sourcePort);
+        service.AddPortTo(group, targetPort);
 
         var args = new PointerEventArgs { Button = 0 };
 
@@ -218,8 +218,8 @@ public class SelectBehaviourTests
 
         var node = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
 
         var args = new PointerEventArgs { Button = 0 };
 
@@ -240,8 +240,8 @@ public class SelectBehaviourTests
 
         var node = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
 
         var args = new PointerEventArgs { Button = 0 };
 
@@ -259,8 +259,8 @@ public class SelectBehaviourTests
         using var service = CreateService();
         var node = new Node();
         var layer = new Layer();
-        service.Add.Layer(layer);
-        service.Add.NodeTo(layer, node);
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
 
         var args = new PointerEventArgs { Button = 0 };
 

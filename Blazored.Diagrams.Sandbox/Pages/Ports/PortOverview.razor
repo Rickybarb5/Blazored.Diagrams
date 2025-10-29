@@ -132,7 +132,7 @@
         @"// 1. Create a node
         var node = new Node();
         node.SetPosition(50, 50);
-        Service.Add.Node(node);
+        Service.AddNode(node);
         
         // 2. Define a port
         var port = new Port 
@@ -142,7 +142,7 @@
         };
         
         // 3. Add the port to the node
-        Service.Add.PortTo(node, port);";
+        Service.AddPortTo(node, port);";
 
     private const string CanCreateLinkCode =
         @"// Example: Only allow 1 outgoing link
@@ -184,7 +184,7 @@
         { 
             Alignment = PortAlignment.Custom 
         };
-        Service.Add.PortTo(myNode, customPort);";
+        Service.AddPortTo(myNode, customPort);";
 
     private const string OffsetCode =
         @"// Get a port (e.g., Top Center)
@@ -197,7 +197,7 @@
         // Nudge it 20px to the right
         port.OffSetX = 20;
         
-        Service.Add.PortTo(myNode, port);";
+        Service.AddPortTo(myNode, port);";
 
 
     // --- Diagram Initialization ---
@@ -208,45 +208,45 @@
         var mainNode = new Node();
         mainNode.SetPosition(150, 100);
         mainNode.SetSize(400, 300);
-        Service.Add.Node(mainNode);
+        Service.AddNode(mainNode);
 
         // --- Add ports for every alignment/justification combo ---
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Left, Justification = PortJustification.Start });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Left, Justification = PortJustification.Center });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Left, Justification = PortJustification.End });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Right, Justification = PortJustification.Start });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Right, Justification = PortJustification.Center });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Right, Justification = PortJustification.End });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Top, Justification = PortJustification.Start });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Top, Justification = PortJustification.Center });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Top, Justification = PortJustification.End });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Bottom, Justification = PortJustification.Start });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Bottom, Justification = PortJustification.Center });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.Bottom, Justification = PortJustification.End });
-        Service.Add.PortTo(mainNode, new Port { Alignment = PortAlignment.CenterParent });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Left, Justification = PortJustification.Start });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Left, Justification = PortJustification.Center });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Left, Justification = PortJustification.End });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Right, Justification = PortJustification.Start });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Right, Justification = PortJustification.Center });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Right, Justification = PortJustification.End });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Top, Justification = PortJustification.Start });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Top, Justification = PortJustification.Center });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Top, Justification = PortJustification.End });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Bottom, Justification = PortJustification.Start });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Bottom, Justification = PortJustification.Center });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.Bottom, Justification = PortJustification.End });
+        Service.AddPortTo(mainNode, new Port { Alignment = PortAlignment.CenterParent });
 
 
         // 2. Create a second node to link to
         var targetNode = new Node();
         targetNode.SetPosition(650, 225);
-        Service.Add.Node(targetNode);
+        Service.AddNode(targetNode);
 
         var targetPort = new Port { Alignment = PortAlignment.Left, Justification = PortJustification.Center };
-        Service.Add.PortTo(targetNode, targetPort);
+        Service.AddPortTo(targetNode, targetPort);
 
         // 3. Add a link
         var sourcePort = mainNode.Ports.First(p => p.Alignment == PortAlignment.Right && p.Justification == PortJustification.Center);
-        Service.Add.LinkTo(sourcePort, targetPort, new LineLink());
+        Service.AddLinkTo(sourcePort, targetPort, new LineLink());
 
         // 4. Add a third node to show advanced positioning
         var advancedNode = new Node();
         advancedNode.SetPosition(150, 450);
         advancedNode.SetSize(400, 150);
-        Service.Add.Node(advancedNode);
+        Service.AddNode(advancedNode);
 
         // 4a. Add a custom positioned port
         var customPort = new CustomPositionPort { Alignment = PortAlignment.Custom };
-        Service.Add.PortTo(advancedNode, customPort);
+        Service.AddPortTo(advancedNode, customPort);
 
         return base.OnInitializedAsync();
     }

@@ -11,8 +11,8 @@ namespace Blazored.Diagrams.Behaviours;
 /// </summary>
 public class DeleteWithKeyBehaviour : BaseBehaviour
 {
-    private readonly IDiagramService _service;
     private readonly DeleteWithKeyBehaviourOptions _behaviourOptions;
+    private readonly IDiagramService _service;
 
 
     /// <summary>
@@ -31,7 +31,7 @@ public class DeleteWithKeyBehaviour : BaseBehaviour
     {
         OnEnabledChanged(ev.IsEnabled);
     }
-    
+
     private void OnEnabledChanged(bool isEnabled)
     {
         if (isEnabled)
@@ -43,6 +43,7 @@ public class DeleteWithKeyBehaviour : BaseBehaviour
             DisposeSubscriptions();
         }
     }
+
     private void SubscribeToEvents()
     {
         Subscriptions = [_service.Events.SubscribeTo<DiagramKeyDownEvent>(e => OnKeyDown(e.Args))];
@@ -53,8 +54,8 @@ public class DeleteWithKeyBehaviour : BaseBehaviour
         if (obj.Code != _behaviourOptions.DeleteKeyCode ||
             !_behaviourOptions.IsEnabled) return;
 
-        _service.Diagram.AllGroups.Where(x => x.IsSelected).ForEach(group =>_service.Remove.Group(group));
-        _service.Diagram.AllLinks.Where(x => x.IsSelected).ForEach(link =>_service.Remove.Link(link));
-        _service.Diagram.AllNodes.Where(x => x.IsSelected).ForEach(node =>_service.Remove.Node(node));
+        _service.Diagram.AllGroups.Where(x => x.IsSelected).ForEach(group => _service.RemoveGroup(group));
+        _service.Diagram.AllLinks.Where(x => x.IsSelected).ForEach(link => _service.RemoveLink(link));
+        _service.Diagram.AllNodes.Where(x => x.IsSelected).ForEach(node => _service.RemoveNode(node));
     }
 }
