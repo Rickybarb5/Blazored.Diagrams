@@ -1,0 +1,51 @@
+@inject HttpClient Http
+
+@if (_isLoading)
+{
+    <p>Loading code...</p>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+}
+else if (!string.IsNullOrEmpty(_fileContent))
+{
+    <CodeHighlighter Language="@Language" Code="@_fileContent" />
+}
+
+@code {
+    [Parameter] public string FileName { get; set; } = string.Empty;
+
+    [Parameter] public string Language { get; set; } = "plaintext";
+
+    private string? _fileContent;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        _fileContent = null;
+
+        try
+        {
+            // Adjust base path as needed
+            var filePath = $"docs/Code/{FileName}.txt";
+
+            _fileContent = await Http.GetStringAsync(filePath);
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = $"Could not load file '{FileName}.txt'.";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Unexpected error: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

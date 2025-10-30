@@ -58,7 +58,7 @@ public class SelectBehaviour : BaseBehaviour
         {
             // If not multiselect or Ctrl not pressed, unselect all and select the new one
             var wasSelected = selectableModel.IsSelected;
-            _service.Diagram.UnselectAll();
+            _service.UnselectAll();
             selectableModel.IsSelected = true;
         }
     }
@@ -70,7 +70,7 @@ public class SelectBehaviour : BaseBehaviour
             // Only clear selection if Ctrl is not pressed or multiselect is disabled
             if (!_behaviourOptions.MultiSelectEnabled || !args.CtrlKey)
             {
-                diagram.UnselectAll();
+                _service.UnselectAll();
             }
         }
     }

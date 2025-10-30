@@ -1,5 +1,4 @@
 using Blazored.Diagrams.Extensions;
-using Blazored.Diagrams.Layers;
 
 namespace Blazored.Diagrams.Diagrams;
 
@@ -69,24 +68,5 @@ public partial class Diagram
             _positionY = y;
             OnPositionChanged.Publish(new(this, oldX, oldY, _positionX, _positionY));
         }
-    }
-
-    /// <inheritdoc />
-    public virtual void UseLayer(ILayer layer)
-    {
-        if (!Layers.Contains(layer))
-        {
-            Layers.AddInternal(layer);
-        }
-
-        CurrentLayer = layer;
-    }
-
-    /// <inheritdoc />
-    public virtual void UseLayer(string layerId)
-    {
-        var layer = Layers.FirstOrDefault(x => x.Id == layerId);
-
-        CurrentLayer = layer ?? throw new InvalidOperationException($"Layer {layerId} is not a part of the diagram");
     }
 }

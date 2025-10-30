@@ -140,14 +140,8 @@ public interface IDiagram :
     void SelectAll();
 
     /// <summary>
-    /// Sets a layer as the current layer.
+    /// Sets the diagram zoom.
     /// </summary>
-    /// <param name="layer">Layer to be used.</param>
-    void UseLayer(ILayer layer);
-
-    /// <summary>
-    /// Sets a layer as the current layer.
-    /// </summary>
-    /// <param name="layerId">Id of the layer to be used.</param>
-    void UseLayer(string layerId);
+    /// <param name="zoom"></param>
+    void SetZoom(double zoom);
 }

@@ -128,7 +128,7 @@ public class DrawLinkBehaviorTests
         var sourceNode = new Node();
         var sourcePort = new Mock<IPort>();
         sourcePort.Setup(x => x.Id).Returns(Guid.NewGuid().ToString());
-        sourcePort.Setup(x => x.CanCreateLink()).Returns(false);
+        sourcePort.Setup(x => x.CanCreateLink()).Returns(true);
         sourcePort.Setup(x => x.Parent).Returns(sourceNode);
         sourcePort.Setup(x => x.IncomingLinks).Returns([]);
         sourcePort.Setup(x => x.OutgoingLinks).Returns([]);

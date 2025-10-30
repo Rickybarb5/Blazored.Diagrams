@@ -2,7 +2,6 @@ using Blazored.Diagrams.Components.Models;
 using Blazored.Diagrams.Nodes;
 using Blazored.Diagrams.Services.Diagrams;
 using Bunit;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazored.Diagrams.Test.Components;
@@ -46,7 +45,7 @@ public class DefaultNodeComponentTests : TestContext
         var cut = RenderComponent<DefaultNodeComponent>(parameters => parameters
             .Add(p => p.Node, _testNode)
             .AddCascadingValue(_diagramService)
-            .Add(p => p.Content, (RenderFragment)((builder) => builder.AddMarkupContent(0, expectedContent)))
+            .Add(p => p.Content, (builder) => builder.AddMarkupContent(0, expectedContent))
         );
 
         // Assert

@@ -23,7 +23,7 @@ public class EventLoggingBehavior : BaseBehaviour
     public EventLoggingBehavior(IDiagramService diagramService)
     {
         _diagramService = diagramService;
-        _behaviourOptions = _diagramService.Behaviours.GetBehaviourOptions<LoggingBehaviourOptions>()!;
+        _behaviourOptions = _diagramService.Behaviours.GetBehaviourOptions<LoggingBehaviourOptions>();
         _behaviourOptions.OnEnabledChanged.Subscribe(OnEnabledChanged);
         OnEnabledChanged(_behaviourOptions.IsEnabled);
     }
@@ -55,55 +55,73 @@ public class EventLoggingBehavior : BaseBehaviour
 
     private void Log(IEvent e)
     {
-        var eventType = e.GetType();
-        var properties = eventType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-        var logMessage = new StringBuilder();
-
-        // Header for the event
-        logMessage.AppendLine($"--- Event Log: {eventType.Name} ---");
-
-        // Check if the event has any public properties to log
-        if (properties.Length == 0)
+        try
         {
-            logMessage.AppendLine("  No public parameters found.");
-        }
-        else
-        {
-            foreach (var prop in properties)
+            var eventType = e.GetType();
+            bool isModelInputEvent = InheritsFromGenericType(eventType, typeof(ModelInputEvent<>));
+
+            if (isModelInputEvent && !_behaviourOptions.LogPointerEvents)
+                return;
+
+            var properties = eventType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var logMessage = new StringBuilder();
+
+            logMessage.AppendLine($"--- Event Log: {eventType.Name} ---");
+
+            if (properties.Length == 0)
             {
-                try
+                logMessage.AppendLine("  No public parameters found.");
+            }
+            else
+            {
+                foreach (var prop in properties)
                 {
-                    // Get the value of the property from the event instance
-                    var value = prop.GetValue(e);
-
-                    // Use the property name and its value in the log message
-                    logMessage.AppendLine($"  {prop.Name}: {value ?? "null"}");
-
-                    // Special handling for nested complex types (like Args) is optional but helpful
-                    if (prop.Name == "Args" && value != null)
+                    try
                     {
-                        // If it's a Blazor EventArgs, log a few key details
-                        var argsType = value.GetType();
-                        if (argsType.Name.Contains("EventArgs"))
-                        {
-                            var clientX = argsType.GetProperty("ClientX")?.GetValue(value);
-                            var clientY = argsType.GetProperty("ClientY")?.GetValue(value);
+                        var value = prop.GetValue(e);
+                        logMessage.AppendLine($"  {prop.Name}: {value ?? "null"}");
 
-                            if (clientX != null && clientY != null)
+                        if (prop.Name == "Args" && value != null)
+                        {
+                            var argsType = value.GetType();
+                            if (argsType.Name.Contains("EventArgs"))
                             {
-                                logMessage.AppendLine($"    - Client Coordinates: ({clientX}, {clientY})");
+                                var clientX = argsType.GetProperty("ClientX")?.GetValue(value);
+                                var clientY = argsType.GetProperty("ClientY")?.GetValue(value);
+
+                                if (clientX != null && clientY != null)
+                                {
+                                    logMessage.AppendLine($"    - Client Coordinates: ({clientX}, {clientY})");
+                                }
                             }
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    logMessage.AppendLine($"  {prop.Name}: ERROR retrieving value ({ex.Message})");
+                    catch (Exception ex)
+                    {
+                        logMessage.AppendLine($"  {prop.Name}: ERROR retrieving value ({ex.Message})");
+                    }
                 }
             }
+
+            Console.WriteLine(logMessage.ToString());
+        }
+        catch
+        {
+            // Here to avoid crashes from this behaviour.
         }
 
-        Console.WriteLine(logMessage.ToString());
+    }
+    
+    // Utility method to check for inheritance from a generic base type
+    private static bool InheritsFromGenericType(Type? type, Type genericBase)
+    {
+        while (type != null && type != typeof(object))
+        {
+            var current = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+            if (current == genericBase)
+                return true;
+            type = type.BaseType!;
+        }
+        return false;
     }
 }

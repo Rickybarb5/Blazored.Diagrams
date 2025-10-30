@@ -1,5 +1,4 @@
 @page "/custom-nodes"
-@using Blazored.Diagrams.Events
 
 <MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
     <MudGrid Style="height:100%">
@@ -20,7 +19,7 @@
                         <MudText Typo="Typo.body1" GutterBottom="true">
                             To associate it to a component use the <code class="text-primary">IHasComponent&lt;T&gt;</code> interface, where <code class="text-primary">T</code> is the name of your Razor component. The recommended pattern is inheriting from <code class="text-primary">Node</code> which implements the basic features of a node.
                         </MudText>
-                        <CodeHighlighter Language="csharp" Code="@nodeClassCode"></CodeHighlighter>
+                        <HighlightFromFile  Language="csharp" FileName="MyCustomNode"></HighlightFromFile>
                     </MudExpansionPanel>
 
                     <MudExpansionPanel Text="Step 2: Define the Razor Component" Expanded="true">
@@ -30,7 +29,7 @@
                         <MudAlert Severity="Severity.Warning" Class="mb-3">
                             The "Node" parameter is **required** for the diagram container render the node correctly.
                         </MudAlert>
-                        <CodeHighlighter Language="cshtml" Code="@componentCode"></CodeHighlighter>
+                        <HighlightFromFile  Language="cshtml" FileName="MyCustomComponent"></HighlightFromFile>
                     </MudExpansionPanel>
 
                     <MudExpansionPanel Text="Step 3: Live Actions (C# Service)" Expanded="true">
@@ -74,8 +73,7 @@
 
         <MudItem xs="12" md="6" Style="height:100%">
             <MudPaper Class="mud-height-full" Elevation="4">
-                <DiagramContainer DiagramService="Service">
-                </DiagramContainer>
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
             </MudPaper>
         </MudItem>
     </MudGrid>
@@ -83,127 +81,8 @@
 
 
 @code {
-    [Inject] public IDiagramService Service { get; set; } = null!;
-    
-    private int _nodeCount = 0;
-    private MyCustomNode? _selectedNode;
-    private IDisposable? _subscription;
 
-
-    protected override Task OnInitializedAsync()
-    {
-        AddCustomNode();
-
-        _subscription = Service.Events.SubscribeTo<NodeSelectionChangedEvent>(
-            e => InvokeAsync(() => HandleNodeSelectionChanged(e))
-        );
-        
-        return base.OnInitializedAsync();
-    }
-    
-    private void HandleNodeSelectionChanged(NodeSelectionChangedEvent e)
-    {
-        var node = e.Model as MyCustomNode;
-        
-        if (node != null)
-        {
-            if (node.IsSelected)
-            {
-                _selectedNode = node;
-            }
-            else if (_selectedNode == node)
-            {
-                _selectedNode = null;
-            }
-        }
-        StateHasChanged();
-    }
 
     // --- Live Action Methods ---
 
-    private void AddCustomNode()
-    {
-        _nodeCount++;
-        var node = new MyCustomNode { Name = $"Node #{_nodeCount}" };
-        node.SetPosition(100 + (_nodeCount % 5) * 50, 100 + (_nodeCount / 5) * 50);
-
-        Service.AddNode(node);
-    }
-    
-    private void RemoveSelectedNode()
-    {
-        if (_selectedNode != null)
-        {
-            Service.RemoveNode(_selectedNode);
-            _selectedNode = null;
-            InvokeAsync(StateHasChanged);
-        }
-    }
-
-    private Task AddPortToSelectedNode()
-    {
-        if (_selectedNode == null)
-        {
-            return Task.CompletedTask;
-        }
-
-        var sides = new List<PortAlignment> { PortAlignment.Left, PortAlignment.Top, PortAlignment.Right, PortAlignment.Bottom };
-        var nextSide = sides.FirstOrDefault(side => _selectedNode.Ports.All(p => p.Alignment != side));
-
-        if (_selectedNode.Ports.Count!=4)
-        {
-            Service.AddPortTo(_selectedNode, new Port { Alignment = nextSide });
-        }
-        return InvokeAsync(StateHasChanged);
-    }
-    
-    public void Dispose()
-    {
-        _subscription?.Dispose();
-    }
-
-    // --- Code Snippets for Display ---
-    private const string nodeClassCode =
-        @"// C# Class (MyCustomNode.cs)
-using Blazored.Diagrams.Nodes;
-using Blazored.Diagrams.Interfaces;
-
-public class MyCustomNode : Node, IHasComponent<MyCustomComponent>
-{
-    public string Name{ get; set; }
-    public string Status { get; set; } = ""Initial Status"";
-}";
-
-    private const string componentCode =
-        @"@* Razor Component (MyCustomComponent.razor) *@
-@using Blazored.Diagrams.Ports
- <style>
-    custom-node-box {
-        width: 250px;
-        height: 150px;
-        background-color: #3f51b5;
-        color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-        }
-</style>
-<div class=""custom-node-box"">
-    <div class=""d-flex flex-column align-center"">
-        <MudText Typo=""Typo.h5"">@Node.Name</MudText>
-        <MudText Typo=""Typo.body2"">Status: @Node.Status</MudText>
-        <MudText Typo=""Typo.body2"">Selected: @Node.IsSelected</MudText>
-    </div>
-    
-    <PortRenderer Alignment=""PortAlignment.All"" />
-</div>
-
-@code {
-    // REQUIRED PARAMETER!
-    [Parameter]
-    public required MyCustomNode Node { get; set; }
-}";
 }

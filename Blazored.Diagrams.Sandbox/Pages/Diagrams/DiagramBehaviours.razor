@@ -32,28 +32,30 @@
                 <MudStack Spacing="3" Class="mb-6">
                     <div class="d-flex justify-content-between align-center">
                         <MudText Typo="Typo.h6">Panning Behaviour</MudText>
-                        <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<PanBehaviourOptions>()!.IsEnabled"
-                                   Color="Color.Primary"
-                                   Label="Panning enabled"
-                                   LabelPlacement="Placement.Start"/>
+                      
                     </div>
                     <MudText Typo="Typo.body2" Class="mud-text-secondary">
                         Drag the canvas to pan the view.
                     </MudText>
+                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<PanBehaviourOptions>()!.IsEnabled"
+                               Color="Color.Primary"
+                               Label="Panning enabled"
+                               LabelPlacement="Placement.Start"/>
                 </MudStack>
                 <MudDivider Class="my-4"/>
 
                 <MudStack Spacing="3" Class="mb-6">
                     <div class="d-flex justify-content-between align-center">
                         <MudText Typo="Typo.h6">Moving Models</MudText>
-                        <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled"
-                                   Color="Color.Primary"
-                                   Label="Moving enabled"
-                                   LabelPlacement="Placement.Start"/>
+                       
                     </div>
                     <MudText Typo="Typo.body2" Class="mud-text-secondary">
                         Click and drag a model to move it within the diagram.
                     </MudText>
+                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<MoveBehaviourOptions>().IsEnabled"
+                               Color="Color.Primary"
+                               Label="Moving enabled"
+                               LabelPlacement="Placement.Start"/>
                 </MudStack>
                 <MudDivider Class="my-4"/>
 
@@ -100,13 +102,10 @@
                     <MudText Typo="Typo.body2" Class="mud-text-secondary">
                         Select a model and press the designated key to delete it.
                     </MudText>
-
-                    <div class="d-flex justify-content-between align-center">
-                        <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled"
-                                   Color="Color.Primary"
-                                   Label="Delete enabled"
-                                   LabelPlacement="Placement.Start"/>
-                    </div>
+                    <MudSwitch @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().IsEnabled"
+                               Color="Color.Primary"
+                               Label="Delete enabled"
+                               LabelPlacement="Placement.Start"/>
                     <MudTextField Style="max-width: 150px" Immediate="true" Label="Delete key code" @bind-Value="Service.Behaviours.GetBehaviourOptions<DeleteWithKeyBehaviourOptions>().DeleteKeyCode"/>
                 </MudStack>
 

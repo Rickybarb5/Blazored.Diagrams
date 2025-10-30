@@ -72,7 +72,13 @@ public interface IDiagramService : IDisposable
     /// </summary>
     /// <param name="parameters">Customization options.</param>
     void FitToScreen(FitToScreenParameters parameters);
-
+    
+    /// <summary>
+    /// Sets a layer as the current layer.
+    /// </summary>
+    /// <param name="layer">Layer to be used.</param>
+    void UseLayer(ILayer layer);
+    
     /// <summary>
     /// Removes a node from the diagram.
     /// </summary>
@@ -206,4 +212,20 @@ public interface IDiagramService : IDisposable
     /// <param name="parameters">Parameters to zoom the model.</param>
     void ZoomToModel<TModel>(ZoomToModelParameters<TModel> parameters)
         where TModel : IPosition, ISize;
+    
+    /// <summary>
+    /// Unselects all models in the diagram.
+    /// </summary>
+    void UnselectAll();
+
+    /// <summary>
+    /// Selects all models in the diagram.
+    /// </summary>
+    void SelectAll();
+
+    /// <summary>
+    ///  Sets the diagram zoom.
+    /// </summary>
+    /// <param name="zoom">Desired zoom value.</param>
+    void SetZoom(double zoom);
 }

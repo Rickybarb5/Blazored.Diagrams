@@ -10,12 +10,12 @@ if (args.Length == 0)
     return;
 }
 
-string outputDir = args[0];
+var outputDir = args[0];
 Directory.CreateDirectory(outputDir);
 
 // Assuming the 'Blazored.Diagrams' assembly is available
 var assembly = typeof(Blazored.Diagrams.Diagrams.Diagram).Assembly;
-string xmlPath = Path.ChangeExtension(assembly.Location, ".xml");
+var xmlPath = Path.ChangeExtension(assembly.Location, ".xml");
 
 if (!File.Exists(xmlPath))
 {
@@ -25,7 +25,7 @@ if (!File.Exists(xmlPath))
 
 // 1. Get the events, now grouped by a key (e.g., "Layer", "Node")
 var docsByGroup = EventDocScanner.GetDiagramEventDocs(assembly, xmlPath);
-int totalEvents = 0;
+var totalEvents = 0;
 
 var options = new JsonSerializerOptions 
 { 
@@ -37,7 +37,7 @@ var options = new JsonSerializerOptions
 // 2. Iterate over each group
 foreach (var group in docsByGroup)
 {
-    string groupKey = group.Key;
+    var groupKey = group.Key;
     if (groupKey == "Other")
     {
         Console.Error.WriteLine($"Found {group.Count()} events with 'Other' grouping:");
@@ -49,11 +49,11 @@ foreach (var group in docsByGroup)
     var docsForGroup = group.ToList();
     
     // 3. Serialize this group's list
-    string json = JsonSerializer.Serialize(docsForGroup, options);
+    var json = JsonSerializer.Serialize(docsForGroup, options);
 
     // 4. Create a unique filename for this group
-    string fileName = $"events.{groupKey.ToLowerInvariant()}.json";
-    string outputPath = Path.Combine(outputDir, fileName);
+    var fileName = $"events.{groupKey.ToLowerInvariant()}.json";
+    var outputPath = Path.Combine(outputDir, fileName);
     
     File.WriteAllText(outputPath, json);
     Console.WriteLine($"Generated {docsForGroup.Count} event docs at {outputPath}");
@@ -86,7 +86,7 @@ namespace EventDocGenerator
                     {
                         // Get Summary
                         var summaryEl = e.Element("summary");
-                        string summary = null;
+                        string? summary = null;
                         if (summaryEl != null)
                         {
                             // Use string.Concat(Nodes()) to preserve inner tags like <see>
@@ -107,7 +107,7 @@ namespace EventDocGenerator
             var eventTypes = assembly.GetTypes()
                 .Where(t =>
                     t.Namespace != null &&
-                    t.Namespace.StartsWith("Blazored.Diagrams.Services.Events") &&
+                    t.Namespace.StartsWith("Blazored.Diagrams.Events") &&
                     t.IsClass &&
                     !t.IsAbstract &&
                     !t.IsGenericTypeDefinition && // Exclude ItemAddedEvent<T> definition
@@ -131,7 +131,7 @@ namespace EventDocGenerator
                 
                     // 4. Look up the doc entry for this type
                     members.TryGetValue(key, out var docEntry);
-                    string summary = docEntry?.Summary;
+                    var summary = docEntry?.Summary;
                     var paramDocs = docEntry?.ParamDocs ?? new Dictionary<string, string>();
 
                     if (string.IsNullOrWhiteSpace(summary))

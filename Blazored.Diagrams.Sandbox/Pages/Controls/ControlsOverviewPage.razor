@@ -3,7 +3,7 @@
 <MudGrid Spacing="2" Justify="Justify.Center" Style="height:100%; width: 100%; margin: 0;">
 
     <!-- LEFT PANEL: Documentation -->
-    <MudItem xs="12" sm="4" Style="height: 100%; overflow-y: auto;">
+    <MudItem xs="12" sm="6" Style="height: 100%; overflow-y: auto;">
         <MudPaper Class="pa-4 mud-height-full">
             <MudText Typo="Typo.h5" Color="Color.Primary" GutterBottom="true">Diagram Controls</MudText>
 
@@ -30,7 +30,7 @@
                     <MudText Typo="Typo.body2" Class="mb-2">
                         You can use standard CSS (like <code>position: absolute</code>) to place your control at a specific location, such as the bottom-right or top-right corner.
                     </MudText>
-                    <CodeHighlighter Language="csharp" Code="@UsageCode"/>
+                    <CodeHighlighter Language="cshtml" Code="@UsageCode"/>
                 </MudExpansionPanel>
 
                 <!-- Panel 3: Example: ZoomControls.razor -->
@@ -50,10 +50,10 @@
                         The <code>MinimapControls</code> component (shown top-right) renders a scaled-down SVG representation of the entire diagram.
                     </MudText>
                     <MudText Typo="Typo.body2" Class="mb-2">
-                        It iterates through all diagram models (Nodes, Groups, Links, Ports), calculates the overall bounds, and draws them within its own SVG viewport. It also draws a rectangle representing the current visible area of the main diagram.
+                        It iterates through all diagram models (Nodes, Groups, Links, Ports), calculates the overall bounds, and draws them within its own SVG viewport.
                     </MudText>
                     <MudText Typo="Typo.body2" Class="mb-2">
-                        It cascades the <code>IDiagramService</code> and subscribes to events (like model changes, pan, zoom) to keep the minimap synchronized. CSS from <code>MinimapControls.razor.css</code> is required for positioning and basic styling.
+                        It cascades the <code>IDiagramService</code> and subscribes to events (like model changes, pan, zoom) to keep the minimap synchronized.
                     </MudText>
                     <CodeHighlighter Language="cshtml" Code="@MinimapControlCode"/>
                 </MudExpansionPanel>
@@ -63,7 +63,7 @@
     </MudItem>
 
     <!-- RIGHT PANEL: Diagram with Controls -->
-    <MudItem xs="12" sm="8" Style="height: 100%;">
+    <MudItem xs="12" sm="6" Style="height: 100%;">
         <MudPaper Class="mud-height-full" Elevation="4" Style="position: relative;">
             <DiagramContainer DiagramService="Service">
                 <ZoomControls/>

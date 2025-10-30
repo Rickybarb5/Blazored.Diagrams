@@ -9,6 +9,12 @@ namespace Blazored.Diagrams.Options.Behaviours;
 public class LoggingBehaviourOptions : BaseBehaviourOptions
 {
     /// <summary>
+    /// When enabled, logs pointer events.
+    /// When disabled, those events are ignored.
+    /// </summary>
+    public bool LogPointerEvents { get; set; } = false;
+    
+    /// <summary>
     /// Instantiates a new Logging behaviour options
     /// </summary>
     public LoggingBehaviourOptions()

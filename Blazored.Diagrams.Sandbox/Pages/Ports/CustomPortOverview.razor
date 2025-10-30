@@ -19,7 +19,7 @@
                         First, create a C# class that inherits from <code>Port</code>. The only requirement is to
                         implement <code>IHasComponent&lt;T&gt;</code>, pointing to your new Razor component.
                     </MudText>
-                    <CodeHighlighter Language="csharp" Code="@CustomPortModelCode"/>
+                    <HighlightFromFile Language="csharp" FileName="CustomPort"></HighlightFromFile>
                 </MudExpansionPanel>
 
                 <!-- Panel 2: The Custom Port Component -->
@@ -32,7 +32,7 @@
                         The parameter **must** be named <code>Port</code> for the <code>PortContainer</code> to inject
                         the model correctly. Its type should be your new custom port class.
                     </MudAlert>
-                    <CodeHighlighter Language="cshtml" Code="@CustomPortComponentCode"/>
+                    <HighlightFromFile Language="csharp" FileName="CustomPortComponent"></HighlightFromFile>
                 </MudExpansionPanel>
 
                 <!-- Panel 3: How to Use It -->
@@ -41,7 +41,7 @@
                         Finally, add an instance of your new <code>CustomPort</code> model to a node just as you would a
                         default port. The diagram will automatically find and render your component.
                     </MudText>
-                    <CodeHighlighter Language="csharp" Code="@CustomPortUsageCode"/>
+                    <HighlightFromFile Language="csharp" FileName="CustomPortOverview.razor"></HighlightFromFile>
                 </MudExpansionPanel>
 
             </MudExpansionPanels>
@@ -58,142 +58,7 @@
 </MudGrid>
 
 @code {
-    [Inject] public IDiagramService Service { get; set; } = null!;
 
     // --- Diagram Initialization ---
-
-    protected override Task OnInitializedAsync()
-    {
-        // 1. Create a node with a DEFAULT port
-        var node1 = new Node();
-        node1.SetPosition(50, 150);
-        Service.AddNode(node1);
-
-        var defaultPort = new Port { Alignment = PortAlignment.Right, Justification = PortJustification.Center };
-        Service.AddPortTo(node1, defaultPort);
-
-        // 2. Create a node with a CUSTOM port
-        var node2 = new Node();
-        node2.SetPosition(400, 150);
-        Service.AddNode(node2);
-
-        // Use the new CustomPort model
-        var customPort = new CustomPort { Alignment = PortAlignment.Left, Justification = PortJustification.Center };
-        Service.AddPortTo(node2, customPort);
-
-        // 3. Add a link between them
-        Service.AddLinkTo(defaultPort, customPort, new LineLink());
-
-        return base.OnInitializedAsync();
-    }
-
-    // --- Code Snippets ---
-
-    private const string CustomPortModelCode =
-            @"using Blazored.Diagrams.Ports;
-            using Blazored.Diagrams.Services.Registry;
-            
-            // Define in a shared namespace
-            namespace Blazored.Diagrams.Custom
-            {
-                // Inherit from Port and implement IHasComponent<T>
-                public class CustomPort : Port, IHasComponent<CustomPortComponent>
-                {
-                    // You can add custom properties here
-                    public string CustomData { get; set; } = ""My Port"";
-                }
-            }";
-
-    private const string CustomPortComponentCode =
-            @"@using Blazored.Diagrams.Ports
-            @using Blazored.Diagrams.Services.Diagrams
-            @using Blazored.Diagrams.Custom
-            @using System.Text
-            
-            <!-- This div is the custom port -->
-            <div class=""@GetClass()"">
-            </div>
-            
-            @code {
-                [CascadingParameter] 
-                public required IDiagramService DiagramService { get; init; }
-                
-                // The parameter MUST be named 'Port'
-                [Parameter] 
-                public required CustomPort Port { get; init; }
-            
-                private StringBuilder _builder = new ();
-                private const string DefaultCssClass = ""custom-port"";
-                
-                // This logic dynamically applies CSS classes
-                private string GetClass()
-                {
-                    _builder.Clear();
-                    _builder.Append(DefaultCssClass);
-                    if (Port.IsSelected)
-                    {
-                        _builder.Append("" selected"");
-                    }
-                    if (Port.HasLinks)
-                    {
-                        _builder.Append("" linked"");
-                    }
-                    return _builder.ToString();
-                }
-            }
-            
-            <style>
-                .custom-port {
-                    /* Base diamond shape */
-                    width: 20px;
-                    height: 20px;
-                    background-color: whitesmoke;
-                    border: 2px solid #673ab7; /* Deep Purple */
-                    transform: rotate(45deg);
-                    
-                    /* Required for drag behavior */
-                    -webkit-user-drag: none;
-                    cursor: grab;
-                    transition: all 0.15s ease;
-                }
-            
-                .custom-port:hover {
-                    background-color: #ede7f6; /* Light purple */
-                    filter: drop-shadow(0 0 4px rgba(103, 58, 183, 0.8));
-                }
-                
-                .custom-port:active {
-                    cursor: grabbing;
-                }
-            
-                .custom-port.selected {
-                    background: #9575cd;
-                    border-color: #311b92;
-                }
-            
-                .custom-port.linked {
-                    background-color: #673ab7; /* Deep Purple */
-                }
-            </style>";
-
-    private const string CustomPortUsageCode =
-            @"@using Blazored.Diagrams.Custom
-            
-            // ... inside OnInitializedAsync()
-            
-            // Create a node
-            var node = new Node();
-            node.SetPosition(50, 50);
-            Service.AddNode(node);
-            
-            // 2. Define the CUSTOM port
-            var port = new CustomPort 
-            { 
-                Alignment = PortAlignment.Right, 
-                Justification = PortJustification.Center 
-            };
-            
-            // 3. Add the port to the node
-            Service.AddPortTo(node, port);";
 
 }

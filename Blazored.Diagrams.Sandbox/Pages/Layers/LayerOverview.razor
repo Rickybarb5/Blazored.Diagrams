@@ -24,14 +24,25 @@
                                 </MudChip>
                             </MudText>
                             <MudText Typo="Typo.body1" GutterBottom="true">
-                                Use the <CodeHighlighter Language="csharp" Code="Diagram.UseLayer(layer)"></CodeHighlighter> method to change which layer new models are added to.
-                            </MudText>
+                                <p>
+                                    To create a layer: 
+                                    <CodeHighlighter Language="csharp" Code="Layer layer = new();"></CodeHighlighter>
+                                </p>
+                                <p>
+                                    To add a layer: 
+                                    <CodeHighlighter Language="csharp" Code="@($"{nameof(DiagramService)}.{nameof(DiagramService.AddLayer)}(layer);")"></CodeHighlighter>
+                                </p>
+                                <p>
+                                    To switch the active layer:
+                                    <CodeHighlighter Language="csharp" Code="@($"{nameof(DiagramService)}.{nameof(DiagramService.Diagram)}.{nameof(DiagramService.UseLayer)}(layer);")"></CodeHighlighter>
+                                </p>
+                                </MudText>
                             <MudSelect T="ILayer"
                                        Label="Set Active Layer"
                                        Value="@Service.Diagram.CurrentLayer"
                                        ValueChanged="UseLayer"
                                        AnchorOrigin="Origin.BottomCenter">
-                                @for (int i = 0; i < Service.Diagram.Layers.Count; i++)
+                                @for (var i = 0; i < Service.Diagram.Layers.Count; i++)
                                 {
                                     var idx = i; // local copy to avoid capture issues
                                     var layer = Service.Diagram.Layers[idx];
@@ -144,7 +155,7 @@
         }
 
         // Set Layer 2 as active and add nodes
-        Service.Diagram.UseLayer(layer2);
+        Service.UseLayer(layer2);
 
         for (int i = 0; i < 4; i++)
         {
@@ -154,7 +165,7 @@
         }
 
         // Set Layer 1 back as the active layer
-        Service.Diagram.UseLayer(Service.Diagram.Layers[0]);
+        Service.UseLayer(Service.Diagram.Layers[0]);
 
         return base.OnInitializedAsync();
     }
@@ -199,7 +210,7 @@
 
     private void UseLayer(ILayer layer)
     {
-        Service.Diagram.UseLayer(layer);
+        Service.UseLayer(layer);
         StateHasChanged();
     }
 

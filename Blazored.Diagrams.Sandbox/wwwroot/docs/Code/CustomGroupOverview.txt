@@ -16,29 +16,26 @@
                         <MudText Typo="Typo.body1" Class="mb-4">
                             In this example, we've added a custom <code>Title</code> property to hold domain-specific data, and set a default <code>Padding</code> value.
                         </MudText>
-
-                        <CodeHighlighter Language="csharp" Code="@CustomGroupModelCode" />
+                        <HighlightFromFile Language="csharp" FileName="CustomGroup"></HighlightFromFile>
                     </MudExpansionPanel>
-                    
+
                     <MudExpansionPanel Text="2. The Custom Group Component (CustomGroupComponent.razor)" Expanded="true">
                         <MudText Typo="Typo.body1" Class="mb-4">
                             The component is responsible for rendering the group's visual appearance (including its title, header, or custom background). It receives the **Custom Group Model** as a parameter.
                         </MudText>
-                        
+
                         <MudAlert Severity="Severity.Warning" Class="mb-3">
                             The **Group** parameter is **required** for the diagram container to render the group correctly.
                         </MudAlert>
-
-                        <CodeHighlighter Language="cshtml" Code="@CustomGroupComponentCode" />
+                        <HighlightFromFile Language="cshtml" FileName="CustomGroupComponent"></HighlightFromFile>
                     </MudExpansionPanel>
-                    
+
                     <MudExpansionPanel Text="3. Initialization & Usage">
                         <MudText Typo="Typo.body1" Class="mb-4">
                             To use the custom group, instantiate your new <code>CustomGroup</code> model and add it to
                             the Diagram Service. Note that nodes must be explicitly added **to the group** using <code>Service.AddNodeTo()</code>.
                         </MudText>
-                        
-                        <CodeHighlighter Language="csharp" Code="@InitializationCode" />
+                        <HighlightFromFile Language="csharp" FileName="CustomGroupOverview.razor"></HighlightFromFile>
                     </MudExpansionPanel>
 
                 </MudExpansionPanels>
@@ -48,124 +45,9 @@
 
         <MudItem xs="12" sm="12" md="8" Style="height:100%">
             <MudPaper Class="mud-height-full" Elevation="4">
-                <DiagramContainer DiagramService="Service" />
+                <DiagramContainer DiagramService="Service"/>
             </MudPaper>
         </MudItem>
 
     </MudGrid>
 </MudContainer>
-
-@code {
-    [Inject] 
-    public IDiagramService Service { get; set; } = null!;
-
-    protected override Task OnInitializedAsync()
-    {
-        // The CustomGroup class must be defined/available in the project for this to compile.
-        var customGroup = new CustomGroup
-        {
-            Title = "Department A - Infrastructure",
-            Width = 400,
-            Height = 300
-        };
-        customGroup.SetPosition(50, 50);
-
-        Service.AddGroup(customGroup);
-
-        var node1 = new Node(); 
-        node1.SetPosition(50, 80); 
-        node1.SetSize(100, 50);
-
-        Service.AddNodeTo(customGroup, node1);
-        
-        var node2 = new Node();
-        node2.SetPosition(250, 150);
-        node2.SetSize(100, 50);
-        Service.AddNodeTo(customGroup, node2);
-        
-        var outsideNode = new Node();
-        outsideNode.SetPosition(500, 150);
-        Service.AddNode(outsideNode);
-
-        return base.OnInitializedAsync();
-    }
-    
-    // --- Code Strings Extracted to Constants ---
-    private const string CustomGroupModelCode = @"
-using Blazored.Diagrams.Groups;
-using Blazored.Diagrams.Services.Registry;
-
-public class CustomGroup : Group, IHasComponent<CustomGroupComponent>
-{
-    public string Title { get; set; } = ""I'm a group with a title!"";
-
-    public CustomGroup()
-    {
-        // Increase padding to give the title bar some space
-        Padding = 30; 
-    }
-}";
-
-    private const string CustomGroupComponentCode = @"
-<div class=""custom-group @(Group.IsSelected ? ""selected"" : """")"" >
-    <div class=""group-title"">
-        @Group.Title
-    </div>
-</div>
-
-@code {
-    
-    // REQUIRED PARAMETER!
-    [Parameter]
-    public required CustomGroup Group { get; set; }
-}
-
-<style>
-    /* Styles are simplified here, but include min-width/height for group size */
-    .custom-group {
-        width: 100%; 
-        height: 100%;
-        border: 2px solid #1e88e5; 
-        background-color: #e3f2fd; 
-        border-radius: 8px;
-        /* ... rest of the CSS for appearance ... */
-    }
-    .group-title {
-        font-weight: bold;
-        text-align: center;
-        border-bottom: 1px dashed #90caf9;
-    }
-</style>
-";
-
-    private const string InitializationCode = @"
-protected override Task OnInitializedAsync()
-{
-    // 1. Create and add the custom group model
-    var customGroup = new CustomGroup
-    {
-        Title = ""Department A - Infrastructure"",
-        Width = 400,
-        Height = 300
-    };
-    customGroup.SetPosition(50, 50);
-    Service.AddGroup(customGroup);
-
-    // 2. Create nodes inside the group
-    var node1 = new Node(); 
-    node1.SetPosition(50, 80); 
-    node1.SetSize(100, 50);
-    Service.AddNodeTo(customGroup, node1);
-    
-    // 3. Create nodes outside the group
-    var outsideNode = new Node();
-    outsideNode.SetPosition(500, 150);
-    Service.AddNode(outsideNode);
-    
-    // ... add link between inner node and outer node
-    Service.AddLink(node1.GetPort(PortAnchor.Bottom), outsideNode.GetPort(PortAnchor.Top));
-
-    return base.OnInitializedAsync();
-}
-";
-}

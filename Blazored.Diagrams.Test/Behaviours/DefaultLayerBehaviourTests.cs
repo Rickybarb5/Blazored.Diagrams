@@ -49,7 +49,7 @@ public class DefaultLayerBehaviourTests
         service.Events.SubscribeTo<CurrentLayerChangedEvent>(e => capturedEvent = e);
 
         // Verify initial behavior
-        service.Diagram.UseLayer(layer);
+        service.UseLayer(layer);
         Assert.NotNull(capturedEvent);
 
         // Reset and dispose

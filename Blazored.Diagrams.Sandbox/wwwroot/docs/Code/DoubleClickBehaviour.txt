@@ -57,7 +57,7 @@ public class DoubleTapSelectBehaviour : BaseBehaviour
         }
         else
         {
-            diagram.UnselectAll();
+            _service.UnselectAll();
         }
     }
 }

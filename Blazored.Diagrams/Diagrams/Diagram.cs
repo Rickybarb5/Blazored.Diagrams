@@ -47,7 +47,15 @@ public partial class Diagram : IDiagram
     public virtual double Zoom
     {
         get => _zoom;
-        set => SetZoom(value);
+        set
+        {
+            if (Math.Abs(value - _zoom) > 0.001)
+            {
+                var oldZoom = _zoom;
+                _zoom = value;
+                OnZoomChanged.Publish(new(this, oldZoom, _zoom));
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -220,6 +228,7 @@ public partial class Diagram : IDiagram
         {
             return;
         }
+
         var defaultLayer = new Layer
         {
             Id = Guid.Empty.ToString(),

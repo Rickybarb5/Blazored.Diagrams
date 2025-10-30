@@ -100,4 +100,10 @@ public partial class DiagramService : IDiagramService
             new DefaultCenteringBehaviourOptions(),
         ];
     }
+    
+    /// <inheritdoc />
+    public virtual void SetZoom(double zoom)
+    {
+        Diagram.SetZoom(zoom);
+    }
 }

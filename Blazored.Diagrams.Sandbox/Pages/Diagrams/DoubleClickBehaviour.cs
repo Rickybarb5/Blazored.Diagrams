@@ -12,7 +12,7 @@ public class DoubleTapSelectBehaviour : BaseBehaviour
     public DoubleTapSelectBehaviour(IDiagramService service)
     {
         _service = service;
-        var opts = _service.Behaviours.GetBehaviourOptions<DoubleTapSelectOptions>()!;
+        var opts = _service.Behaviours.GetBehaviourOptions<DoubleTapSelectOptions>();
         opts.OnEnabledChanged.Subscribe(OnEnabledChanged);
         OnEnabledChanged(opts.IsEnabled);
     }
@@ -57,7 +57,7 @@ public class DoubleTapSelectBehaviour : BaseBehaviour
         }
         else
         {
-            diagram.UnselectAll();
+            _service.UnselectAll();
         }
     }
 }

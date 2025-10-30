@@ -101,21 +101,19 @@
         return baseClass;
     }
 
-    // --- Action Logic ---
-
     private void ZoomIn()
     {
-        Service.Diagram.SetZoom(Service.Diagram.Zoom + _options.ZoomStep);
+        Service.SetZoom(Service.Diagram.Zoom + _options.ZoomStep);
     }
 
     private void ZoomOut()
     {
-        Service.Diagram.SetZoom(Service.Diagram.Zoom - _options.ZoomStep);
+        Service.SetZoom(Service.Diagram.Zoom - _options.ZoomStep);
     }
 
     private void ResetZoom()
     {
-        Service.Diagram.SetZoom(1);
+        Service.SetZoom(1);
     }
 
     private bool IsZoomLimitReached(ZoomDirection direction)

@@ -82,8 +82,8 @@ public class MoveBehaviour : BaseBehaviour
 
         // Apply inverse zoom to the movement
         var inverseZoom = 1 / obj.Model.Zoom;
-        var xDiffAdjusted = xDiff * (double)inverseZoom;
-        var yDiffAdjusted = yDiff * (double)inverseZoom;
+        var xDiffAdjusted = xDiff * inverseZoom;
+        var yDiffAdjusted = yDiff * inverseZoom;
 
         SelectedModels.ForEach(model =>
         {

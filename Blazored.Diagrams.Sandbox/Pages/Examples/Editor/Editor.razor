@@ -380,7 +380,7 @@
 
     private void SetActiveLayer(ILayer layer)
     {
-        DiagramService.Diagram.UseLayer(layer);
+        DiagramService.UseLayer(layer);
         Snackbar.Add($"Layer {DiagramService.Diagram.Layers.IndexOf(layer) + 1} is now active.", Severity.Info);
     }
 

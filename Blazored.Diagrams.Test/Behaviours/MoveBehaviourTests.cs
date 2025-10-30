@@ -137,7 +137,7 @@ public class MoveBehaviourTests
         var layer = new Layer();
         service.AddLayer(layer);
         service.AddNodeTo(layer, node);
-        service.Diagram.SetZoom(2.0); // Set zoom to 200%
+        service.SetZoom(2.0); // Set zoom to 200%
 
         var startArgs = new PointerEventArgs
         {
