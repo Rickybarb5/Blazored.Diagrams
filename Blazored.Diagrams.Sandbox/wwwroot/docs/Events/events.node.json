@@ -1,0 +1,279 @@
+[
+  {
+    "Name": "NodeAddedEvent",
+    "Summary": "Event triggered when a node is added to the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "NodeClickedEvent",
+    "Summary": "Event triggered when an <c>@onclick</c> event occurs on a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodeDoubleClickedEvent",
+    "Summary": "Event triggered when an <c>@ondblclick</c> event occurs on a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodePointerDownEvent",
+    "Summary": "Event triggered when a pointer (e.g., mouse or touch) is pressed down on a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodePointerEnterEvent",
+    "Summary": "Event triggered when a pointer enters the bounds of a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodePointerLeaveEvent",
+    "Summary": "Event triggered when a pointer leaves the bounds of a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodePointerMoveEvent",
+    "Summary": "Event triggered when a pointer moves over a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodePointerUpEvent",
+    "Summary": "Event triggered when a pointer is released from a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodePositionChangedEvent",
+    "Summary": "Event triggered when a node's position changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that moved."
+      },
+      {
+        "Name": "OldX",
+        "TypeName": "Double",
+        "Documentation": "The old X position value."
+      },
+      {
+        "Name": "OldY",
+        "TypeName": "Double",
+        "Documentation": "The old Y position value."
+      },
+      {
+        "Name": "NewX",
+        "TypeName": "Double",
+        "Documentation": "The new X position value."
+      },
+      {
+        "Name": "NewY",
+        "TypeName": "Double",
+        "Documentation": "The new Y position value."
+      }
+    ]
+  },
+  {
+    "Name": "NodeRedrawEvent",
+    "Summary": "Event triggered when a redraw is manually requested for a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that requested the redraw."
+      }
+    ]
+  },
+  {
+    "Name": "NodeRemovedEvent",
+    "Summary": "Event triggered when a node is removed from the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "NodeSelectionChangedEvent",
+    "Summary": "Event triggered when a node is selected or deselected.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> whose selection state changed."
+      }
+    ]
+  },
+  {
+    "Name": "NodeSizeChangedEvent",
+    "Summary": "Event triggered when the size (width or height) of a node changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> whose size changed."
+      },
+      {
+        "Name": "OldWidth",
+        "TypeName": "Double",
+        "Documentation": "The previous width value."
+      },
+      {
+        "Name": "OldHeight",
+        "TypeName": "Double",
+        "Documentation": "The previous height value."
+      },
+      {
+        "Name": "NewWidth",
+        "TypeName": "Double",
+        "Documentation": "The new width value."
+      },
+      {
+        "Name": "NewHeight",
+        "TypeName": "Double",
+        "Documentation": "The new height value."
+      }
+    ]
+  },
+  {
+    "Name": "NodeVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility state of a node changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> whose visibility state changed."
+      }
+    ]
+  },
+  {
+    "Name": "NodeWheelEvent",
+    "Summary": "Event triggered when the mouse wheel is scrolled while over a node.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "WheelEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.WheelEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortAddedToNodeEvent",
+    "Summary": "Event triggered when a port is added to a node's collection.",
+    "Parameters": [
+      {
+        "Name": "Node",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> the port was added to."
+      },
+      {
+        "Name": "Port",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "PortRemovedFromNodeEvent",
+    "Summary": "Event triggered when a port is removed from a node's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> the port was removed from."
+      },
+      {
+        "Name": "Port",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that was removed."
+      }
+    ]
+  }
+]

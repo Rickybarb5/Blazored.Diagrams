@@ -3,7 +3,7 @@
 @implements IDisposable
 <div class="minimap-container @Class" style="@Style">
 
-    @if (Service is not null)
+    @if (Service is not null && Service.Diagram is { Width: > 0, Height: > 0 })
     {
         <svg class="minimap-svg"
              width="@Width"
@@ -97,7 +97,7 @@
     /// </summary>
     [Parameter]
     public double Width { get; set; }
-    
+
     /// <summary>
     /// Height of the minimap (px).
     /// </summary>

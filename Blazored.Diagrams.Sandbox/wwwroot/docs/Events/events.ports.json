@@ -1,0 +1,374 @@
+[
+  {
+    "Name": "IncomingLinkAddedEvent",
+    "Summary": "Event triggered when an incoming link is added to the port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link was added to."
+      },
+      {
+        "Name": "AddedLink",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "IncomingLinkRemovedEvent",
+    "Summary": "Event triggered when an incoming link is removed from the port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link was removed from."
+      },
+      {
+        "Name": "RemovedLink",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "OutgoingLinkAddedEvent",
+    "Summary": "Event triggered when an outgoing link is added to the port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link was added to."
+      },
+      {
+        "Name": "AddedLink",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "OutgoingLinkRemovedEvent",
+    "Summary": "Event triggered when an outgoing link is removed from the port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link was removed from."
+      },
+      {
+        "Name": "RemovedLink",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "PortAddedEvent",
+    "Summary": "Event triggered when a port is added to a node or group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "PortAlignmentChangedEvent",
+    "Summary": "Event triggered when the visual alignment of the port changes (e.g., from Left to Top).",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose alignment changed."
+      },
+      {
+        "Name": "OldPosition",
+        "TypeName": "PortAlignment",
+        "Documentation": "The previous <see cref=\"T:Blazored.Diagrams.Ports.PortAlignment\" />."
+      },
+      {
+        "Name": "NewPosition",
+        "TypeName": "PortAlignment",
+        "Documentation": "The new <see cref=\"T:Blazored.Diagrams.Ports.PortAlignment\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortClickedEvent",
+    "Summary": "Event triggered when an <c>@onclick</c> event occurs on a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortDoubleClickedEvent",
+    "Summary": "Event triggered when an <c>@ondblclick</c> event occurs on a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortJustificationChangedEvent",
+    "Summary": "Event triggered when the justification (e.g., start, center, end) of a port changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose justification changed."
+      },
+      {
+        "Name": "OldJustification",
+        "TypeName": "PortJustification",
+        "Documentation": "The previous <see cref=\"T:Blazored.Diagrams.Ports.PortJustification\" />."
+      },
+      {
+        "Name": "NewJustification",
+        "TypeName": "PortJustification",
+        "Documentation": "The new <see cref=\"T:Blazored.Diagrams.Ports.PortJustification\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortParentChangedEvent",
+    "Summary": "Event triggered when a port is moved from one container (node or group) to another.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose parent changed."
+      },
+      {
+        "Name": "OldParent",
+        "TypeName": "IPortContainer",
+        "Documentation": "The previous container that held the port."
+      },
+      {
+        "Name": "NewParent",
+        "TypeName": "IPortContainer",
+        "Documentation": "The new container that now holds the port."
+      }
+    ]
+  },
+  {
+    "Name": "PortPointerDownEvent",
+    "Summary": "Event triggered when a pointer (e.g., mouse or touch) is pressed down on a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortPointerEnterEvent",
+    "Summary": "Event triggered when a pointer enters the bounds of a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortPointerLeaveEvent",
+    "Summary": "Event triggered when a pointer leaves the bounds of a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortPointerMoveEvent",
+    "Summary": "Event triggered when a pointer moves over a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortPointerUpEvent",
+    "Summary": "Event triggered when a pointer is released from a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "PortPositionChangedEvent",
+    "Summary": "Event triggered when a port's position changes relative to its parent.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that moved."
+      },
+      {
+        "Name": "OldX",
+        "TypeName": "Double",
+        "Documentation": "The previous X position value."
+      },
+      {
+        "Name": "OldY",
+        "TypeName": "Double",
+        "Documentation": "The previous Y position value."
+      },
+      {
+        "Name": "NewX",
+        "TypeName": "Double",
+        "Documentation": "The new X position value."
+      },
+      {
+        "Name": "NewY",
+        "TypeName": "Double",
+        "Documentation": "The new Y position value."
+      }
+    ]
+  },
+  {
+    "Name": "PortRedrawEvent",
+    "Summary": "Event triggered when a redraw is manually requested for a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that requested the redraw."
+      }
+    ]
+  },
+  {
+    "Name": "PortRemovedEvent",
+    "Summary": "Event triggered when a port is removed from a node or group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "PortSelectionChangedEvent",
+    "Summary": "Event triggered when a port is selected.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose selection status changed."
+      }
+    ]
+  },
+  {
+    "Name": "PortSizeChangedEvent",
+    "Summary": "Event triggered when the size (width or height) of a port changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose size changed."
+      },
+      {
+        "Name": "OldWidth",
+        "TypeName": "Double",
+        "Documentation": "The previous width value."
+      },
+      {
+        "Name": "OldHeight",
+        "TypeName": "Double",
+        "Documentation": "The previous height value."
+      },
+      {
+        "Name": "NewWidth",
+        "TypeName": "Double",
+        "Documentation": "The new width value."
+      },
+      {
+        "Name": "NewHeight",
+        "TypeName": "Double",
+        "Documentation": "The new height value."
+      }
+    ]
+  },
+  {
+    "Name": "PortVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility state of a port changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> whose visibility state changed."
+      }
+    ]
+  },
+  {
+    "Name": "PortWheelEvent",
+    "Summary": "Event triggered when the mouse wheel is scrolled while over a port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "WheelEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.WheelEventArgs\" />."
+      }
+    ]
+  }
+]
