@@ -56,8 +56,6 @@ public class SelectBehaviour : BaseBehaviour
         }
         else
         {
-            // If not multiselect or Ctrl not pressed, unselect all and select the new one
-            var wasSelected = selectableModel.IsSelected;
             _service.UnselectAll();
             selectableModel.IsSelected = true;
         }

@@ -79,10 +79,18 @@ public class EventLoggingBehavior : BaseBehaviour
                     try
                     {
                         var value = prop.GetValue(e);
-                        logMessage.AppendLine($"  {prop.Name}: {value ?? "null"}");
+                        var propType = prop.PropertyType;
 
-                        if (prop.Name == "Args" && value != null)
+                        // 1. Handle Primitive/Simple Types (Direct Logging)
+                        if (propType.IsPrimitive || propType == typeof(string) || propType == typeof(decimal) ||
+                            propType == typeof(DateTime) || propType.IsEnum)
                         {
+                            logMessage.AppendLine($"  {prop.Name}: {value ?? "null"}");
+                        }
+                        else if (prop.Name == "Args" && value != null)
+                        {
+                            logMessage.AppendLine($"  {prop.Name}: {value.GetType().Name} (Event Arguments)");
+
                             var argsType = value.GetType();
                             if (argsType.Name.Contains("EventArgs"))
                             {
@@ -109,9 +117,8 @@ public class EventLoggingBehavior : BaseBehaviour
         {
             // Here to avoid crashes from this behaviour.
         }
-
     }
-    
+
     // Utility method to check for inheritance from a generic base type
     private static bool InheritsFromGenericType(Type? type, Type genericBase)
     {
@@ -122,6 +129,7 @@ public class EventLoggingBehavior : BaseBehaviour
                 return true;
             type = type.BaseType!;
         }
+
         return false;
     }
 }

@@ -66,12 +66,6 @@ public interface IDiagramService : IDisposable
     /// <typeparam name="TModel">Type of the model to be centered.</typeparam>
     public void CenterInViewport<TModel>(CenterInViewportParameters<TModel> parameters)
         where TModel : IPosition, ISize;
-
-    /// <summary>
-    /// Changes the pan and zoom to fit all diagram components on screen (if zoom allows it)
-    /// </summary>
-    /// <param name="parameters">Customization options.</param>
-    void FitToScreen(FitToScreenParameters parameters);
     
     /// <summary>
     /// Sets a layer as the current layer.

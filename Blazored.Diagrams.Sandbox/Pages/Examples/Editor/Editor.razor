@@ -36,7 +36,7 @@
                         @* IVisible Interface *@
                         @if (SelectedModel is IVisible vis)
                         {
-                            <MudCheckBox @bind-Value="vis.IsVisible" Label="Is Visible (Toggle)" Color="Color.Primary"/>
+                            <MudCheckBox @bind-Value="vis.IsVisible" Label="Is Visible" Color="Color.Primary"/>
                         }
 
                         @* ISelectable Interface *@
@@ -93,11 +93,6 @@
                 </MudTooltip>
                 <MudTooltip Text="Add group">
                     <MudIconButton OnClick="AddGroup" Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
-
-                </MudTooltip>
-                <MudTooltip Text=" Fit to screen">
-                    <MudIconButton OnClick="FitToScreen" Icon="@Icons.Material.Filled.FitScreen" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
-
                 </MudTooltip>
                 @if (SelectedModel is not null)
                 {
@@ -120,8 +115,9 @@
             <!-- DIAGRAM CONTAINER -->
             <MudPaper Class="flex-grow-1 elevation-2 rounded-lg" Style="width:100%;height:100%;">
                 <DiagramContainer DiagramService="DiagramService">
-                    <ZoomControls></ZoomControls>
-                    <MinimapControls></MinimapControls>
+                    <ZoomControls IsVisible="_showZoomControls"></ZoomControls>
+                    <MinimapControls IsVisible="_showMinimapControls"></MinimapControls>
+                    <LoggingControls IsVisible="_showLoggingControls"></LoggingControls>
                 </DiagramContainer>
             </MudPaper>
         </MudStack>
@@ -209,6 +205,12 @@
 
                         </MudExpansionPanel>
                     }
+                    <MudExpansionPanel Text="Controls">
+                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showLoggingControls" Label="Show Logging Control"></MudSwitch>
+                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showMinimapControls" Label="Show Minimap Control"></MudSwitch>
+                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showZoomControls" Label="Show Zoom Control"></MudSwitch>
+                    </MudExpansionPanel>
+
                 </MudExpansionPanels>
             </MudCardContent>
         </MudCard>
@@ -217,6 +219,9 @@
 
 @code {
     private object? SelectedModel { get; set; }
+    private bool _showZoomControls = true;
+    private bool _showMinimapControls = true;
+    private bool _showLoggingControls = false;
     private List<IDisposable> _subscriptions = [];
     [Inject] public IDiagramService DiagramService { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
@@ -230,13 +235,6 @@
             DiagramService.Events.SubscribeTo<GroupSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
             DiagramService.Events.SubscribeTo<PortSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
             DiagramService.Events.SubscribeTo<LinkSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
-            DiagramService.Events.SubscribeTo<NodeRedrawEvent>(HandleModelUpdated),
-            DiagramService.Events.SubscribeTo<LinkRedrawEvent>(HandleModelUpdated),
-            DiagramService.Events.SubscribeTo<GroupRedrawEvent>(HandleModelUpdated),
-            DiagramService.Events.SubscribeTo<LayerAddedEvent>(_ => StateHasChanged()),
-            DiagramService.Events.SubscribeTo<LayerRemovedEvent>(_ => StateHasChanged()),
-            DiagramService.Events.SubscribeTo<LayerVisibilityChangedEvent>(_ => StateHasChanged()),
-            DiagramService.Events.SubscribeTo<CurrentLayerChangedEvent>(_ => StateHasChanged())
         ];
     }
 
@@ -245,12 +243,6 @@
         SelectedModel = model;
         StateHasChanged();
     }
-
-    private void HandleModelUpdated<TEvent>(TEvent ev) where TEvent : IEvent
-    {
-        StateHasChanged();
-    }
-
 
     private void SelectModel(ISelectable model)
     {
@@ -261,7 +253,6 @@
 
         model.IsSelected = true;
         SelectedModel = model;
-        StateHasChanged();
     }
 
     private void DeleteModel()
@@ -285,7 +276,6 @@
         }
 
         SelectedModel = null;
-        StateHasChanged();
     }
 
     private void AddNode()
@@ -358,8 +348,6 @@
         {
             Snackbar.Add("Cannot add more than 4 ports automatically.", Severity.Warning);
         }
-
-        StateHasChanged();
     }
 
     private void AddGroup()
@@ -405,11 +393,6 @@
     public void Dispose()
     {
         _subscriptions.DisposeAll();
-    }
-
-    private void FitToScreen(MouseEventArgs obj)
-    {
-        DiagramService.FitToScreen(new FitToScreenParameters(50, false));
     }
 
     private void ZoomToModel(MouseEventArgs obj)

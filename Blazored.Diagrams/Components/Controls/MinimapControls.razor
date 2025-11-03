@@ -1,80 +1,82 @@
 @using System.Globalization
 @using Blazored.Diagrams.Services.Diagrams
 @implements IDisposable
-<div class="minimap-container @Class" style="@Style">
+@if (IsVisible)
+{
+    <div class="minimap-container @Class" style="@Style">
 
-    @if (Service is not null && Service.Diagram is { Width: > 0, Height: > 0 })
-    {
-        <svg class="minimap-svg"
-             width="@Width"
-             height="@Height"
-             viewBox="@($"{_viewBoxMinX.ToString(_nfi)} {_viewBoxMinY.ToString(_nfi)} {_viewBoxWidth.ToString(_nfi)} {_viewBoxHeight.ToString(_nfi)}")">
+        @if (Service is not null && Service.Diagram is { Width: > 0, Height: > 0 })
+        {
+            <svg class="minimap-svg"
+                 width="@Width"
+                 height="@Height"
+                 viewBox="@($"{_viewBoxMinX.ToString(_nfi)} {_viewBoxMinY.ToString(_nfi)} {_viewBoxWidth.ToString(_nfi)} {_viewBoxHeight.ToString(_nfi)}")">
 
-            @foreach (var group in Service.Diagram.AllGroups)
-            {
-                <rect
-                    class="minimap-group"
-                    x="@group.PositionX"
-                    y="@group.PositionY"
-                    width="@group.Width"
-                    height="@group.Height"
-                    fill="@GroupColor">
-                </rect>
-            }
+                @foreach (var group in Service.Diagram.AllGroups)
+                {
+                    <rect
+                        class="minimap-group"
+                        x="@group.PositionX"
+                        y="@group.PositionY"
+                        width="@group.Width"
+                        height="@group.Height"
+                        fill="@GroupColor">
+                    </rect>
+                }
 
-            @foreach (var node in Service.Diagram.AllNodes)
-            {
-                <rect
-                    class="minimap-node"
-                    x="@node.PositionX"
-                    y="@node.PositionY"
-                    width="@node.Width"
-                    height="@node.Height"
-                    fill="@NodeColor">
-                </rect>
-            }
+                @foreach (var node in Service.Diagram.AllNodes)
+                {
+                    <rect
+                        class="minimap-node"
+                        x="@node.PositionX"
+                        y="@node.PositionY"
+                        width="@node.Width"
+                        height="@node.Height"
+                        fill="@NodeColor">
+                    </rect>
+                }
 
-            @foreach (var link in Service.Diagram.AllLinks)
-            {
-                var sourceCenter = Service.GetCenterCoordinates(link.SourcePort);
-                var x1 = sourceCenter.CenterX;
-                var y1 = sourceCenter.CenterY;
-                var x2 = link.TargetPositionX;
-                var y2 = link.TargetPositionY;
+                @foreach (var link in Service.Diagram.AllLinks)
+                {
+                    var sourceCenter = Service.GetCenterCoordinates(link.SourcePort);
+                    var x1 = sourceCenter.CenterX;
+                    var y1 = sourceCenter.CenterY;
+                    var x2 = link.TargetPositionX;
+                    var y2 = link.TargetPositionY;
 
-                <line
-                    class="minimap-link"
-                    x1="@x1.ToString(_nfi)"
-                    y1="@y1.ToString(_nfi)"
-                    x2="@x2.ToString(_nfi)"
-                    y2="@y2.ToString(_nfi)"
-                    stroke="@LinkColor"
-                    stroke-width="4">
-                </line>
-            }
+                    <line
+                        class="minimap-link"
+                        x1="@x1.ToString(_nfi)"
+                        y1="@y1.ToString(_nfi)"
+                        x2="@x2.ToString(_nfi)"
+                        y2="@y2.ToString(_nfi)"
+                        stroke="@LinkColor"
+                        stroke-width="4">
+                    </line>
+                }
 
-            @foreach (var port in Service.Diagram.AllPorts)
-            {
-                <circle
-                    class="minimap-port"
-                    cx="@(port.PositionX.ToString(_nfi))"
-                    cy="@(port.PositionY.ToString(_nfi))"
-                    r="@((port.Width / 2).ToString(_nfi))"
-                    fill="@PortColor">
-                </circle>
-            }
+                @foreach (var port in Service.Diagram.AllPorts)
+                {
+                    <circle
+                        class="minimap-port"
+                        cx="@(port.PositionX.ToString(_nfi))"
+                        cy="@(port.PositionY.ToString(_nfi))"
+                        r="@((port.Width / 2).ToString(_nfi))"
+                        fill="@PortColor">
+                    </circle>
+                }
 
-        </svg>
+            </svg>
 
-        <div class="minimap-info-overlay">
-            <div class="minimap-info-item">
-                <span class="minimap-info-label">Pan:</span>
-                <span>(@Service.Diagram.PanX.ToString("F0"), @Service.Diagram.PanY.ToString("F0"))</span>
+            <div class="minimap-info-overlay">
+                <div class="minimap-info-item">
+                    <span class="minimap-info-label">Pan:</span>
+                    <span>(@Service.Diagram.PanX.ToString("F0"), @Service.Diagram.PanY.ToString("F0"))</span>
+                </div>
             </div>
-        </div>
-    }
-</div>
-
+        }
+    </div>
+}
 @code
 {
     readonly NumberFormatInfo _nfi = new();
@@ -158,6 +160,12 @@
     [Parameter]
     public string? Style { get; set; }
 
+    /// <summary>
+    /// Shows/Hides the control
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -211,7 +219,6 @@
         Width = Service.Diagram.Width / 8;
         Height = Service.Diagram.Height / 8;
         Refresh(null!);
-        StateHasChanged();
     }
 
     private void Refresh(IEvent? e)

@@ -171,17 +171,14 @@
     }
     
     // New Method: Create Layer
-    private Task CreateNewLayer()
+    private void CreateNewLayer()
     {
         var newLayer = new Layer();
         Service.AddLayer(newLayer);
-        // Optional: Make the new layer active after creation
-        // Service.Diagram.UseLayer(newLayer); 
-        return InvokeAsync(StateHasChanged);
     }
     
     // New Method: Add Node to Active Layer
-    private Task AddNodeToActiveLayer()
+    private void AddNodeToActiveLayer()
     {
         var newX = 50 + (_newNodeCount % 8) * 100; // Simple positioning logic
         var newY = 450 + (_newNodeCount / 8) * 50;
@@ -193,25 +190,21 @@
         Service.AddNode(node);
 
         _newNodeCount++;
-        return InvokeAsync(StateHasChanged);
     }
 
-    private Task SelectAll()
+    private void SelectAll()
     {
         Service.Diagram.CurrentLayer.SelectAll();
-        return InvokeAsync(StateHasChanged);
     }
 
-    private Task UnselectAll()
+    private void UnselectAll()
     {
         Service.Diagram.CurrentLayer.UnselectAll();
-        return InvokeAsync(StateHasChanged);
     }
 
     private void UseLayer(ILayer layer)
     {
         Service.UseLayer(layer);
-        StateHasChanged();
     }
 
 }

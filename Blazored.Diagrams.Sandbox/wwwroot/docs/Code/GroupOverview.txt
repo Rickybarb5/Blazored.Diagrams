@@ -129,10 +129,13 @@
         Service.AddNodeTo(_outerGroup, siblingNode);
 
         // 5. Subscribe to Group Selection Changes to update the UI
-        _selectionSubscription = Service.Events.SubscribeTo<GroupSelectionChangedEvent>(e => UpdateSelectedGroup());
+        _selectionSubscription = Service.Events.SubscribeTo<GroupSelectionChangedEvent>( UpdateSelectedGroup);
 
-        // Initial check for selection
-        UpdateSelectedGroup();
+        // Find the single currently selected group across all layers
+        // We use FirstOrDefault as we'll only display actions for one selected group.
+        _selectedGroup = Service.Diagram.Layers
+            .SelectMany(l => l.AllGroups)
+            .FirstOrDefault(g => g.IsSelected);
 
         return base.OnInitializedAsync();
     }
@@ -140,13 +143,16 @@
     /// <summary>
     /// Finds the first selected group in the diagram to update the UI controls.
     /// </summary>
-    private void UpdateSelectedGroup()
+    private void UpdateSelectedGroup(GroupSelectionChangedEvent ev)
     {
-        // Find the single currently selected group across all layers
-        // We use FirstOrDefault as we'll only display actions for one selected group.
-        _selectedGroup = Service.Diagram.Layers
-            .SelectMany(l => l.AllGroups)
-            .FirstOrDefault(g => g.IsSelected);
+        if (ev.Model.IsSelected)
+        {
+            _selectedGroup = ev.Model;
+        }
+        else
+        {
+            _selectedGroup = null;
+        }
         StateHasChanged();
     }
 

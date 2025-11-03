@@ -3,25 +3,25 @@
 @using Blazored.Diagrams.Services.Diagrams
 @using System.Text
 @implements IAsyncDisposable
-@if (_diagramService is not null)
+@if (DiagramService is not null)
 {
-    <CascadingValue Value="_diagramService">
+    <CascadingValue Value="DiagramService">
         <div
-            @onpointerleave="ctx => _diagramService.Events.Publish(new DiagramPointerLeaveEvent(_diagramService.Diagram, ctx))"
-            @onpointerdown="ctx => _diagramService.Events.Publish(new DiagramPointerDownEvent(_diagramService.Diagram, ctx))"
-            @onpointerenter="ctx => _diagramService.Events.Publish(new DiagramPointerEnterEvent(_diagramService.Diagram, ctx))"
-            @onpointermove="ctx => _diagramService.Events.Publish(new DiagramPointerMoveEvent(_diagramService.Diagram, ctx))"
-            @onpointerup="ctx => _diagramService.Events.Publish(new DiagramPointerUpEvent(_diagramService.Diagram, ctx))"
-            @onclick="ctx => _diagramService.Events.Publish(new DiagramClickedEvent(_diagramService.Diagram, ctx))"
-            @ondblclick="ctx => _diagramService.Events.Publish(new DiagramDoubleClickedEvent(_diagramService.Diagram, ctx))"
-            @onkeydown="ctx => _diagramService.Events.Publish(new DiagramKeyDownEvent(_diagramService.Diagram, ctx))"
-            @onkeyup="ctx => _diagramService.Events.Publish(new DiagramKeyUpEvent(_diagramService.Diagram, ctx))"
+            @onpointerleave="ctx => DiagramService.Events.Publish(new DiagramPointerLeaveEvent(DiagramService.Diagram, ctx))"
+            @onpointerdown="ctx => DiagramService.Events.Publish(new DiagramPointerDownEvent(DiagramService.Diagram, ctx))"
+            @onpointerenter="ctx => DiagramService.Events.Publish(new DiagramPointerEnterEvent(DiagramService.Diagram, ctx))"
+            @onpointermove="ctx => DiagramService.Events.Publish(new DiagramPointerMoveEvent(DiagramService.Diagram, ctx))"
+            @onpointerup="ctx => DiagramService.Events.Publish(new DiagramPointerUpEvent(DiagramService.Diagram, ctx))"
+            @onclick="ctx => DiagramService.Events.Publish(new DiagramClickedEvent(DiagramService.Diagram, ctx))"
+            @ondblclick="ctx => DiagramService.Events.Publish(new DiagramDoubleClickedEvent(DiagramService.Diagram, ctx))"
+            @onkeydown="ctx => DiagramService.Events.Publish(new DiagramKeyDownEvent(DiagramService.Diagram, ctx))"
+            @onkeyup="ctx => DiagramService.Events.Publish(new DiagramKeyUpEvent(DiagramService.Diagram, ctx))"
             tabindex="-1"
             id="@(ContainerId)"
             @ref="_componentRef"
             style="@(GetContainerStyle())">
-            <div style=@($"transform: translate({_diagramService.Diagram.PanX}px,{_diagramService.Diagram.PanY}px) scale({_diagramService.Diagram.Zoom.ToString(_nfi)});transition: transform 0.05s ease-out;")>
-                @foreach (var layer in _diagramService.Diagram.Layers)
+            <div style=@($"transform: translate({DiagramService.Diagram.PanX}px,{DiagramService.Diagram.PanY}px) scale({DiagramService.Diagram.Zoom.ToString(_nfi)});transition: transform 0.1s ease-out;")>
+                @foreach (var layer in DiagramService.Diagram.Layers)
                 {
                     <LayerContainer Layer="layer"></LayerContainer>
                 }
@@ -40,7 +40,6 @@
     readonly StringBuilder _sb = new();
     private ElementReference _componentRef;
     private List<IDisposable> _subscriptions = [];
-    private IDiagramService _diagramService = null!;
     
     
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
@@ -64,28 +63,14 @@
     [EditorRequired]
     public required IDiagramService DiagramService
     {
-        get => _diagramService;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            if (_diagramService?.Diagram.Id != value.Diagram.Id)
-            {
-                _subscriptions.DisposeAll();
-                _diagramService?.Dispose();
-                _diagramService = value;
-                _subscriptions =
-                [
-                    _diagramService.Events.SubscribeTo<DiagramRedrawEvent>(Redraw),
-                ];
-                InvokeAsync(StateHasChanged);
-            }
-        }
+        get;
+        set;
     }
     
     /// <summary>
     /// ID of the diagram container
     /// </summary>
-    public string ContainerId => $"diagram-container-{_diagramService.Diagram.Id}";
+    public string ContainerId => $"diagram-container-{DiagramService.Diagram.Id}";
 
     /// <inheritdoc />
     protected override Task OnInitializedAsync()
@@ -102,10 +87,14 @@
         {
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var rect = await Js.GetBoundingClientRect(_componentRef);
-            _diagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
-            _diagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
+            DiagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
+            DiagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
             await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
-            _diagramService.Events.Publish(new DiagramRedrawEvent(_diagramService.Diagram));
+            DiagramService.Events.Publish(new DiagramRedrawEvent(DiagramService.Diagram));
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeTo<DiagramRedrawEvent>(Redraw),
+            ];
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -113,16 +102,16 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        _diagramService.Diagram.SetSize((int)(obj.Width), (int)(obj.Height));
+        DiagramService.Diagram.SetSize((int)(obj.Width), (int)(obj.Height));
     }
 
     private string GetContainerStyle()
     {
         _sb.Clear();
-        _sb.Append(_diagramService.Diagram.Options.Style.ContainerStyle);
-        if (_diagramService.Diagram.Options.Style.GridEnabled)
+        _sb.Append(DiagramService.Diagram.Options.Style.ContainerStyle);
+        if (DiagramService.Diagram.Options.Style.GridEnabled)
         {
-            _sb.Append(_diagramService.Options.Styling.GridStyle);
+            _sb.Append(DiagramService.Options.Styling.GridStyle);
         }
 
         return _sb.ToString();
@@ -144,8 +133,7 @@
     [JSInvokable]
     public void OnZoom(WheelEventArgs args)
     {
-        _diagramService.Events.Publish(new DiagramWheelEvent(_diagramService.Diagram, args));
-        StateHasChanged();
+        DiagramService.Events.Publish(new DiagramWheelEvent(DiagramService.Diagram, args));
     }
     
     private void Redraw(DiagramRedrawEvent obj)

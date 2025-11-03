@@ -1,6 +1,4 @@
-using Blazored.Diagrams.Extensions;
 using Blazored.Diagrams.Interfaces;
-using Blazored.Diagrams.Options.Behaviours;
 
 namespace Blazored.Diagrams.Services.Diagrams;
 
@@ -79,61 +77,6 @@ public partial class DiagramService
         var newPanY = screenCenterY  - worldCenterY;
 
         Diagram.SetZoom(1);
-        Diagram.SetPan((int)newPanX, (int)newPanY);
-    }
-
-
-
-    /// <inheritdoc />
-    // TODO: This is bugged!
-    public virtual void FitToScreen(FitToScreenParameters parameters)
-    {
-        bool VisiblePredicate(IVisible x) => parameters.IncludeInvisible || x.IsVisible;
-
-        // Collect all bounds from nodes, groups, and ports that pass visibility filter
-        var allBounds = Diagram.AllNodes.Where(VisiblePredicate).Select(x => x.GetBounds())
-            .Concat(Diagram.AllGroups.Where(VisiblePredicate).Select(x => x.GetBounds()))
-            .Concat(Diagram.AllPorts.Where(VisiblePredicate).Select(x => x.GetBounds())).ToList();
-
-        if (allBounds.Count == 0)
-            return;
-
-        // Compute combined bounding box
-        var minX = allBounds.Min(b => b.Left);
-        var minY = allBounds.Min(b => b.Top);
-        var maxX = allBounds.Max(b => b.Right);
-        var maxY = allBounds.Max(b => b.Bottom);
-
-        var totalWidth = Math.Abs(maxX - minX);
-        var totalHeight = Math.Abs(maxY - minY);
-
-        if (totalWidth <= 0 || totalHeight <= 0 || Diagram.Width <= 0 || Diagram.Height <= 0)
-            return;
-
-        // Add margin
-        var requiredWidth = totalWidth + parameters.Margin * 2;
-        var requiredHeight = totalHeight + parameters.Margin * 2;
-
-        // Compute zoom ratios
-        double zoomX = Diagram.Width / requiredWidth;
-        double zoomY = Diagram.Height / requiredHeight;
-
-        var newZoom = Math.Min(zoomX, zoomY);
-        var zoomOptions = Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>();
-
-        newZoom = Math.Min(newZoom, zoomOptions.MaxZoom);
-
-        // Compute world center and target pan
-        var worldCenterX = minX + totalWidth / 2;
-        var worldCenterY = minY + totalHeight / 2;
-
-        var screenCenterX = Diagram.Width / 2;
-        var screenCenterY = Diagram.Height / 2;
-
-        var newPanX = screenCenterX - worldCenterX * newZoom;
-        var newPanY = screenCenterY - worldCenterY * newZoom;
-
-        Diagram.SetZoom(newZoom);
         Diagram.SetPan((int)newPanX, (int)newPanY);
     }
 }

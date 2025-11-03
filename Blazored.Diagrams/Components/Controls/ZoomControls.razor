@@ -1,29 +1,31 @@
 @using Blazored.Diagrams.Options.Behaviours
 @using Blazored.Diagrams.Services.Diagrams
 
-<div class="@ContainerClass">
+@if (IsVisible)
+{
+    <div class="@ContainerClass">
 
-    <button @onclick="ZoomIn"
-            disabled="@IsZoomLimitReached(ZoomDirection.In)"
-            title="Zoom In"
-            class="@GetButtonClass(ZoomDirection.In)">
-        +
-    </button>
+        <button @onclick="ZoomIn"
+                disabled="@IsZoomLimitReached(ZoomDirection.In)"
+                title="Zoom In"
+                class="@GetButtonClass(ZoomDirection.In)">
+            +
+        </button>
 
-    <div @onclick="ResetZoom"
-         title="Reset Zoom (100%)"
-         class="@DisplayClass">
-        @($"{(Service.Diagram.Zoom * 100):0}%")
-    </div>
+        <div @onclick="ResetZoom"
+             title="Reset Zoom (100%)"
+             class="@DisplayClass">
+            @($"{(Service.Diagram.Zoom * 100):0}%")
+        </div>
 
-    <button @onclick="ZoomOut"
-            disabled="@IsZoomLimitReached(ZoomDirection.Out)"
-            title="Zoom Out"
-            class="@GetButtonClass(ZoomDirection.Out)">
-        &minus;
-    </button>
-</div>
-
+        <button @onclick="ZoomOut"
+                disabled="@IsZoomLimitReached(ZoomDirection.Out)"
+                title="Zoom Out"
+                class="@GetButtonClass(ZoomDirection.Out)">
+            &minus;
+        </button>
+    </div> 
+}
 @code {
     [CascadingParameter] private IDiagramService Service { get; set; } = null!;
 
@@ -62,6 +64,12 @@
     /// </summary>
     [Parameter]
     public string DisplayClass { get; set; } = "zoom-display";
+
+    /// <summary>
+    /// Shows/Hides the control
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
 
     private enum ZoomDirection
     {

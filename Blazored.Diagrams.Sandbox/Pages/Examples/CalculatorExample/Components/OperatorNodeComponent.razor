@@ -87,9 +87,8 @@
 
     private void OnRedraw(IEvent obj)
     {
-        // Must invoke StateHasChanged on the UI thread
         Node.Calculate();
-        InvokeAsync(StateHasChanged);
+        StateHasChanged();
     }
 
     // Helper method to get the operator symbol for better display in the MudSelect

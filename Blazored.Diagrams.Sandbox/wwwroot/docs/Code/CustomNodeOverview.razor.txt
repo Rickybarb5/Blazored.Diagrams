@@ -16,9 +16,7 @@ public partial class CustomNodeOverview
     {
         AddCustomNode();
 
-        _subscription = Service.Events.SubscribeTo<NodeSelectionChangedEvent>(
-            e => InvokeAsync(() => HandleNodeSelectionChanged(e))
-        );
+        _subscription = Service.Events.SubscribeTo<NodeSelectionChangedEvent>(HandleNodeSelectionChanged);
 
         return base.OnInitializedAsync();
     }
@@ -38,7 +36,6 @@ public partial class CustomNodeOverview
                 _selectedNode = null;
             }
         }
-
         StateHasChanged();
     }
 
@@ -57,15 +54,14 @@ public partial class CustomNodeOverview
         {
             Service.RemoveNode(_selectedNode);
             _selectedNode = null;
-            InvokeAsync(StateHasChanged);
         }
     }
 
-    private Task AddPortToSelectedNode()
+    private void AddPortToSelectedNode()
     {
         if (_selectedNode == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var sides = new List<PortAlignment>
@@ -76,8 +72,6 @@ public partial class CustomNodeOverview
         {
             Service.AddPortTo(_selectedNode, new Port { Alignment = nextSide });
         }
-
-        return InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

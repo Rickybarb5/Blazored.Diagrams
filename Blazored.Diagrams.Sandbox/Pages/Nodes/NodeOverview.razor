@@ -123,17 +123,13 @@ Service.AddNode(node);
             Service.RemoveNode(_mainNode);
             _mainNode = null; // Clear the reference
         }
-
-        StateHasChanged(); // Force UI update for button text/status
     }
 
     private void ToggleVisibility()
     {
         if (_mainNode != null)
         {
-            // Toggle the visibility property. The component automatically re-renders.
             _mainNode.IsVisible = !_mainNode.IsVisible;
-            StateHasChanged();
         }
     }
 
@@ -150,9 +146,6 @@ Service.AddNode(node);
             // Add a new Port with the found alignment
             Service.AddPortTo(_mainNode, new Port { Alignment = nextAlignment });
         }
-
-        // This is important to update the port count in the button text
-        StateHasChanged();
     }
 
     private void MoveNode()
@@ -161,10 +154,6 @@ Service.AddNode(node);
         {
             // Programmatically change the node's position
             _mainNode.SetPosition(200, 400);
-
-            // Note: SetPosition internally publishes a NodePositionChangedEvent, 
-            // but we call StateHasChanged to update the status text, if needed.
-            StateHasChanged();
         }
     }
 
