@@ -1,0 +1,108 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release
+      
+    - name: Run tests
+      run: dotnet test Blazored.Diagrams.Test/Blazored.Diagrams.Test.csproj --no-build --configuration Release --verbosity normal
+
+  build-and-publish-nuget:
+    name: Build and Publish NuGet Package
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build RCL
+      run: dotnet build Blazored.Diagrams/Blazored.Diagrams.csproj --configuration Release --no-restore
+      
+    - name: Pack NuGet package
+      run: dotnet pack Blazored.Diagrams/Blazored.Diagrams.csproj --configuration Release --no-build --output ./artifacts
+      
+    - name: Publish to NuGet
+      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+  deploy-github-pages:
+    name: Deploy Sandbox to GitHub Pages
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Publish Blazor WASM
+      run: dotnet publish Blazored.Diagrams.Sandbox/Blazored.Diagrams.Sandbox.csproj -c Release -o publish
+      
+    - name: Change base href in index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/your-repo-name\/" \/>/g' publish/wwwroot/index.html
+      
+    - name: Add .nojekyll file
+      run: touch publish/wwwroot/.nojekyll
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: 'publish/wwwroot'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
