@@ -4,7 +4,6 @@ using Blazored.Diagrams.Services.Observers;
 
 using Blazored.Diagrams.Services.Registry;
 using Blazored.Diagrams.Services.Serialization;
-using Blazored.Diagrams.Services.Virtualization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazored.Diagrams;
@@ -25,7 +24,6 @@ public static class BlazoredDiagramsExtensions
     {
         services
             .AddSingleton<IResizeObserverService, ResizeObserverService>()
-            .AddSingleton<IVirtualizationService, VirtualizationService>()
             .AddSingleton<ISerializationService, SerializationService>()
             .AddTransient<IDiagramService, DiagramService>()
             .AddSingleton<IComponentRegistry, ComponentRegistry>();

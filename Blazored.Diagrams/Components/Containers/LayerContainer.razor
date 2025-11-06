@@ -1,16 +1,14 @@
 @using Blazored.Diagrams.Services.Diagrams
-@using Blazored.Diagrams.Services.Virtualization
-@inject IVirtualizationService VirtualizationService
 @implements IDisposable
-@if (Layer is not null && Layer.IsVisible)
+@if (Layer is not null && Layer.IsVisible )
 {
     <div id="@(ContainerId)">
-            @foreach (var node in VirtualizationService.Virtualize(DiagramService.Diagram, Layer.Nodes))
+            @foreach (var node in Layer.Nodes)
             {
                 <NodeContainer Node="node"></NodeContainer>
             }
 
-            @foreach (var group in VirtualizationService.Virtualize(DiagramService.Diagram, Layer.Groups))
+            @foreach (var group in Layer.Groups)
             {
                 <GroupContainer Group="group"></GroupContainer>
             }
@@ -56,10 +54,11 @@
         return base.OnAfterRenderAsync(firstRender);
     }
 
-    private void Redraw(LayerRedrawEvent e)
+    private void Redraw(IEvent e)
     {
         StateHasChanged();
     }
+    
 
     private List<IDisposable> _subscriptions = [];
 

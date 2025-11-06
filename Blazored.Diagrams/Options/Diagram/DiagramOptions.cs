@@ -8,9 +8,6 @@ public class DiagramOptions : IDiagramOptions
 {
     /// <inheritdoc />
     public IDiagramStyleOptions Style { get; set; } = new DiagramStyleOptions();
-
-    /// <inheritdoc />
-    public IVirtualizationOptions Virtualization { get; init; } = new VirtualizationOptions();
     
     /// <inheritdoc />
     public CurvedLinkOptions CurvedLinkOptions { get; set; } = new();

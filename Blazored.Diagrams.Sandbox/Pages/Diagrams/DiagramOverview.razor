@@ -60,18 +60,6 @@
                                        Label="Show/Hide Grid"
                                        LabelPlacement="Placement.Start"/>
                         </MudStack>
-
-                        <MudDivider Class="my-4"/>
-
-                        <MudText Typo="Typo.subtitle1" GutterBottom="true">Virtualization Options</MudText>
-                        <MudText Typo="Typo.body2" Class="mud-text-secondary mb-3">
-                            Allows you to enable/disable virtualization.
-                        </MudText>
-                        <MudStack Spacing="3">
-                            <MudSwitch Label="Enable virtualization" @bind-Value="Service.Options.Virtualization.IsEnabled" Color="Color.Primary"/>
-                            <MudNumericField T="int" Immediate="true" Label="Buffer size" HelperText="Bigger allows more items further offscreen."
-                                             @bind-Value="Service.Options.Virtualization.BufferSize"/>
-                        </MudStack>
                     </MudExpansionPanel>
 
                 </MudExpansionPanels>

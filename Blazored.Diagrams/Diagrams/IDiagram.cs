@@ -76,7 +76,7 @@ public interface IDiagram :
     int PositionY { get; set; }
 
     /// <summary>
-    /// Virtualization options.
+    /// Diagram options.
     /// </summary>
     IDiagramOptions Options { get; init; }
 

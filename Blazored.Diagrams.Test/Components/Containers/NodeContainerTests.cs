@@ -1,11 +1,10 @@
 using Blazored.Diagrams.Components.Containers;
 using Blazored.Diagrams.Events;
 using Blazored.Diagrams.Nodes;
-
-namespace Blazored.Diagrams.Test.Components;
 using Bunit;
 using Moq;
-using Xunit;
+
+namespace Blazored.Diagrams.Test.Components.Containers;
 
 public class NodeContainerTests : ContainerTestBase<NodeContainer>
 {

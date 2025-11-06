@@ -5,7 +5,7 @@
 @implements IAsyncDisposable
 @if (DiagramService is not null)
 {
-    <CascadingValue Value="DiagramService">
+    <CascadingValue Value="DiagramService" IsFixed="true">
         <div
             @onpointerleave="ctx => DiagramService.Events.Publish(new DiagramPointerLeaveEvent(DiagramService.Diagram, ctx))"
             @onpointerdown="ctx => DiagramService.Events.Publish(new DiagramPointerDownEvent(DiagramService.Diagram, ctx))"
@@ -28,7 +28,7 @@
             </div>
             @if (ChildContent is not null)
             {
-            @ChildContent
+                @ChildContent
             }
         </div>
     </CascadingValue>
@@ -41,7 +41,6 @@
     private ElementReference _componentRef;
     private List<IDisposable> _subscriptions = [];
     
-    
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
 
     /// <summary>
@@ -49,24 +48,20 @@
     /// </summary>
     [Inject]
     public required IJSRuntime Js { get; set; }
-    
+
     /// <summary>
     ///     Used to add additional components on top of the diagram.
     /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-    
+
     /// <summary>
     /// Diagram instance to show in the UI.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public required IDiagramService DiagramService
-    {
-        get;
-        set;
-    }
-    
+    public required IDiagramService DiagramService { get; set; }
+
     /// <summary>
     /// ID of the diagram container
     /// </summary>
@@ -135,7 +130,7 @@
     {
         DiagramService.Events.Publish(new DiagramWheelEvent(DiagramService.Diagram, args));
     }
-    
+
     private void Redraw(DiagramRedrawEvent obj)
     {
         StateHasChanged();

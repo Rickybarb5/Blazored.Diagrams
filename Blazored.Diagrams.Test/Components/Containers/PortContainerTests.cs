@@ -6,7 +6,7 @@ using Blazored.Diagrams.Ports;
 using Blazored.Diagrams.Services.Diagrams;
 using Bunit;
 
-namespace Blazored.Diagrams.Test.Components;
+namespace Blazored.Diagrams.Test.Components.Containers;
 
 public class PortContainerTests : ContainerTestBase<PortContainer>
 {

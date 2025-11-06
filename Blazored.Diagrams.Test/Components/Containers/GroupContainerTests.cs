@@ -4,7 +4,7 @@ using Blazored.Diagrams.Groups;
 using Bunit;
 using Moq;
 
-namespace Blazored.Diagrams.Test.Components;
+namespace Blazored.Diagrams.Test.Components.Containers;
 
 public class GroupContainerTests: ContainerTestBase<GroupContainer>
 {

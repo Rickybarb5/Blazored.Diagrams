@@ -2,7 +2,7 @@ using Blazored.Diagrams.Components.Containers;
 using Blazored.Diagrams.Layers;
 using Bunit;
 
-namespace Blazored.Diagrams.Test.Components;
+namespace Blazored.Diagrams.Test.Components.Containers;
 
 public class LayerContainerTests : ContainerTestBase<LayerContainer>
 {

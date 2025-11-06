@@ -3,7 +3,7 @@ using Blazored.Diagrams.Events;
 using Bunit;
 using Moq;
 
-namespace Blazored.Diagrams.Test.Components;
+namespace Blazored.Diagrams.Test.Components.Containers;
 
 public class DiagramContainerTests : ContainerTestBase<DiagramContainer>
 {

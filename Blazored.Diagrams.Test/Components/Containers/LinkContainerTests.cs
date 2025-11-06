@@ -3,7 +3,7 @@ using Blazored.Diagrams.Links;
 using Blazored.Diagrams.Ports;
 using Bunit;
 
-namespace Blazored.Diagrams.Test.Components;
+namespace Blazored.Diagrams.Test.Components.Containers;
 
 public class LinkContainerTests : ContainerTestBase<LinkContainer>
 {

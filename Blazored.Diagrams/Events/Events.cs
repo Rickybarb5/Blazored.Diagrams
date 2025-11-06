@@ -16,7 +16,7 @@ public abstract record ModelEventBase<TModel>(TModel Model) : EventBase, IModelE
 /// <summary>
 /// Base class for an input event
 /// </summary>
-public abstract record InputEventBase : EventBase, IEvent;
+public abstract record InputEventBase : EventBase;
 
 /// <summary>
 /// Base class for an input event, originated from a model.

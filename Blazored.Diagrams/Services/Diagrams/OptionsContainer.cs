@@ -20,9 +20,6 @@ public class OptionsContainer : IOptionsContainer
     public virtual IDiagramStyleOptions Styling => _service.Diagram.Options.Style;
 
     /// <inheritdoc />
-    public virtual IVirtualizationOptions Virtualization => _service.Diagram.Options.Virtualization;
-
-    /// <inheritdoc />
     public CurvedLinkOptions CurvedLinkOptions => _service.Diagram.Options.CurvedLinkOptions;
 
     /// <inheritdoc />

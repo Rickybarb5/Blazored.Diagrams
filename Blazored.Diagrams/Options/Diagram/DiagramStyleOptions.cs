@@ -2,40 +2,40 @@
 using Newtonsoft.Json;
 
 namespace Blazored.Diagrams.Options.Diagram;
+
 /// <summary>
 /// Style options for the diagram.
 /// </summary>
 public partial class DiagramStyleOptions : IDiagramStyleOptions
 {
     readonly NumberFormatInfo _nfi = new();
+
     /// <summary>
     /// Default diagram container style.
     /// </summary>
-    [JsonIgnore]
-    public const string DefaultContainerStyle = "width:100%;height:100%;overflow:hidden;position:relative;";
+    [JsonIgnore] public const string DefaultContainerStyle =
+        "width:100%;height:100%;overflow:hidden;position:relative;-webkit-touch-callout: none !important;-webkit-user-select: none !important;-webkit-user-drag: none !important;-moz-user-select: none !important;-ms-user-select: none !important;user-select: none !important;";
 
     /// <summary>
     /// Default cell size.
     /// </summary>
-    [JsonIgnore]
-    public const int DefaultCellSize = 20;
+    [JsonIgnore] public const int DefaultCellSize = 20;
 
     /// <summary>
     /// Default grid line color in RGB values.
     /// </summary>
-    [JsonIgnore]
-    public const string DefaultGridLineColor = "0, 0, 0"; // RGB
+    [JsonIgnore] public const string DefaultGridLineColor = "0, 0, 0"; // RGB
 
     /// <summary>
     /// Default grid line opacity.
     /// </summary>
     private const decimal DefaultGridLineOpacity = 0.1m;
-    
+
     /// <summary>
     /// Default grid line thickness in pixels.
     /// </summary>
     private const int DefaultGridLineThickness = 1;
-    
+
     private int _cellSize;
     private string? _gridStyle;
     private string _gridLineColor;
@@ -57,14 +57,12 @@ public partial class DiagramStyleOptions : IDiagramStyleOptions
         DefaultGridStyle = BuildDefaultGridStyle();
     }
 
-    [JsonIgnore] 
-    private string DefaultGridStyle { get; set; }
+    [JsonIgnore] private string DefaultGridStyle { get; set; }
 
     /// <summary>
     /// Style of the diagram Container.
     /// </summary>
     public string ContainerStyle { get; set; }
-    
 
     /// <summary>
     /// Shows/Hides the grid.

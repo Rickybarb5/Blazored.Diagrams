@@ -14,13 +14,6 @@ public interface IDiagramOptions
     /// Style options for <see cref="DiagramContainer"/>
     /// </summary>
     IDiagramStyleOptions Style { get; set; }
-    
-    /// <summary>
-    /// Virtualization options for <see cref="DiagramContainer"/>.
-    /// Usefull if there are many components on the diagram.
-    /// Disabled by default.
-    /// </summary>
-    IVirtualizationOptions Virtualization { get; init; }
 
     /// <summary>
     /// Option list for the behaviours.

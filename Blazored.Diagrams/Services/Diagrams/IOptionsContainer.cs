@@ -13,11 +13,6 @@ public interface IOptionsContainer
     /// Styling options for the diagram.
     /// </summary>
     IDiagramStyleOptions Styling { get; }
-
-    /// <summary>
-    /// Virtualization options for the diagram.
-    /// </summary>
-    IVirtualizationOptions Virtualization { get; }
     
     /// <summary>
     /// Options for <see cref="CurvedLinkComponent"/>.
