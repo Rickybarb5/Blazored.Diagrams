@@ -1,0 +1,462 @@
+[
+  {
+    "Name": "BehaviourEnabledEvent",
+    "Summary": "Enabled event for behaviours."
+  },
+  {
+    "Name": "CurrentLayerChangedEvent",
+    "Summary": "Event triggered when a new layer will start to be used."
+  },
+  {
+    "Name": "DiagramClickedEvent",
+    "Summary": "Event triggered when an @onclick event happens on the"
+  },
+  {
+    "Name": "DiagramDoubleClickedEvent",
+    "Summary": "Event triggered when an @ondblclick event happens on the"
+  },
+  {
+    "Name": "DiagramEvent",
+    "Summary": "Base class for a diagram event."
+  },
+  {
+    "Name": "DiagramKeyDownEvent",
+    "Summary": "Event triggered when an @onkeydown event happens on the"
+  },
+  {
+    "Name": "DiagramKeyUpEvent",
+    "Summary": "Event triggered when an @onkeyup event happens on the"
+  },
+  {
+    "Name": "DiagramPanChangedEvent",
+    "Summary": "Event triggered when the pan changes."
+  },
+  {
+    "Name": "DiagramPointerDownEvent",
+    "Summary": "Event triggered when an @onpointerdown event happens on the"
+  },
+  {
+    "Name": "DiagramPointerEnterEvent",
+    "Summary": "Event triggered when an @onpointerenter event happens on the"
+  },
+  {
+    "Name": "DiagramPointerLeaveEvent",
+    "Summary": "Event triggered when an @onpointerleave event happens on the"
+  },
+  {
+    "Name": "DiagramPointerMoveEvent",
+    "Summary": "Event triggered when an @onpointermove event happens on the"
+  },
+  {
+    "Name": "DiagramPointerUpEvent",
+    "Summary": "Event triggered when an @onpointerup event happens on the"
+  },
+  {
+    "Name": "DiagramPositionChangedEvent",
+    "Summary": "Event triggered when the diagram position changes."
+  },
+  {
+    "Name": "DiagramRedrawEvent",
+    "Summary": "Event triggered when a diagram redraw is requested."
+  },
+  {
+    "Name": "DiagramSizeChangedEvent",
+    "Summary": "Event triggered when the diagram size changes."
+  },
+  {
+    "Name": "DiagramWheelEvent",
+    "Summary": "Event triggered when an @onwheel event happens on the"
+  },
+  {
+    "Name": "DiagramZoomChangedEvent",
+    "Summary": "Event triggered when the zoom changes."
+  },
+  {
+    "Name": "DrawLinkCancelledEvent",
+    "Summary": "Event triggered when a link was being created  via the , but was not attached to a target port."
+  },
+  {
+    "Name": "DrawLinkCreatedEvent",
+    "Summary": "Event triggered when a new link has finished being created via the \n            At this stage the link has a source and target  port."
+  },
+  {
+    "Name": "DrawLinkStartEvent",
+    "Summary": "Event triggered when a new link is being created via the \n            At this stage the link has a source port, but no target port, only target position."
+  },
+  {
+    "Name": "GroupAddedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupAddedToGroupEvent",
+    "Summary": "Event triggered when a group is added to another group."
+  },
+  {
+    "Name": "GroupAddedToLayerEvent",
+    "Summary": "Event triggered when a group is added to another group."
+  },
+  {
+    "Name": "GroupClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupDoubleClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPaddingChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPointerDownEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPointerEnterEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPointerLeaveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPointerMoveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPointerUpEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupPositionChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupRedrawEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupRemovedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupRemovedFromGroupEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupRemovedFromLayerEvent",
+    "Summary": "Event triggered when a group is removed from the layer."
+  },
+  {
+    "Name": "GroupSelectionChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupSizeChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupVisibilityChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "GroupWheelEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "IncomingLinkAddedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "IncomingLinkRemovedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "ItemAddedEvent\u00601",
+    "Summary": "Event triggered when an item is added to an observable list."
+  },
+  {
+    "Name": "ItemRemovedEvent\u00601",
+    "Summary": "Event triggered when an item is removed from an observable list."
+  },
+  {
+    "Name": "LayerAddedEvent",
+    "Summary": "Event triggered when a layer is added to the diagram."
+  },
+  {
+    "Name": "LayerEvent",
+    "Summary": "Base layer event."
+  },
+  {
+    "Name": "LayerRedrawEvent",
+    "Summary": "Event triggered when a redraw is requested for a layer."
+  },
+  {
+    "Name": "LayerRemovedEvent",
+    "Summary": "Event triggered when a layer is removed from the diagram."
+  },
+  {
+    "Name": "LayerVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility of a layer changes."
+  },
+  {
+    "Name": "LinkAddedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkDoubleClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkPointerDownEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkPointerEnterEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkPointerLeaveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkPointerMoveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkPointerUpEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkRedrawEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkRemovedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkSelectionChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkSizeChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkSourcePortChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkTargetPortChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkTargetPositionChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkVisibilityChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "LinkWheelEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodeAddedEvent",
+    "Summary": "Event triggered when a node is added to the diagram."
+  },
+  {
+    "Name": "NodeAddedToGroupEvent",
+    "Summary": "Event triggered when a node is added to a group."
+  },
+  {
+    "Name": "NodeAddedToLayerEvent",
+    "Summary": "Event triggered when a node is added to a group."
+  },
+  {
+    "Name": "NodeClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodeDoubleClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodeEvent",
+    "Summary": "Base layer event."
+  },
+  {
+    "Name": "NodePointerDownEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodePointerEnterEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodePointerLeaveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodePointerMoveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodePointerUpEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodePositionChangedEvent",
+    "Summary": "Event triggered when a node\u0027s position changes."
+  },
+  {
+    "Name": "NodeRedrawEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodeRemovedEvent",
+    "Summary": "Event triggered when a node is removed from the diagram."
+  },
+  {
+    "Name": "NodeRemovedFromGroupEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "NodeRemovedFromLayerEvent",
+    "Summary": "Event triggered when a node is removed from a layer."
+  },
+  {
+    "Name": "NodeSelectionChangedEvent",
+    "Summary": "Event triggered when a node is selected/deselected."
+  },
+  {
+    "Name": "NodeSizeChangedEvent",
+    "Summary": "Event triggered when the size of a node changes."
+  },
+  {
+    "Name": "NodeVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility of a node changes."
+  },
+  {
+    "Name": "NodeWheelEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "OutgoingLinkAddedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "OutgoingLinkRemovedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PanEndEvent",
+    "Summary": "Event triggered when the panning ends in the"
+  },
+  {
+    "Name": "PanStartEvent",
+    "Summary": "Event triggered when the panning starts in the"
+  },
+  {
+    "Name": "PortAddedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortAddedToGroupEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortAddedToNodeEvent",
+    "Summary": "Event triggered when a port is added to a node."
+  },
+  {
+    "Name": "PortAlignmentChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortDoubleClickedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortJustificationChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortParentChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortPointerDownEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortPointerEnterEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortPointerLeaveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortPointerMoveEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortPointerUpEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortPositionChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortRedrawEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortRemovedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortRemovedFromGroupEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortRemovedFromNodeEvent",
+    "Summary": "Event triggered when a port is removed from a node."
+  },
+  {
+    "Name": "PortSizeChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortVisibilityChangedEvent",
+    "Summary": "(no documentation found)"
+  },
+  {
+    "Name": "PortWheelEvent",
+    "Summary": "(no documentation found)"
+  }
+]

@@ -1,0 +1,138 @@
+﻿@using System.Globalization
+@using Blazored.Diagrams.Services.Observers
+@using Blazored.Diagrams.Services.Diagrams
+@using System.Text
+@implements IAsyncDisposable
+@if (DiagramService is not null)
+{
+    <CascadingValue Value="DiagramService" IsFixed="true">
+        <div
+            @onpointerleave="ctx => DiagramService.Events.Publish(new DiagramPointerLeaveEvent(DiagramService.Diagram, ctx))"
+            @onpointerdown="ctx => DiagramService.Events.Publish(new DiagramPointerDownEvent(DiagramService.Diagram, ctx))"
+            @onpointerenter="ctx => DiagramService.Events.Publish(new DiagramPointerEnterEvent(DiagramService.Diagram, ctx))"
+            @onpointermove="ctx => DiagramService.Events.Publish(new DiagramPointerMoveEvent(DiagramService.Diagram, ctx))"
+            @onpointerup="ctx => DiagramService.Events.Publish(new DiagramPointerUpEvent(DiagramService.Diagram, ctx))"
+            @onclick="ctx => DiagramService.Events.Publish(new DiagramClickedEvent(DiagramService.Diagram, ctx))"
+            @ondblclick="ctx => DiagramService.Events.Publish(new DiagramDoubleClickedEvent(DiagramService.Diagram, ctx))"
+            @onkeydown="ctx => DiagramService.Events.Publish(new DiagramKeyDownEvent(DiagramService.Diagram, ctx))"
+            @onkeyup="ctx => DiagramService.Events.Publish(new DiagramKeyUpEvent(DiagramService.Diagram, ctx))"
+            tabindex="-1"
+            id="@(ContainerId)"
+            @ref="_componentRef"
+            style="@(GetContainerStyle())">
+            <div style=@($"transform: translate({DiagramService.Diagram.PanX}px,{DiagramService.Diagram.PanY}px) scale({DiagramService.Diagram.Zoom.ToString(_nfi)});transition: transform 0.1s ease-out;")>
+                @foreach (var layer in DiagramService.Diagram.Layers)
+                {
+                    <LayerContainer Layer="layer"></LayerContainer>
+                }
+            </div>
+            @if (ChildContent is not null)
+            {
+                @ChildContent
+            }
+        </div>
+    </CascadingValue>
+}
+
+
+@code {
+    readonly NumberFormatInfo _nfi = new();
+    readonly StringBuilder _sb = new();
+    private ElementReference _componentRef;
+    private List<IDisposable> _subscriptions = [];
+    
+    [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+
+    /// <summary>
+    /// <see cref="IJSRuntime"/>
+    /// </summary>
+    [Inject]
+    public required IJSRuntime Js { get; set; }
+
+    /// <summary>
+    ///     Used to add additional components on top of the diagram.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Diagram instance to show in the UI.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public required IDiagramService DiagramService { get; set; }
+
+    /// <summary>
+    /// ID of the diagram container
+    /// </summary>
+    public string ContainerId => $"diagram-container-{DiagramService.Diagram.Id}";
+
+    /// <inheritdoc />
+    protected override Task OnInitializedAsync()
+    {
+        _nfi.NumberDecimalSeparator = ".";
+        _nfi.NumberDecimalDigits = 3;
+        return base.OnInitializedAsync();
+    }
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
+            var rect = await Js.GetBoundingClientRect(_componentRef);
+            DiagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
+            DiagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
+            await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
+            DiagramService.Events.Publish(new DiagramRedrawEvent(DiagramService.Diagram));
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeTo<DiagramRedrawEvent>(Redraw),
+            ];
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnSizeChanged(ResizeObserverEntry obj)
+    {
+        DiagramService.Diagram.SetSize((int)(obj.Width), (int)(obj.Height));
+    }
+
+    private string GetContainerStyle()
+    {
+        _sb.Clear();
+        _sb.Append(DiagramService.Diagram.Options.Style.ContainerStyle);
+        if (DiagramService.Diagram.Options.Style.GridEnabled)
+        {
+            _sb.Append(DiagramService.Options.Styling.GridStyle);
+        }
+
+        return _sb.ToString();
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        _subscriptions.DisposeAll();
+        await ResizeObserverService.UnobserveAsync(ContainerId);
+    }
+
+    /// <summary>
+    /// Handles the wheel events from JS.
+    /// Implemented this way due to an open blazor issue where wheel event cannot be stopped from propagating.
+    /// https://github.com/dotnet/aspnetcore/issues/17358
+    /// </summary>
+    /// <param name="args"><see cref="WheelEventArgs"/>.</param>
+    [JSInvokable]
+    public void OnZoom(WheelEventArgs args)
+    {
+        DiagramService.Events.Publish(new DiagramWheelEvent(DiagramService.Diagram, args));
+    }
+
+    private void Redraw(DiagramRedrawEvent obj)
+    {
+        StateHasChanged();
+    }
+}

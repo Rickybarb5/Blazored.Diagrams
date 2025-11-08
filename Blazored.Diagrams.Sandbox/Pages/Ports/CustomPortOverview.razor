@@ -1,0 +1,64 @@
+@page "/custom-ports"
+
+<MudGrid Spacing="2" Justify="Justify.Center" Style="height:100%; width: 100%; margin: 0;">
+
+    <!-- LEFT PANEL: Documentation -->
+    <MudItem xs="12" sm="5" Style="height: 100%; overflow-y: auto;">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.h5" Color="Color.Primary" GutterBottom="true">Custom Port Overview</MudText>
+            <MudText Typo="Typo.body1" Class="mb-3">
+                You can create custom ports to render any Blazor component as a connection point. This is useful for
+                changing the port's appearance (shape, color, icon) or adding custom logic.
+            </MudText>
+
+            <MudExpansionPanels MultiExpansion="true">
+
+                <!-- Panel 1: The Custom Port Model -->
+                <MudExpansionPanel Text="1. The Custom Port Model" Expanded="true">
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        First, create a C# class that inherits from <code>Port</code>. The only requirement is to
+                        implement <code>IHasComponent&lt;T&gt;</code>, pointing to your new Razor component.
+                    </MudText>
+                    <HighlightFromFile Language="csharp" FileName="CustomPort"></HighlightFromFile>
+                </MudExpansionPanel>
+
+                <!-- Panel 2: The Custom Port Component -->
+                <MudExpansionPanel Text="2. The Custom Port Component" Expanded="true">
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        Next, create the Razor component. This example (<code>CustomPortComponent.razor</code>) renders
+                        a purple diamond shape.
+                    </MudText>
+                    <MudAlert Severity="Severity.Warning" Class="mb-3">
+                        The parameter **must** be named <code>Port</code> for the <code>PortContainer</code> to inject
+                        the model correctly. Its type should be your new custom port class.
+                    </MudAlert>
+                    <HighlightFromFile Language="csharp" FileName="CustomPortComponent"></HighlightFromFile>
+                </MudExpansionPanel>
+
+                <!-- Panel 3: How to Use It -->
+                <MudExpansionPanel Text="3. How to Use the Custom Port" Expanded="true">
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        Finally, add an instance of your new <code>CustomPort</code> model to a node just as you would a
+                        default port. The diagram will automatically find and render your component.
+                    </MudText>
+                    <HighlightFromFile Language="csharp" FileName="CustomPortOverview.razor"></HighlightFromFile>
+                </MudExpansionPanel>
+
+            </MudExpansionPanels>
+        </MudPaper>
+    </MudItem>
+
+    <!-- RIGHT PANEL: Diagram -->
+    <MudItem xs="12" sm="7" Style="height: 100%;">
+        <MudPaper Class="mud-height-full" Elevation="4">
+            <DiagramContainer DiagramService="Service"/>
+        </MudPaper>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+
+    // --- Diagram Initialization ---
+
+}

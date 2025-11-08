@@ -1,0 +1,182 @@
+@using Blazored.Diagrams.Events
+<style>
+.animated-link {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none; /* Allows clicks to fall through to the path */
+}
+
+.animated-path {
+    pointer-events: auto; /* Re-enable pointer events on the path itself */
+    stroke-linecap: round;
+    transition: stroke 0.2s, stroke-width 0.2s;
+
+    /* Animation properties: 'marching ants' effect */
+    animation: dash 5s linear infinite;
+}
+
+.animated-path.selected {
+    stroke-width: 6; /* Thicker when selected */
+    filter: drop-shadow(0 0 5px #ffc107);
+}
+
+@@keyframes dash {
+     to {
+         stroke-dashoffset: -100;
+     }
+ }
+</style>
+    <svg class="animated-link">
+        @* The d attribute defines a straight path with a dashed, animated stroke *@
+        <path d="@GetPath()"
+              fill="none"
+              id="@PathId"
+              stroke="@Stroke"
+              stroke-width="4"
+              stroke-dasharray="10, 5"
+              class="animated-path @(Link.IsSelected ? "selected" : "")"
+              @onpointerleave="HandlePointerLeave"
+              @onpointerdown="HandlePointerDown"
+              @onpointerenter="HandlePointerEnter"
+              @onpointermove="HandlePointerMove"
+              @onpointerup="HandlePointerUp"
+              @onwheel="ctx => DiagramService.Events.Publish(new LinkWheelEvent(Link, ctx))"
+              @onclick="HandleClick"
+              @ondblclick="HandleDoubleClick"/>
+    </svg>
+
+@code {
+    [Inject] private IJSRuntime Js { get; init; } = null!;
+
+    // MANDATORY LINK PARAMETER: Required to receive the model data
+    [Parameter] public required AnimatedLink Link { get; set; }
+
+    // Required to get the container position for relative coordinate calculation
+    [CascadingParameter] public required LinkContainer Container { get; set; }
+    
+    /// <summary>
+    /// Service cascaded through the <see cref="LinkContainer"/>
+    /// </summary>
+    [CascadingParameter]
+    public required IDiagramService DiagramService { get; init; } = null!;
+
+    /// <summary>
+        ///     ID of the element.
+        /// </summary>
+        private string PathId => $"link-path-{Link.Id}";
+
+    private string Stroke => Link.IsSelected ? "#ffc107" : "#ff5722"; // Orange/Amber
+    
+    /// <summary>
+    /// Relative start X coordinate of the link.
+    /// </summary>
+    private int RelativeX1 => DiagramService.GetCenterCoordinates(Link.SourcePort).CenterX - Container.PositionX;
+
+    /// <summary>
+    /// Relative start Y coordinate of the link.
+    /// </summary>
+    private int RelativeY1 => DiagramService.GetCenterCoordinates(Link.SourcePort).CenterY - Container.PositionY;
+
+    /// <summary>
+    /// Relative end X coordinate of the link.
+    /// </summary>
+    private int RelativeX2 => Container.TargetX - Container.PositionX;
+
+    /// <summary>
+    /// Relative start Y coordinate of the link.
+    /// </summary>
+    private int RelativeY2 => Container.TargetY - Container.PositionY;
+
+    private string GetPath()
+    {
+        return $"M {RelativeX1} {RelativeY1} L {RelativeX2} {RelativeY2}";
+    }
+
+
+    /// <summary>
+    /// Handles the @onclick event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandleClick(MouseEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkClickedEvent(Link, e));
+        }
+    }
+
+    /// <summary>
+    /// Handles the @ondbclick event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandleDoubleClick(MouseEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkDoubleClickedEvent(Link, e));
+        }
+    }
+
+    /// <summary>
+    /// Handles the @onpointerdown event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandlePointerDown(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerDownEvent(Link, e));
+        }
+    }
+
+    /// <summary>
+    /// Handles the @onpointerup event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandlePointerUp(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerUpEvent(Link, e));
+        }
+    }
+
+    /// <summary>
+    /// Handles the @onpointerleave event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandlePointerLeave(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerLeaveEvent(Link, e));
+        }
+    }
+
+    /// <summary>
+    /// Handles the @onpointerenter event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandlePointerEnter(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerEnterEvent(Link, e));
+        }
+    }
+
+    /// <summary>
+    /// Handles the @onpointermove event.
+    /// </summary>
+    /// <param name="e">Mouse event args.</param>
+    protected virtual async Task HandlePointerMove(PointerEventArgs e)
+    {
+        if (await Js.IsClickOnPath(e, PathId))
+        {
+            DiagramService.Events.Publish(new LinkPointerMoveEvent(Link, e));
+        }
+    }
+
+}
+

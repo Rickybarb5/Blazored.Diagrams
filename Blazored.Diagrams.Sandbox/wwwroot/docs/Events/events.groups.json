@@ -1,0 +1,364 @@
+[
+  {
+    "Name": "GroupAddedEvent",
+    "Summary": "Event triggered when a group is added to the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that was added."
+      }
+    ]
+  },
+  {
+    "Name": "GroupAddedToGroupEvent",
+    "Summary": "Event triggered when a group is added to another group.",
+    "Parameters": [
+      {
+        "Name": "ParentModel",
+        "TypeName": "IGroup",
+        "Documentation": "The parent group to which the child group was added."
+      },
+      {
+        "Name": "AddedGroup",
+        "TypeName": "IGroup",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Groups.IGroup\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "GroupClickedEvent",
+    "Summary": "Event triggered when an <c>@onclick</c> event occurs on a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupDoubleClickedEvent",
+    "Summary": "Event triggered when an <c>@ondblclick</c> event occurs on a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPaddingChangedEvent",
+    "Summary": "Event triggered when the internal padding of a group changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group whose padding changed."
+      },
+      {
+        "Name": "OldPadding",
+        "TypeName": "Int32",
+        "Documentation": "The old padding value in pixels."
+      },
+      {
+        "Name": "NewPadding",
+        "TypeName": "Int32",
+        "Documentation": "The new padding value in pixels."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPointerDownEvent",
+    "Summary": "Event triggered when a pointer (e.g., mouse or touch) is pressed down on a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPointerEnterEvent",
+    "Summary": "Event triggered when a pointer enters the bounds of a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPointerLeaveEvent",
+    "Summary": "Event triggered when a pointer leaves the bounds of a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPointerMoveEvent",
+    "Summary": "Event triggered when a pointer moves over a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPointerUpEvent",
+    "Summary": "Event triggered when a pointer is released from a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "GroupPositionChangedEvent",
+    "Summary": "Event triggered when a group position changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group the moved."
+      },
+      {
+        "Name": "OldX",
+        "TypeName": "Int32",
+        "Documentation": "The old X position value."
+      },
+      {
+        "Name": "OldY",
+        "TypeName": "Int32",
+        "Documentation": "The old Y position value."
+      },
+      {
+        "Name": "NewX",
+        "TypeName": "Int32",
+        "Documentation": "The new X position value."
+      },
+      {
+        "Name": "NewY",
+        "TypeName": "Int32",
+        "Documentation": "The new Y position value."
+      }
+    ]
+  },
+  {
+    "Name": "GroupRedrawEvent",
+    "Summary": "Event triggered when a redraw is manually requested for a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that requested the redraw."
+      }
+    ]
+  },
+  {
+    "Name": "GroupRemovedEvent",
+    "Summary": "Event triggered when a group is removed from the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "GroupRemovedFromGroupEvent",
+    "Summary": "Event triggered when a child group is removed from its parent group.",
+    "Parameters": [
+      {
+        "Name": "ParentModel",
+        "TypeName": "IGroup",
+        "Documentation": "The parent group from which the child group was removed."
+      },
+      {
+        "Name": "RemovedGroup",
+        "TypeName": "IGroup",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Groups.IGroup\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "GroupSelectionChangedEvent",
+    "Summary": "Event triggered when the selection state of a group changes (e.g., selected or deselected).",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group whose selection state changed."
+      }
+    ]
+  },
+  {
+    "Name": "GroupSizeChangedEvent",
+    "Summary": "Event triggered when the size (width or height) of a group changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group whose size changed."
+      },
+      {
+        "Name": "OldWidth",
+        "TypeName": "Int32",
+        "Documentation": "The previous width value in pixels."
+      },
+      {
+        "Name": "OldHeight",
+        "TypeName": "Int32",
+        "Documentation": "The previous height value in pixels."
+      },
+      {
+        "Name": "NewWidth",
+        "TypeName": "Int32",
+        "Documentation": "The new width value in pixels."
+      },
+      {
+        "Name": "NewHeight",
+        "TypeName": "Int32",
+        "Documentation": "The new height value in pixels."
+      }
+    ]
+  },
+  {
+    "Name": "GroupVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility state of a group changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group whose visibility state changed."
+      }
+    ]
+  },
+  {
+    "Name": "GroupWheelEvent",
+    "Summary": "Event triggered when the mouse wheel is scrolled while over a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "WheelEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.WheelEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "NodeAddedToGroupEvent",
+    "Summary": "Event triggered when a node is added to a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group the node was added to."
+      },
+      {
+        "Name": "Node",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "NodeRemovedFromGroupEvent",
+    "Summary": "Event triggered when a node is removed from a group.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group the node was removed from."
+      },
+      {
+        "Name": "Node",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "PortAddedToGroupEvent",
+    "Summary": "Event triggered when a port is added directly to a group's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group the port was added to."
+      },
+      {
+        "Name": "Port",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "PortRemovedFromGroupEvent",
+    "Summary": "Event triggered when a port is removed from a group's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group the port was removed from."
+      },
+      {
+        "Name": "Port",
+        "TypeName": "IPort",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> that was removed."
+      }
+    ]
+  }
+]

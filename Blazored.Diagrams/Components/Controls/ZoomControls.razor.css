@@ -1,0 +1,64 @@
+.diagram-zoom-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -webkit-user-drag: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+.zoom-in-button, .zoom-out-button {
+    width: 40px;
+    height: 30px;
+    background-color: #444;
+    color: white;
+    border: 1px solid #555;
+    font-size: 18px;
+    line-height: 0;
+    transition: background-color 0.1s;
+}
+
+.zoom-in-button:hover, .zoom-out-button:hover {
+    background-color: #555;
+}
+
+.zoom-in-button {
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    cursor: zoom-in;
+}
+.zoom-out-button {
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    cursor: zoom-out;
+}
+
+.zoom-display {
+    padding: 4px 8px;
+    font-size: 12px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    cursor: pointer;
+    user-select: none;
+    width: 40px;
+    height: 30px;display: flex; 
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-in-disabled, .zoom-out-disabled {
+    background-color: #666 !important; 
+    cursor: not-allowed !important;
+    opacity: 0.5;
+    box-shadow: none;
+}

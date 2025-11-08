@@ -1,0 +1,31 @@
+@if (Link is not null)
+{
+    <svg class="default-link">
+        <defs>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+                <feFlood flood-color="#C0C0C0" result="flood"/>
+                <feComposite in="flood" in2="blur" operator="in" result="colorBlur"/>
+                <feMerge>
+                    <feMergeNode in="colorBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+        <path d="@GetPath()"
+              class="link-path"
+              id="@(PathId)"
+              fill="none"
+              stroke="@Stroke"
+              stroke-width="@(StrokeWidth)"
+              @onpointerleave="HandlePointerLeave"
+              @onpointerdown="HandlePointerDown"
+              @onpointerenter="HandlePointerEnter"
+              @onpointermove="HandlePointerMove"
+              @onpointerup="HandlePointerUp"
+              @onwheel="ctx => DiagramService.Events.Publish(new LinkWheelEvent(Link, ctx))"
+              @onclick="HandleClick"
+              @ondblclick="HandleDoubleClick"/>
+
+    </svg>
+}

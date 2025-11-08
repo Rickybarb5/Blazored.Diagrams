@@ -1,0 +1,45 @@
+﻿@using Blazored.Diagrams.Services.Diagrams
+@using System.Text
+<div class="@GetClass()">
+    @if (Content is not null)
+    {
+        @Content
+    }
+</div>
+
+@code {
+
+    /// <summary>
+    /// <see cref="Node"/>
+    /// </summary>
+    [Parameter]
+    public required Node Node { get; init; }
+    
+    /// <summary>
+    /// Optional content if people want to use the default component.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+
+    /// <summary>
+    /// <see cref="IDiagramService"/>
+    /// </summary>
+    [CascadingParameter]
+    public IDiagramService DiagramService { get; init; } = null!;
+
+    private const string DefaultCssClass = "default-node";
+    private readonly StringBuilder _builder = new();
+
+    private string GetClass()
+    {
+        _builder.Clear();
+        _builder.Append(DefaultCssClass);
+        if (Node.IsSelected)
+        {
+            _builder.Append(" selected");
+        }
+
+       return _builder.ToString();
+    }
+
+}

@@ -1,0 +1,35 @@
+@page "/calculator-example"
+@using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.Behaviours
+@using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.Nodes
+
+<MudToolBar >
+    <MudButton StartIcon="@Icons.Material.Filled.Numbers" Variant="Variant.Filled" OnClick="AddNumber">Add a Number Node</MudButton>
+    <MudButton StartIcon="@Icons.Material.Filled.Calculate" Variant="Variant.Filled" OnClick="AddOperator">Add an Operator Node</MudButton>
+</MudToolBar>
+<div style="display:flex;flex-direction:row;width:100%; height:100%">
+    <DiagramContainer DiagramService="Service"></DiagramContainer>
+</div>
+
+@code {
+    [Inject] public IDiagramService Service { get; set; } = null!;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Service.Behaviours.RegisterBehaviour(new CalculatorBehaviour(Service));
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+    private void AddNumber(MouseEventArgs obj)
+    {
+        var node = new NumberNode();
+        Service.AddNode(node);
+    }
+
+    private void AddOperator(MouseEventArgs obj)
+    {
+        var node = new Nodes.OperatorNode();
+        Service.AddNode(node);
+    }
+}

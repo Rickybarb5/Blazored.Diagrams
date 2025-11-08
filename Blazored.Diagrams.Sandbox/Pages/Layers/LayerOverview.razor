@@ -1,0 +1,210 @@
+@page "/layer-overview"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" sm="12" md="4" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Layer Overview</MudText>
+
+                <MudExpansionPanels MultiExpansion="false">
+
+                    <MudExpansionPanel Text="Layer Management & Operations" Expanded="true">
+                        
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            A **Layer** acts as an invisible container for diagram models (Nodes, Groups, Links). It provides a way to logically group elements and control them in bulk, primarily for **visibility** and **selection**. Every element in the diagram belongs to one layer.
+                        </MudText>
+
+                        <h2>Layer Status & Creation</h2>
+                        <MudStack Spacing="2">
+                            <MudText Typo="Typo.subtitle1">
+                                Active Layer:
+                                <MudChip Color="Color.Secondary" Size="Size.Small" T="string">
+                                    @Service.Diagram.CurrentLayer.Id
+                                </MudChip>
+                            </MudText>
+                            <MudText Typo="Typo.body1" GutterBottom="true">
+                                <p>
+                                    To create a layer: 
+                                    <CodeHighlighter Language="csharp" Code="Layer layer = new();"></CodeHighlighter>
+                                </p>
+                                <p>
+                                    To add a layer: 
+                                    <CodeHighlighter Language="csharp" Code="@($"{nameof(DiagramService)}.{nameof(DiagramService.AddLayer)}(layer);")"></CodeHighlighter>
+                                </p>
+                                <p>
+                                    To switch the active layer:
+                                    <CodeHighlighter Language="csharp" Code="@($"{nameof(DiagramService)}.{nameof(DiagramService.Diagram)}.{nameof(DiagramService.UseLayer)}(layer);")"></CodeHighlighter>
+                                </p>
+                                </MudText>
+                            <MudSelect T="ILayer"
+                                       Label="Set Active Layer"
+                                       Value="@Service.Diagram.CurrentLayer"
+                                       ValueChanged="UseLayer"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @for (var i = 0; i < Service.Diagram.Layers.Count; i++)
+                                {
+                                    var idx = i; // local copy to avoid capture issues
+                                    var layer = Service.Diagram.Layers[idx];
+                                    var label = $"Layer {idx + 1}";
+                                    <MudSelectItem Value="@layer">@label</MudSelectItem>
+                                }
+                            </MudSelect>
+                            
+                            @* Moved "Create Layer" button here *@
+                            <MudButton OnClick="CreateNewLayer"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Info"
+                                       StartIcon="@Icons.Material.Filled.Layers"
+                                       Size="Size.Medium"
+                                       Class="mt-3">
+                                Create Layer
+                            </MudButton>
+
+                        </MudStack>
+
+                        <MudDivider Class="my-4"/>
+                        
+                        
+                        <h2>Visibility Control</h2>
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            Toggling a layer's <code>IsVisible</code> property instantly hides or shows all its contents.
+                        </MudText>
+                        <MudStack Spacing="3">
+                            @foreach (var layer in Service.Diagram.Layers)
+                            {
+                                <MudSwitch Color="Color.Primary"
+                                           T="bool"
+                                           Label="@($"Layer {Service.Diagram.Layers.IndexOf(layer) + 1} Visible")"
+                                           @bind-Value="layer.IsVisible"
+                                           LabelPlacement="Placement.Left"/>
+                            }
+                        </MudStack>
+
+                        <MudDivider Class="my-4"/>
+                        
+                        
+                        <h2>Bulk Operations (Active Layer)</h2>
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            These controls affect the currently active layer.
+                        </MudText>
+                        
+                        @* Node Creation Button *@
+                        <MudStack Row="true" Spacing="2" Justify="Justify.FlexStart" Class="mb-3">
+                            <MudButton OnClick="AddNodeToActiveLayer"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.AddCircle"
+                                       Size="Size.Medium">
+                                Add Node
+                            </MudButton>
+                        </MudStack>
+                        
+                        @* Selection Buttons *@
+                        <MudStack Row="true" Spacing="2" Justify="Justify.FlexStart">
+                            <MudButton OnClick="SelectAll"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Success"
+                                       StartIcon="@Icons.Material.Filled.SelectAll"
+                                       Size="Size.Medium">
+                                Select All
+                            </MudButton>
+                            <MudButton OnClick="UnselectAll"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Warning"
+                                       StartIcon="@Icons.Material.Filled.Deselect"
+                                       Size="Size.Medium">
+                                Unselect All
+                            </MudButton>
+                        </MudStack>
+                        
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="12" md="8" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+
+    [Inject] public IDiagramService Service { get; set; } = null!;
+    
+    // Counter for new nodes to help with positioning
+    private int _newNodeCount = 0;
+
+    protected override Task OnInitializedAsync()
+    {
+        var layer2 = new Layer();
+        Service.AddLayer(layer2);
+
+        // Add nodes to Layer 1 (index 0)
+        for (var i = 0; i < 4; i++)
+        {
+            var node = new NamedNode { Name = "Layer 1 Node" };
+            node.SetPosition(50 + 200 * i, 100);
+            Service.AddNode(node);
+        }
+
+        // Set Layer 2 as active and add nodes
+        Service.UseLayer(layer2);
+
+        for (int i = 0; i < 4; i++)
+        {
+            var node = new NamedNode { Name = "Layer 2 Node" };
+            node.SetPosition(50 + 200 * i, 300);
+            Service.AddNode(node);
+        }
+
+        // Set Layer 1 back as the active layer
+        Service.UseLayer(Service.Diagram.Layers[0]);
+
+        return base.OnInitializedAsync();
+    }
+    
+    // New Method: Create Layer
+    private void CreateNewLayer()
+    {
+        var newLayer = new Layer();
+        Service.AddLayer(newLayer);
+    }
+    
+    // New Method: Add Node to Active Layer
+    private void AddNodeToActiveLayer()
+    {
+        var newX = 50 + (_newNodeCount % 8) * 100; // Simple positioning logic
+        var newY = 450 + (_newNodeCount / 8) * 50;
+
+        var node = new NamedNode { Name = $"New Node on Layer {Service.Diagram.Layers.IndexOf(Service.Diagram.CurrentLayer) + 1}" };
+        node.SetPosition(newX, newY);
+        
+        // This will add the node to the current active layer
+        Service.AddNode(node);
+
+        _newNodeCount++;
+    }
+
+    private void SelectAll()
+    {
+        Service.Diagram.CurrentLayer.SelectAll();
+    }
+
+    private void UnselectAll()
+    {
+        Service.Diagram.CurrentLayer.UnselectAll();
+    }
+
+    private void UseLayer(ILayer layer)
+    {
+        Service.UseLayer(layer);
+    }
+
+}

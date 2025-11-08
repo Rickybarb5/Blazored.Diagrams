@@ -1,0 +1,156 @@
+@page "/link-overview"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" sm="12" md="6" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Links</MudText>
+                
+                <MudText Typo="Typo.body1" Class="mb-4">
+                    The library provides three built-in link types, all inheriting from the base <code>Link</code> class, to define the visual path between ports.
+                </MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="1. LineLink (Straight)" Expanded="false">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            The **LineLink** is the simplest and default link type. It draws a straight line connecting the center points of the source and target ports.
+                        </MudText>
+
+                        <CodeHighlighter Language="csharp" Code="@LineLinkCode" />
+                    </MudExpansionPanel>
+                    
+                    <MudExpansionPanel Text="2. CurvedLink (Bezier Curve)" Expanded="false">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            The **CurvedLink** uses a **Bezier curve** to connect ports, often resulting in a visually smoother and more dynamic diagram style.
+                        </MudText>
+
+                        <CodeHighlighter Language="csharp" Code="@CurvedLinkCode" />
+                    </MudExpansionPanel>
+                    
+                    <MudExpansionPanel Text="3. OrthogonalLink (Right Angles)" Expanded="false">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            The **OrthogonalLink** is commonly used for flowcharts or structured diagrams. It ensures that the path is composed only of horizontal and vertical segments.
+                        </MudText>
+                        
+                        <MudAlert Severity="Severity.Info" Class="mb-3">
+                            The routing logic for the orthogonal link attempts to find the shortest path between ports using only right angles.
+                        </MudAlert>
+
+                        <CodeHighlighter Language="csharp" Code="@OrthogonalLinkCode" />
+                    </MudExpansionPanel>
+                    
+                     <MudExpansionPanel Text="4. Initialization & Usage" Expanded="true">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            To use a specific link type, simply instantiate the corresponding class (`LineLink`, `CurvedLink`, or `OrthogonalLink`) when adding the link to the Diagram Service.
+                        </MudText>
+                        
+                        <CodeHighlighter Language="csharp" Code="@LinkInitializationCode" />
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="12" md="6" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service" />
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Inject] 
+    public IDiagramService Service { get; set; } = null!;
+
+    protected override Task OnInitializedAsync()
+    {
+        // Create the Nodes
+        var n1 = new Node { PositionX = 50, PositionY = 100 };
+        var n2 = new Node { PositionX = 300, PositionY = 50 };
+        var n3 = new Node { PositionX = 300, PositionY = 250 };
+        var n4 = new Node { PositionX = 600, PositionY = 150 };
+
+        // Add the nodes.
+        Service.AddNode(n1);
+        Service.AddNode(n2);
+        Service.AddNode(n3);
+        Service.AddNode(n4);
+        
+        // Create the ports.
+        Service.AddPortTo(n1, new Port { Alignment = PortAlignment.Right });
+        Service.AddPortTo(n2, new Port { Alignment = PortAlignment.Left });
+        Service.AddPortTo(n2, new Port { Alignment = PortAlignment.Right });
+        Service.AddPortTo(n3, new Port { Alignment = PortAlignment.Left });
+        Service.AddPortTo(n3, new Port { Alignment = PortAlignment.Right });
+        Service.AddPortTo(n4, new Port { Alignment = PortAlignment.Left });
+
+        // Create the links.
+        var lineLink = new LineLink();
+        var curvedLink = new CurvedLink();
+        var orthogonalLink = new OrthogonalLink();
+
+        // Add the links.
+        Service.AddLinkTo(n1.Ports.First(), n2.Ports.First(), lineLink);
+        Service.AddLinkTo(n2.Ports.Last(), n3.Ports.First(), curvedLink);
+        Service.AddLinkTo(n3.Ports.Last(), n4.Ports.First(), orthogonalLink);
+       
+        return base.OnInitializedAsync();
+    }
+    
+    // --- Code Strings Extracted to Constants ---
+    private const string LineLinkCode = @"
+// Simple straight link. This is the default style
+// if no specific link component is registered.
+public class LineLink : Link, IHasComponent<LineLinkComponent>;
+";
+
+    private const string CurvedLinkCode = @"
+// A link drawn as a Bezier curve, often used for
+// aesthetically pleasing and smooth diagrams.
+public class CurvedLink : Link, IHasComponent<CurvedLinkComponent>;
+";
+
+    private const string OrthogonalLinkCode = @"
+// A link that uses only horizontal and vertical segments
+// (right angles), common in flowcharts and circuit diagrams.
+public class OrthogonalLink : Link, IHasComponent<OrthogonalLinkComponent>;
+";
+
+    private const string LinkInitializationCode = @"
+       // Create the Nodes
+        var n1 = new Node { PositionX = 50, PositionY = 100 };
+        var n2 = new Node { PositionX = 300, PositionY = 50 };
+        var n3 = new Node { PositionX = 300, PositionY = 250 };
+        var n4 = new Node { PositionX = 600, PositionY = 150 };
+
+        // Add the nodes.
+        Service.AddNode(n1);
+        Service.AddNode(n2);
+        Service.AddNode(n3);
+        Service.AddNode(n4);
+        
+        // Create the ports.
+        Service.AddPortTo(n1, new Port{ Alignment = PortAlignment.Right});
+        Service.AddPortTo(n2, new Port{ Alignment = PortAlignment.Left});
+        Service.AddPortTo(n2, new Port{ Alignment = PortAlignment.Right});
+        Service.AddPortTo(n3, new Port{ Alignment = PortAlignment.Left});
+        Service.AddPortTo(n3, new Port{ Alignment = PortAlignment.Right});
+        Service.AddPortTo(n4, new Port{ Alignment = PortAlignment.Left});
+
+        // Create the links.
+        var lineLink = new LineLink();
+        var curvedLink = new CurvedLink();
+        var orthogonalLink = new OrthogonalLink();
+
+        // Add the links.
+        Service.AddAddLinkTo(n1.Ports.First(), n2.Ports.First(), lineLink);
+        Service.AddAddLinkTo(n2.Ports.Last(), n3.Ports.First(), curvedLink);
+        Service.AddAddLinkTo(n3.Ports.Last(), n4.Ports.First(), orthogonalLink);
+       
+";
+}

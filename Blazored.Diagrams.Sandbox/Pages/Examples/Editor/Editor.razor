@@ -1,0 +1,404 @@
+﻿@page "/editor"
+@using Blazored.Diagrams.Events
+<MudGrid Spacing="1" Class="h-screen w-full" Style="overflow:hidden;height:100%">
+
+    <!-- LEFT PANEL: Selected Model Properties (Interface Editor) -->
+    <MudItem xs="12" sm="2" Class="py-0 h-full">
+        <MudCard Class="h-full elevation-2 d-flex flex-column" Style="overflow-y: hidden;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6" Class="font-bold text-indigo-700">Model Editor</MudText>
+            </MudCardHeader>
+            <MudCardContent Class="flex-grow-1" Style="overflow-y: auto;">
+                @if (SelectedModel is null)
+                {
+                    <MudText Typo="Typo.body2" Class="text-gray-500">Select a node, group, or link to view properties.</MudText>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.caption" Class="font-mono text-xs">ID: @((SelectedModel as IId)!.Id)...</MudText>
+                            <MudText Typo="Typo.caption" Class="font-mono text-xs">Type: @SelectedModel.GetType().Name</MudText>
+                            <MudButton OnClick="DeleteModel" Variant="Variant.Filled" Color="Color.Error" Class="mt-2" FullWidth="true" StartIcon="@Icons.Material.Filled.Delete">Delete Model</MudButton>
+
+                        </MudStack>
+                        @* IPosition Interface *@
+                        @if (SelectedModel is IPosition pos)
+                        {
+                            <MudNumericField Label="Position X" @bind-Value="pos.PositionX" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"/>
+                            <MudNumericField Label="Position Y" @bind-Value="pos.PositionY" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"/>
+                        }
+                        @if (SelectedModel is IPadding pad)
+                        {
+                            <MudNumericField Label="Padding" @bind-Value="pad.Padding" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"/>
+                        }
+
+                        @* IVisible Interface *@
+                        @if (SelectedModel is IVisible vis)
+                        {
+                            <MudCheckBox @bind-Value="vis.IsVisible" Label="Is Visible" Color="Color.Primary"/>
+                        }
+
+                        @* ISelectable Interface *@
+                        @if (SelectedModel is ISelectable sel)
+                        {
+                            <MudCheckBox @bind-Value="sel.IsSelected" Label="Is Selected" Color="Color.Warning"/>
+                        }
+                        @* ISelectable Interface *@
+                        @if (SelectedModel is IPort p)
+                        {
+                            <MudSelect T="PortAlignment" @bind-Value="p.Alignment" Label="Align">
+                                <MudSelectItem Value="PortAlignment.Left">Left</MudSelectItem>
+                                <MudSelectItem Value="PortAlignment.Right">Right</MudSelectItem>
+                                <MudSelectItem Value="PortAlignment.Top">Top</MudSelectItem>
+                                <MudSelectItem Value="PortAlignment.Bottom">Bottom</MudSelectItem>
+                            </MudSelect>
+
+                            <MudSelect T="PortJustification" @bind-Value="p.Justification" Label="Justify">
+                                <MudSelectItem Value="PortJustification.Start">Start</MudSelectItem>
+                                <MudSelectItem Value="PortJustification.End">End</MudSelectItem>
+                                <MudSelectItem Value="PortJustification.Center">Center</MudSelectItem>
+                            </MudSelect>
+                        }
+
+                        @* INodeContainer Interface (for nodes) *@
+                        @if (SelectedModel is INodeContainer nc)
+                        {
+                            <MudButton OnClick="@(() => AddNodeToContainer(nc))" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.AddCircle" FullWidth="true" Class="mt-2">Add Child Node</MudButton>
+                        }
+                        @* INodeContainer Interface (for groups/diagram) *@
+                        @if (SelectedModel is IGroupContainer gc)
+                        {
+                            <MudButton OnClick="@(() => AddGroupToContainer(gc))" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.AddCircle" FullWidth="true" Class="mt-2">Add Child Group</MudButton>
+                        }
+
+                        @* IPortContainer Interface (for nodes/groups) *@
+                        @if (SelectedModel is IPortContainer pc)
+                        {
+                            <MudButton OnClick="@(() => AddPortToContainer(pc))" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.AddCircle" FullWidth="true" Class="mt-2">Add Port</MudButton>
+                        }
+                    </MudStack>
+                }
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <!-- MIDDLE/MAIN AREA: Toolbar and Diagram Container -->
+    <MudItem xs="12" sm="8" Class="py-0 h-full" Style="width: 100%;height:100%">
+        <MudStack Class="h-full" Style="width: 100%;height:100%">
+            <!-- TOP TOOLBAR -->
+            <MudPaper Class="d-flex pa-2 elevation-2 rounded-lg">
+                <MudTooltip Text="Add Node">
+                    <MudIconButton OnClick="AddNode" Icon="@Icons.Material.Filled.AddBox" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
+                </MudTooltip>
+                <MudTooltip Text="Add group">
+                    <MudIconButton OnClick="AddGroup" Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
+                </MudTooltip>
+                @if (SelectedModel is not null)
+                {
+                    <MudTooltip Text="Zoom to model">
+                        <MudIconButton OnClick="ZoomToModel" Icon="@Icons.Material.Filled.ZoomInMap" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
+                    </MudTooltip>
+                }
+
+                <MudTooltip Text="Save Diagram">
+                    <MudIconButton OnClick="SaveDiagram" Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Size="Size.Small" Color="Color.Dark"></MudIconButton>
+
+                </MudTooltip>
+                <MudTooltip Text="Load Diagram">
+                    <MudIconButton OnClick="LoadDiagram" Icon="@Icons.Material.Filled.Upload" Variant="Variant.Filled"
+                                   Size="Size.Small" Color="Color.Dark">
+                    </MudIconButton>
+                </MudTooltip>
+            </MudPaper>
+
+            <!-- DIAGRAM CONTAINER -->
+            <MudPaper Class="flex-grow-1 elevation-2 rounded-lg" Style="width:100%;height:100%;">
+                <DiagramContainer DiagramService="DiagramService">
+                    <ZoomControls IsVisible="_showZoomControls"></ZoomControls>
+                    <MinimapControls IsVisible="_showMinimapControls"></MinimapControls>
+                    <LoggingControls IsVisible="_showLoggingControls"></LoggingControls>
+                </DiagramContainer>
+            </MudPaper>
+        </MudStack>
+    </MudItem>
+
+    <!-- RIGHT PANEL: Layers Overview (Contents/Hierarchy) -->
+    <MudItem xs="12" sm="2" Class="py-0 h-full">
+        <MudCard Class="h-full elevation-2 d-flex flex-column" Style="overflow-y: hidden;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6" Class="font-bold text-indigo-700">Layers Overview</MudText>
+            </MudCardHeader>
+            <MudCardContent Class="flex-grow-1" Style="overflow-y: auto;">
+
+                <!-- ADD LAYER BUTTON -->
+                <MudButton
+                    OnClick="AddNewLayer"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    StartIcon="@Icons.Material.Filled.Add"
+                    FullWidth="true"
+                    Class="mb-2">
+                    Add New Layer
+                </MudButton>
+
+                <!-- ADDED ACTIVE LAYER SELECTOR -->
+                <MudSelect T="ILayer"
+                           Label="Set Active Layer"
+                           Value="@DiagramService.Diagram.CurrentLayer"
+                           ValueChanged="SetActiveLayer"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Class="mb-2">
+                    @foreach (var layer in DiagramService.Diagram.Layers)
+                    {
+                        var layerIndex = DiagramService.Diagram.Layers.IndexOf(layer);
+                        var label = $"Layer {layerIndex + 1}";
+                        <MudSelectItem Value="@layer">@label</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudExpansionPanels Class="mt-2">
+                    @foreach (var layer in DiagramService.Diagram.Layers)
+                    {
+                        var layerIndex = DiagramService.Diagram.Layers.IndexOf(layer);
+                        <MudExpansionPanel Text="@($"Layer {layerIndex + 1} ({(layer.IsVisible ? "Visible" : "Hidden")})")"
+                                           Expanded="@(layer == DiagramService.Diagram.CurrentLayer)"
+                                           Class="border border-solid border-gray-300 rounded-lg my-1">
+                            <!-- VISIBILITY TOGGLE -->
+                            <MudSwitch @bind-Value="layer.IsVisible"
+                                       Color="Color.Primary"
+                                       Label="Layer Visible"
+                                       Class="ml-4"/>
+
+                                @foreach (var group in layer.AllGroups)
+                                {
+                                    <MudListItem T="object" Icon="@Icons.Material.Filled.GroupWork" OnClick="@(() => SelectModel(group))" Class="text-sm">
+                                        Group: @(group.Id)
+                                    </MudListItem>
+                                }
+
+                                @foreach (var node in layer.AllNodes)
+                                {
+                                    <MudListItem T="object" Icon="@Icons.Material.Filled.Square" OnClick="@(() => SelectModel(node))" Class="text-sm">
+                                        Node: @(node.Id)
+                                    </MudListItem>
+                                }
+                            
+                                @foreach (var link in layer.AllLinks)
+                                {
+                                    <MudListItem T="object" Icon="@Icons.Material.Filled.Segment" OnClick="@(() => SelectModel(link))" Class="text-sm">
+                                        Link: @(link.SourcePort.Parent.Id) -> @(link.TargetPort?.Parent.Id ?? "Floating")
+                                    </MudListItem>
+                                }
+                        </MudExpansionPanel>
+                    }
+                    <MudExpansionPanel Text="Controls">
+                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showLoggingControls" Label="Show Logging Control"></MudSwitch>
+                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showMinimapControls" Label="Show Minimap Control"></MudSwitch>
+                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showZoomControls" Label="Show Zoom Control"></MudSwitch>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private object? SelectedModel { get; set; }
+    private bool _showZoomControls = true;
+    private bool _showMinimapControls = true;
+    private bool _showLoggingControls = false;
+    private List<IDisposable> _subscriptions = [];
+    [Inject] public IDiagramService DiagramService { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public IDialogService DialogService { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        _subscriptions =
+        [
+            DiagramService.Events.SubscribeTo<NodeSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
+            DiagramService.Events.SubscribeTo<GroupSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
+            DiagramService.Events.SubscribeTo<PortSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
+            DiagramService.Events.SubscribeTo<LinkSelectionChangedEvent>(ev => HandleModelSelected(ev.Model)),
+        ];
+    }
+
+    private void HandleModelSelected(ISelectable model)
+    {
+        SelectedModel = model;
+        StateHasChanged();
+    }
+
+    private void SelectModel(ISelectable model)
+    {
+        if (SelectedModel is ISelectable selectable)
+        {
+            selectable.IsSelected = false;
+        }
+
+        model.IsSelected = true;
+        SelectedModel = model;
+        ZoomToModel(new MouseEventArgs());
+    }
+
+    private void DeleteModel()
+    {
+        if (SelectedModel is null) return;
+
+        if (SelectedModel is Node node)
+        {
+            DiagramService.RemoveNode(node);
+            Snackbar.Add($"Node deleted: {node.Id}", Severity.Error);
+        }
+        else if (SelectedModel is Group group)
+        {
+            DiagramService.RemoveGroup(group);
+            Snackbar.Add($"Group deleted: {group.Id}", Severity.Error);
+        }
+        else if (SelectedModel is Link link)
+        {
+            DiagramService.RemoveLink(link);
+            Snackbar.Add($"Link deleted: {link.Id}", Severity.Error);
+        }
+
+        SelectedModel = null;
+    }
+
+    private void AddNode()
+    {
+        var newNode = new Node();
+        DiagramService.AddNode(newNode);
+        Snackbar.Add("Node added!", Severity.Success);
+        SelectModel(newNode);
+    }
+
+    private void AddNodeToContainer(INodeContainer container)
+    {
+        var newNode = new Node();
+        if (container is Group group)
+        {
+            DiagramService.AddNodeTo(group, newNode);
+            Snackbar.Add($"Child Node added to Group", Severity.Info);
+        }
+        else
+        {
+            DiagramService.AddNode(newNode);
+            Snackbar.Add("Node added to Diagram", Severity.Info);
+        }
+
+        SelectModel(newNode);
+    }
+
+    private void AddGroupToContainer(IGroupContainer container)
+    {
+        var newGroup = new Group();
+
+        if (container is Group group)
+        {
+            DiagramService.AddGroupTo(group, newGroup);
+            Snackbar.Add($"Child Group added to Group", Severity.Info);
+        }
+        else
+        {
+            DiagramService.AddGroup(newGroup);
+            Snackbar.Add("Node added to Diagram", Severity.Info);
+        }
+
+        SelectModel(newGroup);
+    }
+
+    private void AddPortToContainer(IPortContainer container)
+    {
+        // Available port alignments to cycle through
+        List<PortAlignment> portAlignments =
+        [
+            PortAlignment.Left,
+            PortAlignment.Top,
+            PortAlignment.Right,
+            PortAlignment.Bottom
+        ];
+
+        // Find the next available side to add a port to
+        var nextAlignment = portAlignments.FirstOrDefault(alignment =>
+            container.Ports.All(p => p.Alignment != alignment));
+
+        if (container.Ports.Count < 4)
+        {
+            var port = new Port { Alignment = nextAlignment };
+            // Add a new Port with the found alignment
+            DiagramService.AddPortTo(container, port);
+            Snackbar.Add($"Port added to {container.GetType().Name}", Severity.Info);
+            SelectModel(port);
+        }
+        else if (container.Ports.Count == 4)
+        {
+            Snackbar.Add("Cannot add more than 4 ports automatically.", Severity.Warning);
+        }
+    }
+
+    private void AddGroup()
+    {
+        var newGroup = new Group();
+
+        DiagramService.AddGroup(newGroup);
+        Snackbar.Add("Group added!", Severity.Success);
+        SelectModel(newGroup);
+    }
+
+    private void AddNewLayer()
+    {
+        var newLayer = new Layer();
+        DiagramService.AddLayer(newLayer);
+        Snackbar.Add("New layer added!", Severity.Success);
+    }
+
+    private void SetActiveLayer(ILayer layer)
+    {
+        DiagramService.UseLayer(layer);
+        Snackbar.Add($"Layer {DiagramService.Diagram.Layers.IndexOf(layer) + 1} is now active.", Severity.Info);
+    }
+
+    private async Task SaveDiagram()
+    {
+        var json = DiagramService.Save(DiagramService.Diagram);
+        await DialogService.ShowAsync<SimpleDialog>(string.Empty, new DialogParameters()
+        {
+            { nameof(SimpleDialog.Text), json },
+            { nameof(SimpleDialog.Title), "Save Diagram" },
+        });
+    }
+
+    private async Task LoadDiagram()
+    {
+        await DialogService.ShowAsync<LoadJsonDialog>("Load diagram", new DialogParameters()
+        {
+            { nameof(LoadJsonDialog.Service), DiagramService }
+        });
+    }
+
+    public void Dispose()
+    {
+        _subscriptions.DisposeAll();
+    }
+
+    private void ZoomToModel(MouseEventArgs obj)
+    {
+        switch (SelectedModel)
+        {
+            case IPort p:
+                DiagramService.ZoomToModel(new ZoomToModelParameters<IPort>(p));
+                break;
+            case IGroup g:
+                DiagramService.ZoomToModel(new ZoomToModelParameters<IGroup>(g));
+                break;
+            case INode n:
+                DiagramService.ZoomToModel(new ZoomToModelParameters<INode>(n));
+                break;
+        }
+    }
+
+}

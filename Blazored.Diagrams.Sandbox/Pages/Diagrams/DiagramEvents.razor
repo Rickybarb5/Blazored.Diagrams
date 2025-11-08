@@ -1,0 +1,427 @@
+@page "/diagram-events"
+@inject HttpClient Http
+@using System.Text.Json
+@using System.Text.RegularExpressions
+
+@* IMPORTANT: Assuming CodeHighlighter.razor is in scope or properly imported via _Imports.razor *@
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+    <MudText Typo="Typo.h3" GutterBottom="true">Event Documentation</MudText>
+    
+    @if (isLoading)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary"/>
+    }
+    else if (eventGroups.Any() || infoTabContent != null)
+    {
+        <MudTabs Elevation="2" Rounded="true" PanelClass="pa-4" Centered="true">
+            
+            @* The "Info" Tab *@
+            @if (infoTabContent != null)
+            {
+                <MudTabPanel Text="Info">
+                    <MudExpansionPanels MultiExpansion="true" Dense="true" >
+                        
+                        @* 1. Core Event System Panel (Updated with subscription/disposal example) *@
+                        <MudExpansionPanel Text="Core Event System (IEventAggregator)" Expanded="true" Dense="true">
+                            <MudText Typo="Typo.body1" Class="mb-4">
+                                The Blazored Diagram event system uses an **Event Aggregator** to facilitate communication between the core diagram services, nodes, and ports. This mechanism allows you to react to user interactions (like dragging or clicking) and internal state changes (like adding a link) across your entire application without tightly coupling components.
+                            </MudText>
+                            <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+                                The core interface is <code >IEventAggregator</code>, which is accessed via <code >IDiagramService.Events</code>.
+                            </MudAlert>
+
+                            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2"><strong>Example: Global Subscription and Disposal</strong></MudText>
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.body1">
+                                    To listen for any event globally (e.g., when any node is removed), you use <code >SubscribeTo&lt;TEvent&gt;()</code>. This method returns an <code >IDisposable</code> object, which **must be disposed of** when your component is removed from the DOM.
+                                </MudText>
+                                <CodeHighlighter Language="csharp" Code="
+public partial class MyComponent : IDisposable
+{
+    [Inject] public IDiagramService DiagramService { get; set; }
+    
+    // Store the subscription disposable
+    private IDisposable _subscription;
+
+    protected override void OnInitialized()
+    {
+        // 1. Subscribe and store the IDisposable reference
+        _subscription = DiagramService.Events.SubscribeTo<NodeRemovedEvent>(HandleNodeRemoved);
+    }
+    
+    private void HandleNodeRemoved(NodeRemovedEvent removed)
+    {
+        Console.WriteLine($'Node {removed.Node.Id} was removed from the diagram.');
+    }
+
+    public void Dispose()
+    {
+        // 2. IMPORTANT: Dispose of the subscription when the component is removed
+        _subscription?.Dispose();
+    }
+}
+" />
+                            </MudStack>
+                            
+                            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2"><strong>Example: Conditional Subscription with SubscribeWhere</strong></MudText>
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.body1">
+                                    Use <code >SubscribeWhere&lt;TEvent&gt;()</code> to apply a predicate, only invoking the handler when the condition is met. This is ideal for listening to events from a **specific Node, Group, or Port ID** globally.
+                                </MudText>
+                                <CodeHighlighter Language="csharp" Code="
+public partial class MyComponent : IDisposable
+{
+    [Inject] public IDiagramService DiagramService { get; set; }
+    
+    private IDisposable? _subscription;
+    private Node  MyNode;
+
+    protected override void OnInitialized()
+    {
+
+        // 1. Subscribe using SubscribeWhere, checking the event's Item ID
+        _subscription = DiagramService.Events.SubscribeWhere<NodePositionChangedEvent>(
+                                e => e.Item.Id == MyNode.Id, HandleTargetNodeMovement);
+    }
+
+    private void HandleTargetNodeMovement(NodePositionChangedEvent movement)
+    {
+        Console.WriteLine($'Target Node ({MyNode.Id}) moved to ({movement.NewX}, {movement.NewY})');
+    }
+    
+    public void Dispose()
+    {
+        // 2. Dispose the subscription when the component is destroyed
+        _subscription?.Dispose();
+    }
+}" />
+                                </MudStack>
+                        </MudExpansionPanel>
+
+                        @* 2. Direct Event Consumption (ITypedEvent<T>) (Updated text) *@
+                        <MudExpansionPanel Text="Direct Event Consumption (ITypedEvent<T>)" Expanded="true" Dense="true">
+                            <MudText Typo="Typo.body1" Class="mb-4">
+                                Most major diagram components (like Nodes, Ports, and Groups) expose events directly using the <code >ITypedEvent&lt;T&gt;</code> interface.
+                                Any property implementing this interface is **automatically registered** with the main event aggregator upon component initialization.
+                            </MudText>
+
+                            <MudAlert Severity="Severity.Warning" Dense="true" Class="mb-4">
+                                **When to use direct subscription:** If you already have a direct reference to a model (e.g., a specific Node or Group instance), it's often more performant to subscribe directly to its <code >ITypedEvent&lt;T&gt;</code> property than subscribing globally via the <code >IDiagramService</code>. **Note that direct subscriptions are not automatically disposed, so you must call the <code >Unsubscribe</code> method when your component is disposed to prevent memory leaks.**
+                            </MudAlert>
+
+                            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2"><strong>Example: Subscribing to a Node's Direct Event</strong></MudText>
+                            
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.body1">
+                                    Imagine you have a variable <code >_subscribedNode</code>. You can listen directly for when its position changes, but remember to unsubscribe in <code >Dispose</code>:
+                                </MudText>
+                                <CodeHighlighter Language="csharp" Code="
+public partial class MyComponent : IDisposable
+{
+    private Action<NodePositionChangedEvent> _handler;
+    private INode _subscribedNode;
+
+    protected override void OnInitialized()
+    {
+        _subscribedNode = DiagramService.Nodes.First();
+        
+        // 1. Define the handler (store it for disposal)
+        _handler = HandleNodeMovement;
+
+        // 2. Subscribe directly to the ITypedEvent property
+        _subscribedNode.OnPositionChanged.Subscribe(_handler);
+    }
+    
+    private void HandleNodeMovement(NodePositionChangedEvent movement)
+    {
+        Console.WriteLine($'Node {movement.Item.Id} moved to ({movement.NewX}, {movement.NewY})');
+    }
+
+    public void Dispose()
+    {
+        // 3. IMPORTANT: Unsubscribe when the component is removed
+        if (_subscribedNode != null && _handler != null)
+        {
+            _subscribedNode.OnPositionChanged.Unsubscribe(_handler);
+        }
+    }
+}
+" />
+                            </MudStack>
+                        </MudExpansionPanel>
+                        
+                        @* 3. Implementing Custom Events Panel *@
+                        <MudExpansionPanel Text="Exposing Custom Events via ITypedEvent<T>" Expanded="true" Dense="true">
+                            <MudText Typo="Typo.body1" Class="mb-4">
+                                To expose an event on a custom model (like a custom Node or Service), you must declare a property implementing <code >ITypedEvent&lt;T&gt;</code> and use it within your property setters.
+                            </MudText>
+                            
+                            <MudAlert Severity="Severity.Info" Dense="true" Class="mb-4">
+                                **Automatic Registration:** When a public property is declared as <code >ITypedEvent&lt;T&gt;</code> on a model, the Diagram Service **automatically registers** it with the main <code >IEventAggregator</code>. This means any component can subscribe to your event globally using <code >DiagramService.Events.SubscribeTo&lt;T&gt;()</code>.
+                            </MudAlert>
+
+                            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2"><strong>Steps to implement and consume a custom event:</strong></MudText>
+                            
+                            <MudStack Spacing="4">
+                                
+                                @* Step 1: Define the Event Message *@
+                                <MudStack Spacing="1">
+                                    <MudText Typo="Typo.body1">
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mr-2">1</MudChip>
+                                        <strong>Define the Event Message:</strong> Create a simple class/record for the data payload. It must implement the <code >IEvent</code> interface.
+                                    </MudText>
+                                    <CodeHighlighter Language="csharp" Code="public record CustomNameChanged(string OldName, string NewName, CustomNode Item): IEvent" />
+                                </MudStack>
+
+                                @* Step 2: Implement the Event Property and Publish *@
+                                <MudStack Spacing="1">
+                                    <MudText Typo="Typo.body1">
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mr-2">2</MudChip>
+                                        <strong>Implement Event and Publish:</strong> In your model (e.g., <code >CustomNode</code>), declare the <code >ITypedEvent</code> property and call <code >Publish</code> in the corresponding property setter.
+                                    </MudText>
+                                    <CodeHighlighter Language="csharp" Code="
+public class CustomNode : Node
+{
+    private string _customName;
+    
+    // Auto-Registered ITypedEvent Property
+    public ITypedEvent<CustomNameChanged> OnNameChanged { get; init; } = new TypedEvent<CustomNameChanged>();
+
+    public string CustomName
+    {
+        get => _customName;
+        set
+        {
+            if (_customName != value)
+            {
+                var oldName = _customName;
+                _customName = value;
+                
+                // Publish the event directly on the property
+                OnNameChanged.Publish(new(oldName, value, this));
+            }
+        }
+    }
+}
+" />
+                                </MudStack>
+
+                                @* Step 3: Consume Globally (via Event Aggregator) *@
+                                <MudStack Spacing="1">
+                                    <MudText Typo="Typo.body1">
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mr-2">3</MudChip>
+                                        <strong>Consume Globally:</strong> Any component can subscribe via the main Event Aggregator (because the event was auto-registered).
+                                    </MudText>
+                                    <CodeHighlighter Language="csharp" Code="
+[Inject] public IDiagramService DiagramService { get; set; }
+
+protected override void OnInitialized()
+{
+    // Subscribe to the event globally by its type
+    DiagramService.Events.SubscribeTo<CustomNameChanged>(HandleNameChange);
+}
+
+private void HandleNameChange(CustomNameChanged message)
+{
+    Console.WriteLine($'Name changed from {message.OldName} to {message.NewName}');
+}
+" />
+                                </MudStack>
+                                
+                            </MudStack>
+                        </MudExpansionPanel>
+
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            }
+
+            @* The dynamic event group tabs (no changes needed here as they don't have code blocks) *@
+            @foreach (var group in eventGroups)
+            {
+                <MudTabPanel Text="@group.Name">
+                    <MudExpansionPanels MultiExpansion="true" Dense="true" >
+                        @foreach (var eventDoc in group.Events)
+                        {
+                            <MudExpansionPanel Dense="true" >
+                                <TitleContent>
+                                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Text">@eventDoc.Name</MudChip>
+                                </TitleContent>
+                                <ChildContent>
+                                    <MudText Typo="Typo.body1" Class="mb-4">
+                                        @FormatDocumentation(eventDoc.Summary)
+                                    </MudText>
+
+                                    @if (eventDoc.Parameters.Any())
+                                    {
+                                        <MudText Typo="Typo.h6" Class="mb-2">Parameters</MudText>
+                                        <MudSimpleTable Dense="true" Hover="true" FixedHeader="true" Style="overflow-x: auto;" Class="mb-4" >
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Documentation</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach (var param in eventDoc.Parameters)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <MudText>
+                                                            <code>@param.Name</code>
+                                                        </MudText>
+                                                    </td>
+                                                    <td>
+                                                        <MudText>
+                                                            <code>@param.TypeName</code>
+                                                        </MudText>
+                                                    </td>
+                                                    <td>@FormatDocumentation(param.Documentation)</td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                        </MudSimpleTable>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body2">
+                                            <i>This event has no parameters.</i>
+                                        </MudText>
+                                    }
+                                </ChildContent>
+                            </MudExpansionPanel>
+                        }
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            }
+        </MudTabs>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Error">
+            Could not load any event documentation.
+            Ensure JSON files exist in <code>wwwroot/docs/</code>.
+        </MudAlert>
+    }
+
+</MudContainer>
+
+@code {
+    private List<EventGroup> eventGroups = new();
+    private InfoTabContent? infoTabContent; 
+    private bool isLoading = true;
+
+    // The list of files to fetch from wwwroot/docs/
+    private string[] groupNames =
+    {
+        "Diagram",
+        "Layer",
+        "Node",
+        "Groups",
+        "Ports",
+        "Links",
+        "ObservableList"
+    };
+    
+    // The introductory text from the original component
+    private const string IntroductionText = @"
+        The Blazored Diagram event system uses an **Event Aggregator** to facilitate communication between the core diagram services, nodes, and ports. This mechanism allows you to react to user interactions (like dragging or clicking) and internal state changes (like adding a link) across your entire application without tightly coupling components.
+        The core interface is <code >IEventAggregator</code>, accessed via the Diagram Service.
+    ";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 1. Set up the Info Tab content
+        infoTabContent = new InfoTabContent
+        {
+            Name = "Info",
+            Content = IntroductionText
+        };
+
+        // 2. Load the dynamic event groups (existing logic)
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        foreach (var name in groupNames)
+        {
+            var path = $"docs/events.{name.ToLower()}.json";
+            try
+            {
+                var eventDocs = await Http.GetFromJsonAsync<List<EventDoc>>(path, options);
+                if (eventDocs != null && eventDocs.Any())
+                {
+                    eventGroups.Add(new EventGroup { Name = name, Events = eventDocs });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // File not found, just skip this group
+                Console.WriteLine($"Could not find documentation file: {path}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading {path}: {ex.Message}");
+            }
+        }
+
+        isLoading = false;
+    }
+
+    private MarkupString FormatDocumentation(string doc)
+    {
+        if (string.IsNullOrEmpty(doc))
+        {
+            return (MarkupString)"";
+        }
+
+        // Regex to find <see cref="..."/> and extract the last part of the name
+        var formatted = Regex.Replace(
+            doc,
+            @"<see cref=""(T|P|F|M):([\w\.]+)""\s*/>",
+            m => $"<code>{m.Groups[2].Value.Split('.').Last()}</code>"
+        );
+
+        // Regex to find <paramref name="..."/>
+        formatted = Regex.Replace(
+            formatted,
+            @"<paramref name=""(\w+)""\s*/>",
+            m => $"<code>{m.Groups[1].Value}</code>"
+        );
+
+        return (MarkupString)formatted;
+    }
+
+    // --- C# Models to match the JSON structure ---
+    
+    // New model for the static Info Tab
+    public class InfoTabContent
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+    }
+
+    public class EventGroup
+    {
+        public string Name { get; set; } = string.Empty;
+        public List<EventDoc> Events { get; set; } = new();
+    }
+
+    public class EventParameterDoc
+    {
+        public string Name { get; set; } = string.Empty;
+        public string TypeName { get; set; } = string.Empty;
+        public string Documentation { get; set; } = string.Empty;
+    }
+
+    public class EventDoc
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Summary { get; set; } = string.Empty;
+        public List<EventParameterDoc> Parameters { get; set; } = new();
+    }
+
+}

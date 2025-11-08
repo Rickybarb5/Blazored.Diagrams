@@ -1,0 +1,51 @@
+@inherits DefaultLinkComponent
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+
+    /// <summary>
+    /// Height of the wave.
+    /// </summary>
+    protected int WaveHeight 
+    {
+        get => DiagramService.Options.CurvedLinkOptions.WaveHeight;
+        set => DiagramService.Options.CurvedLinkOptions.WaveHeight = value;
+    }
+
+    /// <inheritdoc />
+    protected override string GetPath()
+    {
+        // Calculate control points for a single sine wave
+        var control1X = (RelativeX1 + RelativeX2) / 2;
+        var control1Y = RelativeY1 - WaveHeight; // control point above the line
+        var control2X = (RelativeX1 + RelativeX2) / 2;
+        var control2Y = RelativeY2 + WaveHeight; // control point below the line
+
+        // Using a simple cubic Bézier curve to draw a single wave
+        return $"M {RelativeX1} {RelativeY1} C {control1X} {control1Y}, {control2X} {control2Y}, {RelativeX2} {RelativeY2}";
+    }
+
+    /// <inheritdoc />
+    protected override string StrokeColor
+    {
+        get => DiagramService.Options.CurvedLinkOptions.StrokeColor;
+        set => DiagramService.Options.CurvedLinkOptions.StrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override string SelectedStrokeColor
+    {
+        get => DiagramService.Options.CurvedLinkOptions.SelectedStrokeColor;
+        set => DiagramService.Options.CurvedLinkOptions.SelectedStrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override int StrokeWidth 
+    {
+        get => DiagramService.Options.CurvedLinkOptions.StrokeWidth;
+        set => DiagramService.Options.CurvedLinkOptions.StrokeWidth = value;
+    }
+
+}

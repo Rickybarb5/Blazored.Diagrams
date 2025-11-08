@@ -1,0 +1,283 @@
+using Blazored.Diagrams.Events;
+using Blazored.Diagrams.Groups;
+using Blazored.Diagrams.Layers;
+using Blazored.Diagrams.Links;
+using Blazored.Diagrams.Nodes;
+using Blazored.Diagrams.Options.Behaviours;
+using Blazored.Diagrams.Ports;
+using Blazored.Diagrams.Services.Diagrams;
+using Microsoft.AspNetCore.Components.Web;
+
+namespace Blazored.Diagrams.Test.Behaviours;
+
+public class SelectBehaviourTests
+{
+    private IDiagramService CreateService()
+    {
+        var service = new DiagramService();
+        return service;
+    }
+
+    [Fact]
+    public void NodePointerDown_WhenLeftClick_ShouldSelectNode()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+
+        // Assert
+        Assert.True(node.IsSelected);
+    }
+
+    [Fact]
+    public void NodePointerDown_WhenRightClick_ShouldNotSelectNode()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+
+        var args = new PointerEventArgs { Button = 2 }; // Right click
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+
+        // Assert
+        Assert.False(node.IsSelected);
+    }
+
+    [Fact]
+    public void CtrlClick_WithMultiSelectEnabled_ShouldToggleSelection()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node1 = new Node();
+        var node2 = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
+
+        var args = new PointerEventArgs { Button = 0, CtrlKey = true };
+
+        // Act - Select both nodes
+        service.Events.Publish(new NodePointerDownEvent(node1, args));
+        service.Events.Publish(new NodePointerDownEvent(node2, args));
+
+        // Assert
+        Assert.True(node1.IsSelected);
+        Assert.True(node2.IsSelected);
+
+        // Act - Deselect first node
+        service.Events.Publish(new NodePointerDownEvent(node1, args));
+
+        // Assert
+        Assert.False(node1.IsSelected);
+        Assert.True(node2.IsSelected);
+    }
+
+    [Fact]
+    public void CtrlClick_WithMultiSelectDisabled_ShouldSelectOnlyLastClicked()
+    {
+        // Arrange
+        using var service = CreateService();
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().MultiSelectEnabled = false;
+
+        var node1 = new Node();
+        var node2 = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
+
+        var args = new PointerEventArgs { Button = 0, CtrlKey = true };
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node1, args));
+        service.Events.Publish(new NodePointerDownEvent(node2, args));
+
+        // Assert
+        Assert.False(node1.IsSelected);
+        Assert.True(node2.IsSelected);
+    }
+
+    [Fact]
+    public void BackgroundClick_ShouldDeselectAll()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node1 = new Node { IsSelected = true };
+        var node2 = new Node { IsSelected = true };
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Act
+        service.Events.Publish(new DiagramPointerDownEvent(service.Diagram, args));
+
+        // Assert
+        Assert.False(node1.IsSelected);
+        Assert.False(node2.IsSelected);
+    }
+
+    [Fact]
+    public void BackgroundCtrlClick_ShouldNotDeselectAll()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node1 = new Node { IsSelected = true };
+        var node2 = new Node { IsSelected = true };
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node1);
+        service.AddNodeTo(layer, node2);
+
+        var args = new PointerEventArgs { Button = 0, CtrlKey = true };
+
+        // Act
+        service.Events.Publish(new DiagramPointerDownEvent(service.Diagram, args));
+
+        // Assert
+        Assert.True(node1.IsSelected);
+        Assert.True(node2.IsSelected);
+    }
+
+    [Fact]
+    public void WhenSelectionDisabled_ShouldNotSelectAnything()
+    {
+        // Arrange
+        using var service = CreateService();
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().SelectionEnabled = false;
+
+        var node = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+
+        // Assert
+        Assert.False(node.IsSelected);
+    }
+
+    [Fact]
+    public void SelectionShouldWorkForAllSelectableTypes()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node = new Node();
+        var group = new Group();
+        var sourcePort = new Port();
+        var targetPort = new Port();
+        var link = new LineLink { SourcePort = sourcePort, TargetPort = targetPort };
+
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+        service.AddGroupTo(layer, group);
+        service.AddPortTo(node, sourcePort);
+        service.AddPortTo(group, targetPort);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Act & Assert
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+        Assert.True(node.IsSelected);
+
+        service.Events.Publish(new GroupPointerDownEvent(group, args));
+        Assert.True(group.IsSelected);
+        Assert.False(node.IsSelected); // Previous selection should be cleared
+
+        service.Events.Publish(new LinkPointerDownEvent(link, args));
+        Assert.True(link.IsSelected);
+        Assert.False(group.IsSelected); // Previous selection should be cleared
+    }
+
+    [Fact]
+    public void IsEnabled_WhenSetToFalse_ShouldNotProcessEvents()
+    {
+        // Arrange
+        using var service = CreateService();
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().IsEnabled = false;
+
+        var node = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+
+        // Assert
+        Assert.False(node.IsSelected);
+    }
+
+    [Fact]
+    public void IsEnabled_WhenReEnabled_ShouldProcessEvents()
+    {
+        // Arrange
+        using var service = CreateService();
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().IsEnabled = false;
+        service.Behaviours.GetBehaviourOptions<SelectBehaviourOptions>().IsEnabled = true;
+
+        var node = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+
+        // Assert
+        Assert.True(node.IsSelected);
+    }
+
+    [Fact]
+    public void Dispose_ShouldStopProcessingEvents()
+    {
+        // Arrange
+        using var service = CreateService();
+        var node = new Node();
+        var layer = new Layer();
+        service.AddLayer(layer);
+        service.AddNodeTo(layer, node);
+
+        var args = new PointerEventArgs { Button = 0 };
+
+        // Verify initial behavior
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+        Assert.True(node.IsSelected);
+
+        // Reset selection
+        node.IsSelected = false;
+
+        // Dispose and test
+        service.Dispose();
+
+        // Act
+        service.Events.Publish(new NodePointerDownEvent(node, args));
+
+        // Assert
+        Assert.False(node.IsSelected);
+    }
+}

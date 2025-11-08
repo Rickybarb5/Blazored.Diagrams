@@ -1,0 +1,270 @@
+@using System.Globalization
+@using Blazored.Diagrams.Services.Diagrams
+@implements IDisposable
+@if (IsVisible)
+{
+    <div class="minimap-container @Class" style="@Style">
+
+        @if (Service is not null && Service.Diagram is { Width: > 0, Height: > 0 })
+        {
+            <svg class="minimap-svg"
+                 width="@Width"
+                 height="@Height"
+                 viewBox="@($"{_viewBoxMinX.ToString(_nfi)} {_viewBoxMinY.ToString(_nfi)} {_viewBoxWidth.ToString(_nfi)} {_viewBoxHeight.ToString(_nfi)}")">
+
+                @foreach (var group in Service.Diagram.AllGroups)
+                {
+                    <rect
+                        class="minimap-group"
+                        x="@group.PositionX"
+                        y="@group.PositionY"
+                        width="@group.Width"
+                        height="@group.Height"
+                        fill="@GroupColor">
+                    </rect>
+                }
+
+                @foreach (var node in Service.Diagram.AllNodes)
+                {
+                    <rect
+                        class="minimap-node"
+                        x="@node.PositionX"
+                        y="@node.PositionY"
+                        width="@node.Width"
+                        height="@node.Height"
+                        fill="@NodeColor">
+                    </rect>
+                }
+
+                @foreach (var link in Service.Diagram.AllLinks)
+                {
+                    var sourceCenter = Service.GetCenterCoordinates(link.SourcePort);
+                    var x1 = sourceCenter.CenterX;
+                    var y1 = sourceCenter.CenterY;
+                    var x2 = link.TargetPositionX;
+                    var y2 = link.TargetPositionY;
+
+                    <line
+                        class="minimap-link"
+                        x1="@x1.ToString(_nfi)"
+                        y1="@y1.ToString(_nfi)"
+                        x2="@x2.ToString(_nfi)"
+                        y2="@y2.ToString(_nfi)"
+                        stroke="@LinkColor"
+                        stroke-width="4">
+                    </line>
+                }
+
+                @foreach (var port in Service.Diagram.AllPorts)
+                {
+                    <circle
+                        class="minimap-port"
+                        cx="@(port.PositionX.ToString(_nfi))"
+                        cy="@(port.PositionY.ToString(_nfi))"
+                        r="@((port.Width / 2).ToString(_nfi))"
+                        fill="@PortColor">
+                    </circle>
+                }
+
+            </svg>
+
+            <div class="minimap-info-overlay">
+                <div class="minimap-info-item">
+                    <span class="minimap-info-label">Pan:</span>
+                    <span>(@Service.Diagram.PanX.ToString("F0"), @Service.Diagram.PanY.ToString("F0"))</span>
+                </div>
+            </div>
+        }
+    </div>
+}
+@code
+{
+    readonly NumberFormatInfo _nfi = new();
+    private double _viewBoxMinX;
+    private double _viewBoxMinY;
+    private double _viewBoxWidth;
+    private double _viewBoxHeight;
+    private double _calculatedMargin;
+    private double _viewportRectX;
+    private double _viewportRectY;
+    private double _viewportRectWidth;
+    private double _viewportRectHeight;
+
+    private List<IDisposable> _subscriptions = [];
+
+    [CascadingParameter] private IDiagramService Service { get; set; } = null!;
+
+    /// <summary>
+    /// Width of the minimap (px).
+    /// </summary>
+    [Parameter]
+    public double Width { get; set; }
+
+    /// <summary>
+    /// Height of the minimap (px).
+    /// </summary>
+    [Parameter]
+    public double Height { get; set; }
+
+    /// <summary>
+    /// Inner margin of the minimap (px).
+    /// </summary>
+    [Parameter]
+    public double Margin { get; set; } = 5;
+
+    /// <summary>
+    /// Node color.
+    /// Default is white.
+    /// </summary>
+    [Parameter]
+    public string NodeColor { get; set; } = "white";
+
+    /// <summary>
+    /// Group color.
+    /// Default is gray.
+    /// </summary>
+    [Parameter]
+    public string GroupColor { get; set; } = "gray";
+
+    /// <summary>
+    /// Port color.
+    /// Default is black.
+    /// </summary>
+    [Parameter]
+    public string PortColor { get; set; } = "black";
+
+    /// <summary>
+    /// Radius of the ports (px).
+    /// Default is 2.
+    /// </summary>
+    [Parameter]
+    public int PortRadius { get; set; } = 2;
+
+    /// <summary>
+    /// Link color.
+    /// Default is black.
+    /// </summary>
+    [Parameter]
+    public string LinkColor { get; set; } = "black";
+
+    /// <summary>
+    /// Class of the minimap container.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+
+    /// <summary>
+    /// Style of the minimap container
+    /// </summary>
+    [Parameter]
+    public string? Style { get; set; }
+
+    /// <summary>
+    /// Shows/Hides the control
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        foreach (var subscription in _subscriptions)
+        {
+            subscription.Dispose();
+        }
+
+        _subscriptions.Clear();
+    }
+
+    /// <inheritdoc />
+    protected override Task OnInitializedAsync()
+    {
+        _nfi.NumberDecimalSeparator = ".";
+        _nfi.NumberDecimalDigits = 3;
+        return base.OnInitializedAsync();
+    }
+
+    /// <inheritdoc />
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _subscriptions =
+            [
+                Service.Events.SubscribeTo<NodeAddedEvent>(Refresh),
+                Service.Events.SubscribeTo<NodePositionChangedEvent>(Refresh),
+                Service.Events.SubscribeTo<NodeRemovedEvent>(Refresh),
+                Service.Events.SubscribeTo<GroupAddedEvent>(Refresh),
+                Service.Events.SubscribeTo<GroupRemovedEvent>(Refresh),
+                Service.Events.SubscribeTo<GroupPositionChangedEvent>(Refresh),
+                Service.Events.SubscribeTo<PortAddedEvent>(Refresh),
+                Service.Events.SubscribeTo<PortRemovedEvent>(Refresh),
+                Service.Events.SubscribeTo<PortPositionChangedEvent>(Refresh),
+                Service.Events.SubscribeTo<LinkAddedEvent>(Refresh),
+                Service.Events.SubscribeTo<LinkRemovedEvent>(Refresh),
+                Service.Events.SubscribeTo<DiagramPanChangedEvent>(Refresh),
+                Service.Events.SubscribeTo<DiagramZoomChangedEvent>(Refresh),
+                Service.Events.SubscribeTo<DiagramSizeChangedEvent>(UpdateSize),
+            ];
+
+            Refresh(null!);
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void UpdateSize(DiagramSizeChangedEvent obj)
+    {
+        Width = Service.Diagram.Width / 8;
+        Height = Service.Diagram.Height / 8;
+        Refresh(null!);
+    }
+
+    private void Refresh(IEvent? e)
+    {
+        CalculateViewport();
+
+        var minX = _viewportRectX;
+        var minY = _viewportRectY;
+        var maxX = _viewportRectX + _viewportRectWidth;
+        var maxY = _viewportRectY + _viewportRectHeight;
+
+        var bounds = Service.GetAllBounds();
+        foreach (var bound in bounds)
+        {
+            minX = Math.Min(minX, bound.Left);
+            minY = Math.Min(minY, bound.Top);
+            maxX = Math.Max(maxX, bound.Right);
+            maxY = Math.Max(maxY, bound.Bottom);
+        }
+
+        CalculateViewBox(maxX, maxY, minX, minY);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void CalculateViewport()
+    {
+        _viewportRectX = -Service.Diagram.PanX / Service.Diagram.Zoom;
+        _viewportRectY = -Service.Diagram.PanY / Service.Diagram.Zoom;
+        _viewportRectWidth = Service.Diagram.Width / Service.Diagram.Zoom;
+        _viewportRectHeight = Service.Diagram.Height / Service.Diagram.Zoom;
+    }
+
+    private void CalculateViewBox(double maxX, double maxY, double minX, double minY)
+    {
+        var width = maxX - minX;
+        var height = maxY - minY;
+        var scaledWidth = width / Width;
+        var scaledHeight = height / Height;
+        var scale = Math.Max(scaledWidth, scaledHeight);
+        var viewWidth = scale * Width;
+        var viewHeight = scale * Height;
+
+        _calculatedMargin = Margin * scale;
+        _viewBoxMinX = minX - (viewWidth - width) / 2 - _calculatedMargin;
+        _viewBoxMinY = minY - (viewHeight - height) / 2 - _calculatedMargin;
+        _viewBoxWidth = viewWidth + _calculatedMargin * 2;
+        _viewBoxHeight = viewHeight + _calculatedMargin * 2;
+    }
+}

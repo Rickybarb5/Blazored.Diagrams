@@ -1,0 +1,37 @@
+.default-port {
+    min-height: 20px;
+    min-width: 20px;
+    border-radius: 50%;
+    background-color: whitesmoke;
+    border-color: black;
+    border-style: solid;
+    border-width: 2px;
+    -webkit-user-drag: none;
+    cursor: grab;
+}
+
+.linked {
+    background-color: #696969;
+}
+
+.default-port:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.default-port:active {
+    cursor: grabbing;
+}
+
+.default-port:hover {
+    cursor: grab;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    transition: filter 0.15s ease;
+}
+
+.selected {
+    background: #696969;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    transition: filter 0.15s ease;
+}

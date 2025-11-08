@@ -1,0 +1,287 @@
+[
+  {
+    "Name": "DiagramClickedEvent",
+    "Summary": "Event triggered when an <c>@onclick</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramDoubleClickedEvent",
+    "Summary": "Event triggered when an <c>@ondblclick</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramKeyDownEvent",
+    "Summary": "Event triggered when an <c>@onkeydown</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "KeyboardEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.KeyboardEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramKeyUpEvent",
+    "Summary": "Event triggered when an <c>@onkeyup</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "KeyboardEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.KeyboardEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPanChangedEvent",
+    "Summary": "Event triggered when the pan changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "OldPanX",
+        "TypeName": "Int32",
+        "Documentation": "The previous pan X offset value in pixels."
+      },
+      {
+        "Name": "OldPanY",
+        "TypeName": "Int32",
+        "Documentation": "The previous pan Y offset value in pixels."
+      },
+      {
+        "Name": "PanX",
+        "TypeName": "Int32",
+        "Documentation": "The new pan X offset value in pixels."
+      },
+      {
+        "Name": "PanY",
+        "TypeName": "Int32",
+        "Documentation": "The new pan Y offset value in pixels."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPointerDownEvent",
+    "Summary": "Event triggered when an <c>@onpointerdown</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPointerEnterEvent",
+    "Summary": "Event triggered when an <c>@onpointerenter</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPointerLeaveEvent",
+    "Summary": "Event triggered when an <c>@onpointerleave</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPointerMoveEvent",
+    "Summary": "Event triggered when an <c>@onpointermove</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPointerUpEvent",
+    "Summary": "Event triggered when an <c>@onpointerup</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramPositionChangedEvent",
+    "Summary": "Event triggered when the diagram position changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "OldX",
+        "TypeName": "Double",
+        "Documentation": "The previous X position value."
+      },
+      {
+        "Name": "OldY",
+        "TypeName": "Double",
+        "Documentation": "The previous Y position value."
+      },
+      {
+        "Name": "NewX",
+        "TypeName": "Double",
+        "Documentation": "The new X position value."
+      },
+      {
+        "Name": "NewY",
+        "TypeName": "Double",
+        "Documentation": "The new Y position value."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramRedrawEvent",
+    "Summary": "Event triggered when a diagram redraw is requested.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that requested the redraw."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramSizeChangedEvent",
+    "Summary": "Event triggered when the diagram size changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "OldWidth",
+        "TypeName": "Double",
+        "Documentation": "Previous width value in pixels."
+      },
+      {
+        "Name": "OldHeight",
+        "TypeName": "Double",
+        "Documentation": "Previous height value in pixels."
+      },
+      {
+        "Name": "NewWidth",
+        "TypeName": "Double",
+        "Documentation": "New diagram width in pixels."
+      },
+      {
+        "Name": "NewHeight",
+        "TypeName": "Double",
+        "Documentation": "New diagram height in pixels."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramWheelEvent",
+    "Summary": "Event triggered when an <c>@onwheel</c> event happens on the <see cref=\"T:Blazored.Diagrams.Components.Containers.DiagramContainer\" />.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "WheelEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.WheelEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "DiagramZoomChangedEvent",
+    "Summary": "Event triggered when the zoom changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IDiagram",
+        "Documentation": "The diagram that triggered the event."
+      },
+      {
+        "Name": "OldZoom",
+        "TypeName": "Double",
+        "Documentation": "The previous zoom factor (e.g., 1.0 for 100%)."
+      },
+      {
+        "Name": "NewZoom",
+        "TypeName": "Double",
+        "Documentation": "The new zoom factor."
+      }
+    ]
+  }
+]

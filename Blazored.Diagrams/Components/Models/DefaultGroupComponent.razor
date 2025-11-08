@@ -1,0 +1,94 @@
+﻿@using System.Text
+@using Blazored.Diagrams.Services.Diagrams
+@implements IDisposable
+<div class="@Class">
+    @if (Content is not null)
+    {
+        @Content
+    }
+</div>
+
+@code {
+
+    /// <summary>
+    /// <see cref="DiagramService"/>
+    /// </summary>
+    [CascadingParameter]
+    public IDiagramService DiagramService { get; init; } = null!;
+
+    /// <summary>
+    /// <see cref="Group"/>
+    /// </summary>
+    [Parameter]
+    public required Group Group { get; init; }
+
+    /// <summary>
+    /// Optional content if people want to use the default component.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+
+    /// <summary>
+    /// Minimum width of the group when it has no nested nodes or groups.
+    /// </summary>
+    [Parameter]
+    public int MinWidth { get; set; } = 200;
+
+    /// <summary>
+    /// Minimum height of the group when it has no nested nodes or groups.
+    /// </summary>
+    [Parameter]
+    public int MinHeight { get; set; } = 200;
+
+    private string Class { get; set; } = DefaultCssClass;
+    private const string DefaultCssClass = "default-group";
+    private readonly StringBuilder _builder = new();
+    private List<IDisposable> _subscriptions = null!;
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeWhere<GroupSelectionChangedEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass),
+                DiagramService.Events.SubscribeWhere<NodeRemovedFromGroupEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass),
+                DiagramService.Events.SubscribeWhere<GroupRemovedFromGroupEvent>(p => p.Model.Id == Group.Id, SetGroupCssClass),
+            ];
+        }
+
+        SetGroupCssClass();
+    }
+
+    private void SetGroupCssClass(IEvent e)
+    {
+        SetGroupCssClass();
+    }
+
+    private void SetGroupCssClass()
+    {
+        _builder.Clear();
+        _builder.Append(DefaultCssClass);
+        if (Group.Nodes.Count == 0 && Group.Groups.Count == 0)
+        {
+            // _builder.Append(" min-size");
+            Group.SetSize(MinWidth, MinHeight);
+        }
+
+        if (Group.IsSelected)
+        {
+            _builder.Append(" selected");
+        }
+
+        Class = _builder.ToString();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _subscriptions.DisposeAll();
+    }
+
+}

@@ -1,0 +1,52 @@
+<div style="width:100%;height:100%">
+    <DiagramContainer DiagramService="Service"></DiagramContainer>
+</div>
+
+@code {
+    [Parameter] 
+    [EditorRequired]
+    public required IDiagramService Service { get; set; }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var node1 = new Node();
+            node1.SetPosition(100, 100);
+            var port1 = new Port();
+            port1.Alignment = PortAlignment.Right;
+            var node2 = new Node();
+            var port2 = new Port();
+            port2.Alignment = PortAlignment.Left;
+            node2.SetPosition(400, 100);
+            Service.AddPortTo(node1, port1);
+            Service.AddPortTo(node2, port2);
+            Service.AddNode(node1);
+            Service.AddNode(node2);
+
+            var group = new Group();
+            var groupPort = new Port();
+            groupPort.Alignment = PortAlignment.Left;
+
+            var node1Port = new Port();
+            node1Port.Alignment = PortAlignment.Right;
+            var groupNode1 = new Node();
+            groupNode1.SetPosition(700, 700);
+            Service.AddPortTo(groupNode1, node1Port);
+
+            var node2Port = new Port();
+            node2Port.Alignment = PortAlignment.Left;
+            var groupNode2 = new Node();
+            groupNode2.SetPosition(900, 900);
+            Service.AddPortTo(groupNode2, node2Port);
+            Service.AddNodeTo(group, groupNode1);
+            Service.AddNodeTo(group, groupNode1);
+            Service.AddNodeTo(group, groupNode2);
+            Service.AddPortTo(group, groupPort);
+            Service.AddGroup(group);
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+}

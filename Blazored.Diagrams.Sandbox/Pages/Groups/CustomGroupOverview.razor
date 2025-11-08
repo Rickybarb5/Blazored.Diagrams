@@ -1,0 +1,53 @@
+@page "/custom-groups"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" sm="12" md="4" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Custom Groups</MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="1. The Custom Group Model (CustomGroup.cs)" Expanded="true">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            To create a custom group, you must first define a model that inherits from the base <code>Group</code> class and implements <code>IHasComponent&lt;T&gt;</code>, where <code>T</code> is your custom Razor component.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            In this example, we've added a custom <code>Title</code> property to hold domain-specific data, and set a default <code>Padding</code> value.
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="CustomGroup"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="2. The Custom Group Component (CustomGroupComponent.razor)" Expanded="true">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            The component is responsible for rendering the group's visual appearance (including its title, header, or custom background). It receives the **Custom Group Model** as a parameter.
+                        </MudText>
+
+                        <MudAlert Severity="Severity.Warning" Class="mb-3">
+                            The **Group** parameter is **required** for the diagram container to render the group correctly.
+                        </MudAlert>
+                        <HighlightFromFile Language="cshtml" FileName="CustomGroupComponent"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="3. Initialization & Usage">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            To use the custom group, instantiate your new <code>CustomGroup</code> model and add it to
+                            the Diagram Service. Note that nodes must be explicitly added **to the group** using <code>Service.AddNodeTo()</code>.
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="CustomGroupOverview.razor"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="12" md="8" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"/>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>

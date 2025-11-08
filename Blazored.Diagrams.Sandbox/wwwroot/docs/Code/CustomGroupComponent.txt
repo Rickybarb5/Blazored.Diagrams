@@ -1,0 +1,38 @@
+<div class="custom-group @(Group.IsSelected ? "selected" : "")" >
+    <div class="group-title">
+        @Group.Title
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public required CustomGroup Group { get; set; }
+}
+
+<style>
+    .custom-group {
+        width: 100%; /* Occupy the whole container */
+        height: 100%;/* Occupy the whole container */
+        border: 2px solid #1e88e5; 
+        background-color: #e3f2fd; 
+        border-radius: 8px;
+        transition: box-shadow 0.15s;
+        min-width: 150px;
+        min-height: 150px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    .custom-group.selected {
+        box-shadow: 0 0 10px 3px rgba(30, 136, 229, 0.7);
+    }
+
+    .group-title {
+        font-weight: bold;
+        color: #1565c0; /* Darker blue text */
+        margin-bottom: 5px;
+        text-align: center;
+        border-bottom: 1px dashed #90caf9;
+    }
+</style>

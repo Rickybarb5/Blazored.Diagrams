@@ -1,0 +1,160 @@
+@page "/node-overview"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" md="6" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Nodes</MudText>
+
+                <MudText Typo="Typo.subtitle1" Class="mb-3">
+                    The base <code class="text-primary">Node</code> class provides all necessary functionality for a diagram element, including drag-and-drop, selection, and port management.
+                </MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="Step 1: Node Initialization" Expanded="true">
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            You only need to instantiate the base <code class="text-primary">Node</code> class and use the <code class="text-primary">IDiagramService</code> to add it to the diagram.
+                        </MudText>
+                        <CodeHighlighter Language="csharp" Code="@initializationCode"></CodeHighlighter>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Step 2: Live Actions via IDiagramService" Expanded="true">
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            Use the buttons below to control the node in the live diagram on the right. These actions demonstrate the primary functions of the <code class="text-primary">IDiagramService</code>.
+                        </MudText>
+
+                        <MudStack Row="true" Spacing="2" Class="my-3 flex-wrap">
+                            <MudButton OnClick="AddOrRemoveNode"
+                                       Variant="Variant.Filled"
+                                       Color="@(_mainNode == null ? Color.Info : Color.Warning)"
+                                       StartIcon="@(_mainNode == null ? Icons.Material.Filled.Add : Icons.Material.Filled.Delete)">
+                                @(_mainNode == null ? "Add Node" : "Remove Node")
+                            </MudButton>
+
+                            <MudButton OnClick="ToggleVisibility"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Dark"
+                                       StartIcon="@(_mainNode?.IsVisible ?? false ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                       Disabled="@(_mainNode == null)">
+                                Toggle Visibility
+                            </MudButton>
+
+                            <MudButton OnClick="AddPort"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Success"
+                                       StartIcon="@Icons.Material.Filled.Circle"
+                                       Disabled="@(_mainNode == null || (_mainNode?.Ports.Count >= 4))">
+                                Add Port (@(_mainNode?.Ports.Count ?? 0)/4)
+                            </MudButton>
+
+                            <MudButton OnClick="MoveNode"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.GpsFixed"
+                                       Disabled="@(_mainNode == null)">
+                                Move Node (200, 400)
+                            </MudButton>
+                        </MudStack>
+
+                        <MudAlert Severity="Severity.Info" Class="mt-3">
+                            Node Status: <b>@(_mainNode == null ? "Not in Diagram" : "In Diagram")</b> | Visible: <b>@(_mainNode?.IsVisible.ToString() ?? "N/A")</b>
+                        </MudAlert>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+    [Inject] public IDiagramService Service { get; set; } = null!;
+
+    // The single node instance used for demonstration
+    private Node? _mainNode;
+
+    // Available port alignments to cycle through
+    private readonly List<PortAlignment> _portAlignments = new()
+    {
+        PortAlignment.Left,
+        PortAlignment.Top,
+        PortAlignment.Right,
+        PortAlignment.Bottom
+    };
+
+    // --- C# Code Snippet for Display ---
+    private const string initializationCode =
+        @"// 1. Instantiate the Node class
+var node = new Node() 
+{
+    PositionX = 300, 
+    PositionY = 200
+};
+
+// 2. Add to the diagram using the service
+Service.AddNode(node);
+
+// The DiagramContainer will automatically render the built-in DefaultNodeComponent.";
+
+
+    // --- Live Action Methods ---
+
+    private void AddOrRemoveNode()
+    {
+        if (_mainNode == null)
+        {
+            // Add the node
+            _mainNode = new Node();
+            _mainNode.SetPosition(300, 200); // Set a starting position
+            Service.AddNode(_mainNode);
+        }
+        else
+        {
+            // Remove the node
+            Service.RemoveNode(_mainNode);
+            _mainNode = null; // Clear the reference
+        }
+    }
+
+    private void ToggleVisibility()
+    {
+        if (_mainNode != null)
+        {
+            _mainNode.IsVisible = !_mainNode.IsVisible;
+        }
+    }
+
+    private void AddPort()
+    {
+        if (_mainNode == null) return;
+
+        // Find the next available side to add a port to
+        var nextAlignment = _portAlignments.FirstOrDefault(alignment =>
+            _mainNode.Ports.All(p => p.Alignment != alignment));
+
+        if (_mainNode.Ports.Count < 4)
+        {
+            // Add a new Port with the found alignment
+            Service.AddPortTo(_mainNode, new Port { Alignment = nextAlignment });
+        }
+    }
+
+    private void MoveNode()
+    {
+        if (_mainNode != null)
+        {
+            // Programmatically change the node's position
+            _mainNode.SetPosition(200, 400);
+        }
+    }
+
+}

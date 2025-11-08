@@ -1,0 +1,161 @@
+﻿@using Blazored.Diagrams.Services.Observers
+@using Blazored.Diagrams.Services.Registry
+@using Blazored.Diagrams.Services.Diagrams
+@implements IAsyncDisposable;
+@if (Port is not null && Port.IsVisible)
+{
+    <div style="@($"left:{Port.PositionX}px;top:{Port.PositionY}px;position:absolute;")"
+         @onpointerleave="ctx => DiagramService.Events.Publish(new PortPointerLeaveEvent(Port, ctx))"
+         @onpointerdown="ctx => DiagramService.Events.Publish(new PortPointerDownEvent(Port, ctx))"
+         @onpointerenter="ctx => DiagramService.Events.Publish(new PortPointerEnterEvent(Port, ctx))"
+         @onpointermove="ctx => DiagramService.Events.Publish(new PortPointerMoveEvent(Port, ctx))"
+         @onpointerup="ctx => DiagramService.Events.Publish(new PortPointerUpEvent(Port, ctx))"
+         @onwheel="ctx => DiagramService.Events.Publish(new PortWheelEvent(Port, ctx))"
+         @onclick="ctx => DiagramService.Events.Publish(new PortClickedEvent(Port, ctx))"
+         @ondblclick="ctx => DiagramService.Events.Publish(new PortDoubleClickedEvent(Port, ctx))"
+         @onpointerdown:stopPropagation
+         @ref="_componentRef" id="@(ContainerId)">
+        <DynamicComponent Type="@(ComponentRegistry.GetComponentType(Port.GetType()))" Parameters="@(Parameters)"></DynamicComponent>
+    </div>
+}
+
+@code {
+    
+    private Dictionary<string, object> Parameters => new() { { nameof(Port), Port } };
+    private ElementReference _componentRef;
+    private List<IDisposable> _subscriptions = [];
+    
+    [Inject] IComponentRegistry ComponentRegistry { get; init; } = null!;
+
+    [Inject] private IJSRuntime Js { get; set; } = null!;
+
+    [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
+
+    /// <summary>
+    ///     Cascading diagram from <see cref="DiagramContainer"/>
+    /// </summary>
+    [CascadingParameter]
+    public required IDiagramService DiagramService { get; set; }
+
+    /// <summary>
+    ///     Port instance to be rendered in the UI.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public required IPort Port
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// ID of the port container.
+    /// </summary>
+    public string ContainerId => $"port-container-{Port.Id}";
+
+    private void Redraw(IEvent e)
+    {
+        RefreshPositionCoordinates();
+    }
+    
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _subscriptions =
+            [
+                DiagramService.Events.SubscribeWhere<PortRedrawEvent>(p => p.Model.Id == Port.Id, Redraw),
+                DiagramService.Events.SubscribeWhere<PortJustificationChangedEvent>(p => p.Model.Id == Port.Id, Redraw),
+                DiagramService.Events.SubscribeWhere<PortAlignmentChangedEvent>(p => p.Model.Id == Port.Id, Redraw),
+                DiagramService.Events.SubscribeWhere<GroupPositionChangedEvent>(p => p.Model.Id == Port.Parent.Id,
+                    Redraw),                
+                DiagramService.Events.SubscribeWhere<GroupPaddingChangedEvent>(p => p.Model.Id == Port.Parent.Id,
+                    Redraw),
+                DiagramService.Events.SubscribeWhere<GroupSizeChangedEvent>(p => p.Model.Id == Port.Parent.Id,
+                    Redraw),
+                DiagramService.Events.SubscribeWhere<NodePositionChangedEvent>(p => p.Model.Id == Port.Parent.Id,
+                    Redraw),
+                DiagramService.Events.SubscribeWhere<NodeSizeChangedEvent>(p => p.Model.Id == Port.Parent.Id,
+                    Redraw),
+            ];
+
+            await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
+            var size = await Js.GetBoundingClientRect(_componentRef);
+            SetSize((int)size.Width, (int)size.Height);
+            RefreshPositionCoordinates();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnSizeChanged(ResizeObserverEntry obj)
+    {
+        SetSize((int)obj.Width, (int)obj.Height);
+    }
+
+    private void SetSize(int width, int height)
+    {
+        Port.SetSize(width, height);
+    }
+
+    private void RefreshPositionCoordinates()
+    {
+        var newPosition = CalculatePosition();
+        Port.SetPosition(newPosition.PositionX, newPosition.PositionY);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private (int PositionX, int PositionY) CalculatePosition()
+    {
+        var (x, y) = (Position: Port.Alignment, Alignment: Port.Justification) switch
+        {
+            (PortAlignment.Left, PortJustification.Start) => (Port.Parent.PositionX - Port.Width / 2,
+                Port.Parent.PositionY - Port.Height / 2),
+            (PortAlignment.Left, PortJustification.Center) => (Port.Parent.PositionX - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height / 2 - Port.Height / 2),
+            (PortAlignment.Left, PortJustification.End) => (Port.Parent.PositionX - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height - Port.Height / 2),
+
+            (PortAlignment.Right, PortJustification.Start) => (
+                Port.Parent.PositionX + Port.Parent.Width - Port.Width / 2,
+                Port.Parent.PositionY - Port.Height / 2),
+            (PortAlignment.Right, PortJustification.Center) => (
+                Port.Parent.PositionX + Port.Parent.Width - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height / 2 - Port.Height / 2),
+            (PortAlignment.Right, PortJustification.End) => (Port.Parent.PositionX + Port.Parent.Width - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height - Port.Height / 2),
+
+            (PortAlignment.Top, PortJustification.Start) =>
+                (Port.Parent.PositionX - Port.Width / 2, Port.Parent.PositionY - Port.Height / 2),
+            (PortAlignment.Top, PortJustification.Center) => (
+                Port.Parent.PositionX + Port.Parent.Width / 2 - Port.Width / 2,
+                Port.Parent.PositionY - Port.Height / 2),
+            (PortAlignment.Top, PortJustification.End) => (Port.Parent.PositionX + Port.Parent.Width - Port.Width / 2,
+                Port.Parent.PositionY - Port.Height / 2),
+
+            (PortAlignment.Bottom, PortJustification.Start) => (Port.Parent.PositionX - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height - Port.Height / 2),
+            (PortAlignment.Bottom, PortJustification.Center) => (
+                Port.Parent.PositionX + Port.Parent.Width / 2 - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height - Port.Height / 2),
+            (PortAlignment.Bottom, PortJustification.End) => (
+                Port.Parent.PositionX + Port.Parent.Width - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height - Port.Height / 2),
+            (PortAlignment.CenterParent, _) => (
+                Port.Parent.PositionX + (Port.Parent.Width / 2) - (Port.Width / 2),
+                Port.Parent.PositionY + (Port.Parent.Height / 2) - (Port.Height / 2)),
+            (PortAlignment.Custom, _) => Port.CustomPositioning(),
+            _ => (Port.PositionX, Port.PositionY)
+        };
+        return (x, y);
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        _subscriptions.DisposeAll();
+        await ResizeObserverService.UnobserveAsync(ContainerId);
+    }
+
+}

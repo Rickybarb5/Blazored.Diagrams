@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider @ref="@_mudThemeProvider" IsDarkMode="IsDarkMode"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudPopoverProvider/>
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())"/>
+        <MudText Typo="Typo.h5" Class="ml-3">Blazored Diagrams</MudText>
+        <MudSpacer/>
+        <MudLink Href="https://github.com/Rickybarb5/Blazored.Diagrams" Target="_blank">
+            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Color="Color.Secondary"></MudIcon>
+        </MudLink>
+        <MudToggleIconButton bind-Toggled="@_mudThemeProvider.IsDarkMode" ToggledChanged="b => IsDarkMode = !IsDarkMode" Icon="@Icons.Material.Filled.LightMode" ToggledIcon="@Icons.Material.Filled.DarkMode"></MudToggleIconButton>
+    </MudAppBar>
+    <MudDrawer 
+        @bind-Open="@_drawerOpen" 
+        Elevation="2" 
+        ClipMode="DrawerClipMode.Always"
+        Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">         
+        <DrawerItems></DrawerItems>
+    </MudDrawer>
+    <MudMainContent>
+        <div style="width:100%;height:95vh">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
+
+<MudSnackbarProvider />
+@code {
+
+    private MudThemeProvider _mudThemeProvider = null!;
+    private bool IsDarkMode = true;
+    bool _drawerOpen;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+}

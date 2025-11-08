@@ -1,0 +1,289 @@
+[
+  {
+    "Name": "LinkAddedEvent",
+    "Summary": "Event triggered when a link is added to the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "LinkClickedEvent",
+    "Summary": "Event triggered when an <c>@onclick</c> event occurs on a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkDoubleClickedEvent",
+    "Summary": "Event triggered when an <c>@ondblclick</c> event occurs on a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "MouseEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.MouseEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkPointerDownEvent",
+    "Summary": "Event triggered when a pointer (e.g., mouse or touch) is pressed down on a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkPointerEnterEvent",
+    "Summary": "Event triggered when a pointer enters the bounds of a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkPointerLeaveEvent",
+    "Summary": "Event triggered when a pointer leaves the bounds of a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkPointerMoveEvent",
+    "Summary": "Event triggered when a pointer moves over a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkPointerUpEvent",
+    "Summary": "Event triggered when a pointer is released from a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "PointerEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.PointerEventArgs\" />."
+      }
+    ]
+  },
+  {
+    "Name": "LinkRedrawEvent",
+    "Summary": "Event triggered when a redraw is manually requested for a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that requested the redraw."
+      }
+    ]
+  },
+  {
+    "Name": "LinkRemovedEvent",
+    "Summary": "Event triggered when a link is removed from the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "LinkSelectionChangedEvent",
+    "Summary": "Event triggered when the selection state of a link changes (e.g., selected or deselected).",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> whose selection state changed."
+      }
+    ]
+  },
+  {
+    "Name": "LinkSizeChangedEvent",
+    "Summary": "Event triggered when the size (width or height) of a link changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> whose size changed."
+      },
+      {
+        "Name": "OldWidth",
+        "TypeName": "Double",
+        "Documentation": "The previous width value."
+      },
+      {
+        "Name": "OldHeight",
+        "TypeName": "Double",
+        "Documentation": "The previous height value."
+      },
+      {
+        "Name": "NewWidth",
+        "TypeName": "Double",
+        "Documentation": "The new width value."
+      },
+      {
+        "Name": "NewHeight",
+        "TypeName": "Double",
+        "Documentation": "The new height value."
+      }
+    ]
+  },
+  {
+    "Name": "LinkSourcePortChangedEvent",
+    "Summary": "Event triggered when the source port of a link is changed to a different port.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> whose source port changed."
+      },
+      {
+        "Name": "OldSourcePort",
+        "TypeName": "IPort",
+        "Documentation": "The previous <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link was connected to."
+      },
+      {
+        "Name": "NewSourcePort",
+        "TypeName": "IPort",
+        "Documentation": "The new <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link is now connected to."
+      }
+    ]
+  },
+  {
+    "Name": "LinkTargetPortChangedEvent",
+    "Summary": "Event triggered when the target port of a link is changed.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> whose target port changed."
+      },
+      {
+        "Name": "OldTargetPort",
+        "TypeName": "IPort",
+        "Documentation": "The previous <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link was connected to (can be null)."
+      },
+      {
+        "Name": "NewTargetPort",
+        "TypeName": "IPort",
+        "Documentation": "The new <see cref=\"T:Blazored.Diagrams.Ports.IPort\" /> the link is now connected to (can be null)."
+      }
+    ]
+  },
+  {
+    "Name": "LinkTargetPositionChangedEvent",
+    "Summary": "Event triggered when the target position of a link changes. This is typically only used for in-progress or temporary links.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> whose target position changed."
+      },
+      {
+        "Name": "OldX",
+        "TypeName": "Int32",
+        "Documentation": "The old X position of the target point."
+      },
+      {
+        "Name": "OldY",
+        "TypeName": "Int32",
+        "Documentation": "The old Y position of the target point."
+      },
+      {
+        "Name": "TargetPositionX",
+        "TypeName": "Int32",
+        "Documentation": "The new X position of the target point."
+      },
+      {
+        "Name": "TargetPositionY",
+        "TypeName": "Int32",
+        "Documentation": "The new Y position of the target point."
+      }
+    ]
+  },
+  {
+    "Name": "LinkVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility state of a link changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> whose visibility state changed."
+      }
+    ]
+  },
+  {
+    "Name": "LinkWheelEvent",
+    "Summary": "Event triggered when the mouse wheel is scrolled while over a link.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Links.ILink\" /> that triggered the event."
+      },
+      {
+        "Name": "Args",
+        "TypeName": "WheelEventArgs",
+        "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.WheelEventArgs\" />."
+      }
+    ]
+  }
+]

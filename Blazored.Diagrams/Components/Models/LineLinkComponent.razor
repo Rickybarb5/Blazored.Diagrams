@@ -1,0 +1,34 @@
+@inherits DefaultLinkComponent
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+
+    /// <inheritdoc />
+    protected override string GetPath()
+    {
+        return $"M {RelativeX1} {RelativeY1} L {RelativeX2} {RelativeY2}";
+    }
+
+    /// <inheritdoc />
+    protected override string StrokeColor
+    {
+        get => DiagramService.Options.LineLinkOptions.StrokeColor;
+        set => DiagramService.Options.LineLinkOptions.StrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override string SelectedStrokeColor
+    {
+        get => DiagramService.Options.LineLinkOptions.SelectedStrokeColor;
+        set => DiagramService.Options.LineLinkOptions.SelectedStrokeColor = value;
+    }
+
+    /// <inheritdoc />
+    protected override int StrokeWidth 
+    {
+        get => DiagramService.Options.LineLinkOptions.StrokeWidth;
+        set => DiagramService.Options.LineLinkOptions.StrokeWidth = value;
+    }
+}

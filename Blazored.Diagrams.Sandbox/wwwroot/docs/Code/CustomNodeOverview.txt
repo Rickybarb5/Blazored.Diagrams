@@ -1,0 +1,88 @@
+@page "/custom-nodes"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" md="6" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Custom Nodes</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mb-3">
+                    Every element you see in the diagram is backed by two files: a **C# Class** and a **Razor Component**.
+                </MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="Step 1: Create the C# Node Class" Expanded="true">
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            To define your custom node, inherit from the <code class="text-primary">Node</code> class.
+                        </MudText>
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            To associate it to a component use the <code class="text-primary">IHasComponent&lt;T&gt;</code> interface, where <code class="text-primary">T</code> is the name of your Razor component. The recommended pattern is inheriting from <code class="text-primary">Node</code> which implements the basic features of a node.
+                        </MudText>
+                        <HighlightFromFile  Language="csharp" FileName="MyCustomNode"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Step 2: Define the Razor Component" Expanded="true">
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            Your Razor component (e.g., <code>MyCustomComponent.razor</code>) **must** contain a parameter named <code>Node</code>. Its type should be the C# class you created in Step 1.
+                        </MudText>
+                        <MudAlert Severity="Severity.Warning" Class="mb-3">
+                            The "Node" parameter is **required** for the diagram container render the node correctly.
+                        </MudAlert>
+                        <HighlightFromFile  Language="cshtml" FileName="MyCustomComponent"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Step 3: Live Actions (C# Service)" Expanded="true">
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            All operational changes, like adding new models or ports, must be done via the main <code class="text-primary">IDiagramService</code> to ensure the diagram tracks the changes and re-renders properly.
+                        </MudText>
+                        
+                        <MudStack Row="true" Spacing="2" Class="my-3">
+                            <MudButton OnClick="AddCustomNode" 
+                                       Variant="Variant.Filled" 
+                                       Color="Color.Info" 
+                                       StartIcon="@Icons.Material.Filled.AddCircle">
+                                Add Custom Node
+                            </MudButton>
+
+                            <MudButton OnClick="AddPortToSelectedNode" 
+                                       Variant="Variant.Filled" 
+                                       Color="Color.Success" 
+                                       StartIcon="@Icons.Material.Filled.Link"
+                                       Disabled="@(_selectedNode == null)">
+                                Add Port to Selected
+                            </MudButton>
+                            
+                            <MudButton OnClick="RemoveSelectedNode" 
+                                       Variant="Variant.Filled" 
+                                       Color="Color.Error" 
+                                       StartIcon="@Icons.Material.Filled.DeleteForever"
+                                       Disabled="@(_selectedNode == null)">
+                                Remove Selected
+                            </MudButton>
+                        </MudStack>
+
+                        <MudAlert Severity="Severity.Info" Class="mt-3">
+                            Currently Selected: <b>@(_selectedNode?.Name ?? "None")</b> (ID: <b>@(_selectedNode?.Id ?? "---")</b>)
+                        </MudAlert>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+
+
+    // --- Live Action Methods ---
+
+}

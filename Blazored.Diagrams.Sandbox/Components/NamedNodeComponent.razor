@@ -1,0 +1,52 @@
+@if (Node is not null)
+{
+    <MudCard Style="@(GetStyle())" @ondblclick="HandleDoubleClick">
+        @if (!IsEditState)
+        {
+            <MudCardHeader>
+                <MudText>@Node.Name</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                @if (Node?.Message is not null)
+                {
+                    @foreach (var text in Node.Message.Split(Environment.NewLine))
+                    {
+                        <MudText>@text</MudText>
+                    }
+                }
+            </MudCardContent>
+        }
+        else
+        {
+            <MudCardHeader>
+                <MudTextField Label="Name" T="string" @bind-Value="@Node.Name"></MudTextField>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField Lines="3" max Label="Message" T="string" @bind-Value="@Node.Message"></MudTextField>
+                <MudColorPicker ShowToolbar="true" Label="Color" PickerVariant="PickerVariant.Inline" @bind-Text="@Node.Color"/>
+            </MudCardContent>
+        }
+        <MudCardActions></MudCardActions>
+
+
+    </MudCard>
+}
+
+
+@code {
+
+    public bool IsEditState = false;
+    [Parameter] public required NamedNode Node { get; set; }
+
+    private void HandleDoubleClick()
+    {
+        IsEditState = !IsEditState;
+    }
+
+    private string GetStyle()
+    {
+        var color = Node.IsSelected ? "black" : Node.Color;
+        return $"background:{color};";
+    }
+
+}

@@ -1,0 +1,61 @@
+@page "/custom-behaviours"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" md="6" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Custom Behaviors</MudText>
+
+                <MudText Typo="Typo.subtitle1" Class="mb-3">
+                    Behaviors are where the **business logic and interactivity** of the diagram reside. You can create a custom behavior to completely change how the diagram responds to events.
+                </MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="Step 1: Create the Custom Class" Expanded="true">
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            Inherit from <code class="text-primary">BaseBehaviour</code> and inject <code class="text-primary">IDiagramService</code> to gain access to the <code class="text-primary">Events</code> aggregator.
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="DoubleClickBehaviour"></HighlightFromFile>
+                        <MudText Typo="Typo.body1" GutterBottom="true" Class="mt-3">
+                            Our example subscribes to <code class="text-primary">DiagramDoubleClickedEvent</code> and, when triggered, selects all models in the diagram.
+                        </MudText>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Step 2: Registration & Control" Expanded="true">
+                        <MudText Typo="Typo.h6" Class="mt-4 mb-2">Live Demo Control</MudText>
+                        <MudAlert Severity="Severity.Info" Class="mb-3">
+                            Double-click on the **empty background** of the diagram on the right to test this behavior!
+                        </MudAlert>
+
+                        <div class="d-flex align-center gap-4">
+
+                            <MudSwitch @bind-Value="_options.IsEnabled"
+                                       T="bool"
+                                       Color="Color.Primary"
+                                       LabelPlacement="Placement.Right"
+                                       Label="Double-Tap Select Enabled"/>
+
+                        </div>
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            Behaviour options aren't required for a behaviour to function, but hey have some cool features!
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="DoubleTapSelectOptions"></HighlightFromFile>
+                        <MudText Typo="Typo.body1" GutterBottom="true">
+                            You must register the custom behavior in the <code class="text-primary">OnInitializedAsync</code> method of your component.
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="CustomBehaviours.razor"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

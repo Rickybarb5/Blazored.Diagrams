@@ -1,0 +1,126 @@
+[
+  {
+    "Name": "CurrentLayerChangedEvent",
+    "Summary": "Event triggered when a new layer will start to be used.",
+    "Parameters": [
+      {
+        "Name": "OldLayer",
+        "TypeName": "ILayer",
+        "Documentation": "Previous layer that was being used."
+      },
+      {
+        "Name": "NewLayer",
+        "TypeName": "ILayer",
+        "Documentation": "New layer that will be used."
+      }
+    ]
+  },
+  {
+    "Name": "GroupAddedToLayerEvent",
+    "Summary": "Event triggered when a group is added to a layer's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> the group was added to."
+      },
+      {
+        "Name": "AddedGroup",
+        "TypeName": "IGroup",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Groups.IGroup\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "GroupRemovedFromLayerEvent",
+    "Summary": "Event triggered when a group is removed from the layer's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> the group was removed from."
+      },
+      {
+        "Name": "RemovedGroup",
+        "TypeName": "IGroup",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Groups.IGroup\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "LayerAddedEvent",
+    "Summary": "Event triggered when a layer is added to the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "LayerRedrawEvent",
+    "Summary": "Event triggered when a redraw is requested for a layer.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> that requested the redraw."
+      }
+    ]
+  },
+  {
+    "Name": "LayerRemovedEvent",
+    "Summary": "Event triggered when a layer is removed from the diagram.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> that was removed."
+      }
+    ]
+  },
+  {
+    "Name": "LayerVisibilityChangedEvent",
+    "Summary": "Event triggered when the visibility of a layer changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> whose visibility state changed."
+      }
+    ]
+  },
+  {
+    "Name": "NodeAddedToLayerEvent",
+    "Summary": "Event triggered when a node is added to a layer's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> the node was added to."
+      },
+      {
+        "Name": "Node",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that was added."
+      }
+    ]
+  },
+  {
+    "Name": "NodeRemovedFromLayerEvent",
+    "Summary": "Event triggered when a node is removed from a layer's collection.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Layers.ILayer\" /> the node was removed from."
+      },
+      {
+        "Name": "Node",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazored.Diagrams.Nodes.INode\" /> that was removed."
+      }
+    ]
+  }
+]

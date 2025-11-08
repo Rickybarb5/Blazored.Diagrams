@@ -1,0 +1,195 @@
+@page "/diagram-service-overview"
+
+<MudGrid Spacing="2" Justify="Justify.Center" Style="height:100%; width: 100%; margin: 0;">
+
+    <!-- LEFT PANEL: Documentation -->
+    <MudItem xs="12" sm="4" Style="height: 100%; overflow-y: auto;">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.h5" Color="Color.Primary" GutterBottom="true">IDiagramService Overview</MudText>
+
+            <MudExpansionPanels MultiExpansion="false">
+
+                <!-- Panel 1: What is IDiagramService? -->
+                <MudExpansionPanel Text="What is IDiagramService?" Expanded="true">
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        The <code>IDiagramService</code> is the central "brain" of the entire diagram. It is a stateful service that manages the diagram model, tracks all elements, handles events, and provides helper methods.
+                    </MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        You typically inject this service into your Blazor page or component and pass it to the <code>&lt;DiagramContainer&gt;</code>.
+                    </MudText>
+
+                    <!-- ADDED WARNING AS REQUESTED -->
+                    <MudAlert Severity="Severity.Warning" Class="my-3">
+                        <MudText Typo="Typo.body2" Class="font-weight-bold mb-1">Important: Dependency Injection Scope</MudText>
+                        <MudText Typo="Typo.body2">
+                            <code>IDiagramService</code> is registered as a **transient** service. This is intentional, as it allows you to have multiple, independent diagram instances on the same page.
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Because of this, do **not** use <code>[Inject]</code> to get the service in custom components (Nodes, Controls, etc.). This will create a *new, empty* instance.
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Always receive the service via <code>[CascadingParameter]</code> to ensure you are interacting with the correct diagram instance provided by the <code>&lt;DiagramContainer&gt;</code>.
+                        </MudText>
+                    </MudAlert>
+
+                </MudExpansionPanel>
+
+                <!-- Panel 2: Core Features -->
+                <MudExpansionPanel Text="Core Features" Expanded="true">
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        The service exposes several key properties and methods for controlling the diagram:
+                    </MudText>
+
+                    <MudExpansionPanels MultiExpansion="true" Dense="true" Class="mt-2">
+                        <!-- UPDATED: Model Management -->
+                        <MudExpansionPanel Text="Model Management">
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                Use the <code>Service.Add</code> property and direct methods like <code>Service.RemoveNode()</code> to add or delete models from the diagram.
+                            </MudText>
+                            <CodeHighlighter Language="csharp" Code="@AddRemoveCode"/>
+                        </MudExpansionPanel>
+
+                        <MudExpansionPanel Text="Event Aggregator (.Events)">
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                Access the event system to <code>SubscribeTo&lt;TEvent&gt;()</code> or <code>Publish()</code> events globally. This is the heart of communication between components and behaviors.
+                            </MudText>
+                        </MudExpansionPanel>
+
+                        <MudExpansionPanel Text="Layer Management">
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                Control which layer is active for adding new models using <code>Service.Diagram.UseLayer(myLayer)</code>, or select all models on a layer with <code>myLayer.SelectAll()</code>.
+                            </MudText>
+                        </MudExpansionPanel>
+
+                        <MudExpansionPanel Text="Positioning Utilities">
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                The service provides helper methods (from <code>DiagramService.Positioning.cs</code>) to manage camera and model positions.
+                            </MudText>
+                            <CodeHighlighter Language="csharp" Code="@PositioningCode"/>
+                        </MudExpansionPanel>
+
+                        <!-- UPDATED: Serialization -->
+                        <MudExpansionPanel Text="Serialization">
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                The service provides methods (from <code>DiagramService.Serialization.cs</code>) to save the entire diagram state to a JSON string and load it back.
+                            </MudText>
+                            <CodeHighlighter Language="csharp" Code="@SerializationCode"/>
+                        </MudExpansionPanel>
+
+                        <MudExpansionPanel Text="Behaviors (.Behaviours)">
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                The service automatically registers and runs default behaviors for panning, zooming, selecting, dragging nodes, and drawing links.
+                            </MudText>
+                        </MudExpansionPanel>
+
+                    </MudExpansionPanels>
+                </MudExpansionPanel>
+
+            </MudExpansionPanels>
+        </MudPaper>
+    </MudItem>
+
+    <!-- RIGHT PANEL: Practical Example -->
+    <MudItem xs="12" sm="8" Style="height: 100%; display: flex; flex-direction: column;">
+        <MudPaper Class="pa-2 d-flex justify-start" Elevation="4">
+            <MudButton OnClick="AddNode" Variant="Variant.Filled" Color="Color.Primary" Class="mr-2">Add Node</MudButton>
+            <MudButton OnClick="RemoveLastNode" Variant="Variant.Filled" Color="Color.Error" Class="mr-2" Disabled="@(lastAddedNode == null)">Remove Last Node</MudButton>
+            <MudButton OnClick="CenterNode" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-2" Disabled="@(lastAddedNode == null)">Center Last Node</MudButton>
+            <MudButton OnClick="SelectAll" Variant="Variant.Outlined" Color="Color.Info">Select All</MudButton>
+        </MudPaper>
+        <MudPaper Class="mud-height-full mt-2" Elevation="4" Style="position: relative; flex-grow: 1;">
+            <DiagramContainer DiagramService="Service"/>
+        </MudPaper>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+    [Inject] public IDiagramService Service { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+
+    private Node? lastAddedNode;
+
+// --- Diagram Initialization ---
+    protected override Task OnInitializedAsync()
+    {
+        AddNode(); // Start with one node
+        return base.OnInitializedAsync();
+    }
+
+// --- Button Click Handlers ---
+
+    private void AddNode()
+    {
+        var node = new Node();
+// Position it randomly
+        var rand = new Random();
+        node.SetPosition(rand.Next(0, 300), rand.Next(0, 300));
+
+// Use the service to add the node
+        Service.AddNode(node);
+
+        lastAddedNode = node;
+        Snackbar.Add("Node added!", Severity.Success);
+    }
+
+    private void RemoveLastNode()
+    {
+        if (lastAddedNode != null)
+        {
+// Use flat RemoveNode method
+            Service.RemoveNode(lastAddedNode);
+            Snackbar.Add($"Node {lastAddedNode.Id} removed.", Severity.Error);
+            lastAddedNode = Service.Diagram.AllNodes.LastOrDefault() as Node;
+        }
+    }
+
+    private void CenterNode()
+    {
+        if (lastAddedNode != null)
+        {
+// Use a positioning helper from the service
+            Service.CenterInViewport<Node>(new(lastAddedNode));
+            Snackbar.Add($"Node {lastAddedNode.Id} centered.", Severity.Info);
+        }
+    }
+
+    private void SelectAll()
+    {
+// Use a layer management feature from the service
+        Service.SelectAll();
+        Snackbar.Add("All models selected.", Severity.Info);
+    }
+
+
+// --- Code Snippets ---
+
+    private const string AddRemoveCode =
+        @"// Add a new node to the diagram
+var node = new Node();
+node.SetPosition(50, 50);
+Service.AddNode(node);
+
+// Remove a link using the flat method
+Service.RemoveLink(myLinkInstance);";
+
+    private const string PositioningCode =
+        @"// Get the last added node
+var node = Service.Diagram.AllNodes.Last();
+
+// Center this node in the middle of the screen
+Service.CenterInViewport(node);
+
+// Zoom to fit this node (sets zoom to 1 and pans)
+Service.ZoomToModel(node);";
+
+    private const string SerializationCode =
+        @"// Save the entire diagram to JSON
+string json = Service.Save(Service.Diagram);
+
+// ... later ...
+
+// Load the diagram back from JSON
+Service.LoadAndUse(json);";
+
+}

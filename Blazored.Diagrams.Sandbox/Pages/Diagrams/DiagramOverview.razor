@@ -1,0 +1,105 @@
+@page "/diagram-container-component"
+
+<MudGrid Spacing="2" Justify="Justify.Center" Style="height:100%; width: 100%; margin: 0;">
+
+    <!-- LEFT PANEL: Documentation -->
+    <MudItem xs="12" sm="4" Style="height: 100%; overflow-y: auto;">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.h5" Color="Color.Primary" GutterBottom="true">DiagramContainer Component</MudText>
+
+            <MudExpansionPanels MultiExpansion="false">
+
+                <!-- Panel 1: What is DiagramContainer? -->
+                <MudExpansionPanel Text="What is DiagramContainer?" Expanded="true">
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        The <code>DiagramContainer</code> is the main, top-level Blazor component that acts as the "canvas" for your diagram.
+                    </MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        It is responsible for rendering all the layers, which in turn render the nodes, groups, links, and ports. It also establishes the coordinate system for pan and zoom.
+                    </MudText>
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        To use the container, inject <code>IDiagramService</code> into your page and pass it as a parameter. The container takes up all of it's parent space so make sure to specify it correctly.
+                    </MudText>
+                    <CodeHighlighter Language="cshtml" Code="@UsageCode"/>
+                </MudExpansionPanel>
+
+                <!-- Panel 2: Core Responsibilities -->
+                <MudExpansionPanel Text="Core Responsibilities" Expanded="true">
+                    <MudText Typo="Typo.h6" GutterBottom="true">1. Requires IDiagramService</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        It requires a mandatory <code>DiagramService</code> parameter. This service instance holds the diagram model and all related logic.
+                    </MudText>
+
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="mt-3">2. Cascades the Service</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        It automatically provides this <code>IDiagramService</code> instance as a <code>[CascadingParameter]</code> to all of its children. This is how custom components (like nodes, ports, or controls) get access to the diagram's state and events.
+                    </MudText>
+
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="mt-3">3. Captures DOM Events</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        It captures all raw pointer events (mousedown, mouseup, mousemove, wheel), click events, and key events from the user. It then publishes these as strongly-typed events (e.g., <code>DiagramPointerDownEvent</code>) via the <code>IDiagramService.Events</code> aggregator for behaviors to consume.
+                    </MudText>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudPaper>
+    </MudItem>
+
+    <!-- RIGHT PANEL: Diagram with Controls -->
+    <MudItem xs="12" sm="8" Style="height: 100%;">
+        <MudPaper Class="mud-height-full" Elevation="4" Style="position: relative;">
+            <!-- 
+                The DiagramContainer is the parent.
+                The ZoomControls is the ChildContent, rendered on top.
+            -->
+            <DiagramContainer DiagramService="Service">
+                <ZoomControls/>
+            </DiagramContainer>
+        </MudPaper>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+    [Inject] public IDiagramService Service { get; set; } = null!;
+
+// --- Diagram Initialization ---
+    protected override Task OnInitializedAsync()
+    {
+// Add a few nodes for context
+        var node1 = new Node();
+        node1.SetPosition(50, 50);
+        Service.AddNode(node1);
+
+        var node2 = new Node();
+        node2.SetPosition(250, 150);
+        Service.AddNode(node2);
+
+        return base.OnInitializedAsync();
+    }
+
+// --- Code Snippets ---
+
+    private const string UsageCode =
+        @"<!-- In YourPage.razor -->
+@page ""/my-diagram""
+@inject IDiagramService MyDiagramService
+
+<div style=""height: 80vh; width: 100%;"">
+    <DiagramContainer DiagramService=""MyDiagramService"" />
+</div>
+
+@code {
+    [Inject]
+    public IDiagramService MyDiagramService { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        // Add models to the service
+        var node = new Node();
+        node.SetPosition(10, 10);
+        MyDiagramService.Add.Node(node);
+    }
+}";
+
+
+}

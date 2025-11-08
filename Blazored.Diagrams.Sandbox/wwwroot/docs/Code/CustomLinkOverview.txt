@@ -1,0 +1,63 @@
+@page "/custom-links"
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" sm="12" md="6" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Custom Link Implementation</MudText>
+
+                <MudText Typo="Typo.body1" Class="mb-4">
+                    Creating custom links involves two parts: a **C# model** that inherits from <code>Link</code>, and a **Razor component** that renders the SVG path. Remember, your component **must** include a parameter for the <code class="mud-code">Link</code> model!
+                </MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="The Custom Link Model (C#)" Expanded="true">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            Define your new link type by inheriting from the base <code>Link</code> class and implementing the <code>IHasComponent&lt;T&gt;</code> interface to link it to your Razor component. The model needs a constructor to satisfy its base class.
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="ExtendedLink"></HighlightFromFile>
+                        <HighlightFromFile Language="csharp" FileName="AnimatedLink"></HighlightFromFile>
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            The component you create can be done in two ways:
+                            1) Inherit from DefaultLinkComponent and use/override the basic features.
+                            2) Implement your own link component from scratch.
+                        </MudText>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Extending the Default Component" Expanded="false">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            For a custom path or minor styling changes, it's easiest to **inherit from <code>DefaultLinkComponent</code>**. This gives you access to pre-calculated coordinates (<code>RelativeX1</code>, etc.) and built-in event handling. We'll use this to create a simple S-shaped curved link.
+                        </MudText>
+                        <HighlightFromFile Language="cshtml" FileName="ExtendedLinkComponent"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Totally Custom Component (Animated)" Expanded="false">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            For advanced features like animation or custom decorations, you can create a component that **does not inherit from <code>DefaultLinkComponent</code>**. You'll need to handle coordinates and interactivity yourself, but it gives maximum flexibility.
+                        </MudText>
+                        <HighlightFromFile Language="cshtml" FileName="AnimatedLinkComponent"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Initialization" Expanded="false">
+                        <MudText Typo="Typo.body1" Class="mb-4">
+                            Once your link models and components are ready, use them just like the built-in links to
+                            connect ports using the explicit `Service.AddAddLinkTo` method.
+                        </MudText>
+                        <HighlightFromFile Language="csharp" FileName="CustomLinkOverview.razor"></HighlightFromFile>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="12" md="6" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"/>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>

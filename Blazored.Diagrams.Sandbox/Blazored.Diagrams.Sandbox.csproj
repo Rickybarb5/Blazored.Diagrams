@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" PrivateAssets="all"/>
+        <PackageReference Include="MudBlazor" Version="8.13.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Blazored.Diagrams\Blazored.Diagrams.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="wwwroot\docs\" />
+      <Folder Include="wwwroot\docs\Code\" />
+      <Folder Include="wwwroot\docs\Events\" />
+    </ItemGroup>
+
+    <Target Name="GenerateEventDocs" AfterTargets="Build">
+        <Exec Command="dotnet run --project ../Tools/EventDocGenerator/EventDocGenerator.csproj $(ProjectDir)wwwroot\docs\Events"/>
+        <Exec Command="dotnet run --project ../Tools/ClassFilesGenerator/ClassFilesGenerator.csproj  $(ProjectDir) $(ProjectDir)wwwroot/docs/Code"/>
+    </Target>
+</Project>

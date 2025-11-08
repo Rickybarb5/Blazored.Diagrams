@@ -1,0 +1,126 @@
+@using Blazored.Diagrams.Events
+@using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.Nodes
+@using Blazored.Diagrams.Sandbox.Pages.Examples.CalculatorExample.OperatorNode
+@implements IDisposable
+
+@* 1. Added Elevation and fixed width for a solid look. *@
+<MudCard Elevation="4" 
+         Outlined="true"
+         Style="width: 200px; -webkit-user-select: none;-ms-user-select: none;user-select: none;"
+         Class="mb-2">
+
+    @* 2. Themed header with an icon and reduced vertical padding. *@
+    <MudCardHeader Class="mud-theme-secondary white--text py-2 drag-handle">
+        <MudText Typo="Typo.subtitle1" Class="ml-2">
+            🧮 Operation Node
+        </MudText>
+    </MudCardHeader>
+
+    <MudCardContent Class="pa-3">
+        @* 3. Clearer visual selection for the operator. *@
+        <MudSelect T="Operator" 
+                   Value="Node.Operator" 
+                   ValueChanged="OnValueChanged" 
+                   Label="Operator" 
+                   Margin="Margin.Dense"
+                   Dense="true"
+                   Variant="Variant.Filled"
+                   Immediate="true">
+            @foreach (var value in Enum.GetValues<Operator>())
+            {
+                <MudSelectItem T="Operator" Value="@value">@Enum.GetName(value) (@GetOperatorString(value))</MudSelectItem>
+            }
+        </MudSelect>
+
+        <div class="mt-3">
+            @* 4. Error/Link Status Feedback *@
+            @if (Node.InputPort.IncomingLinks.Count < 1)
+            {
+                <MudText Typo="Typo.caption" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Small" Class="mr-1" />
+                    Connect input here!
+                </MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.caption" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Filled.Link" Size="Size.Small" Class="mr-1" />
+                    Connected: @Node.InputPort.IncomingLinks.Count inputs
+                </MudText>
+            }
+
+            @* 5. Result Display Feedback *@
+            @if (Node.NumberResult is not null)
+            {
+                <MudText Typo="Typo.subtitle2" Color="Color.Success" Class="mt-1" Style="text-wrap: stable">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Small" Class="mr-1" />
+                    Result: <strong style="">@Node.NumberResult</strong>
+                </MudText>
+            }
+        </div>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [CascadingParameter] 
+    public required IDiagramService Service { get; set; }
+
+    [Inject] ISnackbar Snackbar { get; set; } = null!;
+    [Parameter] public required OperatorNode Node { get; set; }
+
+    private List<IDisposable> _subscriptions = null!;
+
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _subscriptions =
+            [
+                Service.Events.SubscribeWhere<NodeRedrawEvent>(p => p.Model.Id == Node.Id, OnRedraw),
+                Service.Events.SubscribeWhere<IncomingLinkAddedEvent>(p => p.Model.Parent.Id == Node.Id, OnRedraw),
+            ];
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnRedraw(IEvent obj)
+    {
+        Node.Calculate();
+        StateHasChanged();
+    }
+
+    // Helper method to get the operator symbol for better display in the MudSelect
+    private string GetOperatorString(Operator op)
+    {
+        return op switch
+        {
+            Operator.Add      => "+",
+            Operator.Subtract => "-",
+            Operator.Multiply => "×", 
+            Operator.Divide   => "÷", 
+            _ => "?"
+        };
+    }
+    
+    private string GetOperatorString() => GetOperatorString(Node.Operator);
+
+
+    public void Dispose()
+    {
+        _subscriptions.DisposeAll();
+    }
+
+    private void DisplayError(string obj)
+    {
+        Snackbar.Add(obj, Severity.Error);
+    }
+
+    private Task OnValueChanged(Operator arg)
+    {
+        Node.Operator = arg;
+        
+        return Task.CompletedTask;
+    }
+}
