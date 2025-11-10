@@ -13,8 +13,8 @@ if (args.Length == 0)
 var outputDir = args[0];
 Directory.CreateDirectory(outputDir);
 
-// Assuming the 'Blazored.Diagrams' assembly is available
-var assembly = typeof(Blazored.Diagrams.Diagrams.Diagram).Assembly;
+// Assuming the 'Blazor.Flows' assembly is available
+var assembly = typeof(Blazor.Flows.Diagrams.Diagram).Assembly;
 var xmlPath = Path.ChangeExtension(assembly.Location, ".xml");
 
 if (!File.Exists(xmlPath))
@@ -107,7 +107,7 @@ namespace EventDocGenerator
             var eventTypes = assembly.GetTypes()
                 .Where(t =>
                     t.Namespace != null &&
-                    t.Namespace.StartsWith("Blazored.Diagrams.Events") &&
+                    t.Namespace.StartsWith("Blazor.Flows.Events") &&
                     t.IsClass &&
                     !t.IsAbstract &&
                     !t.IsGenericTypeDefinition && // Exclude ItemAddedEvent<T> definition

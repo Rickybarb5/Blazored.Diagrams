@@ -10,17 +10,17 @@
 <br />
 <div align="center">
 
-<h3 align="center">Blazored.Diagrams</h3>
+<h3 align="center">Blazor.Flows</h3>
 
   <p align="center">
     A highly customizable and flexible Blazor component for rendering interactive node-based diagrams, flowcharts, and mind maps.
     <br />
     <br />
-    <a href="https://rickybarb5.github.io/Blazored.Diagrams/">View Demo</a>
+    <a href="https://rickybarb5.github.io/Blazor.Flows/">View Demo</a>
     ·
-    <a href="https://github.com/Rickybarb5/Blazored.Diagrams/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/Rickybarb5/Blazor.Flows/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/Rickybarb5/Blazored.Diagrams/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/Rickybarb5/Blazor.Flows/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -43,7 +43,7 @@
 
 ## About The Project
 
-**Blazored.Diagrams** is a comprehensive Blazor component library that allows you to create interactive diagrams entirely within your C# Blazor application. It is built to offer maximum flexibility, allowing developers to create custom nodes, links, and implement complex interaction behaviors.
+**Blazor.Flows** is a comprehensive Blazor component library that allows you to create interactive diagrams entirely within your C# Blazor application. It is built to offer maximum flexibility, allowing developers to create custom nodes, links, and implement complex interaction behaviors.
 
 It provides a strong C# API, accessible via the `IDiagramService`, for managing diagram state, elements (Layers, Nodes, Ports, Links, Groups), and user interactions (panning, zooming, selection).
 
@@ -57,25 +57,25 @@ It provides a strong C# API, accessible via the `IDiagramService`, for managing 
 
 ## Getting Started
 
-Follow these simple steps to integrate **Blazored.Diagrams** into your Blazor project.
+Follow these simple steps to integrate **Blazor.Flows** into your Blazor project.
 
 ### Installation
 
 1.  **Install the NuGet Package**
     Add the core package to your Blazor project:
     ```console 
-    dotnet add package Blazored.Diagrams
+    dotnet add package Blazor.Flows
     ```
 2. **Register Scripts**
    In your `index.html` or `_Host.cs`, add the script tag:
     ```html
-    <script src="_content/Blazored.Diagrams/Blazored.Diagrams.js"></script>
+    <script src="_content/Blazor.Flows/Blazor.Flows.js"></script>
     ```
 
 3. **Register Services**
     In your `Program.cs` or `Startup.cs`, register the required services:
     ```csharp
-    builder.Services.AddBlazoredDiagrams();
+    builder.Services.AddBlazorFlows();
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -101,7 +101,7 @@ The library is designed with a set of core features to support professional diag
 
 - TBD
 
-See the [open issues](https://github.com/Rickybarb5/Blazored.Diagrams/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Rickybarb5/Blazor.Flows/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -134,26 +134,26 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Ricardo - [@RickyBarb5](https://github.com/RickyBarb5)
 
-Project Link: [https://github.com/Rickybarb5/Blazored.Diagrams](https://github.com/Rickybarb5/Blazored.Diagrams)
+Project Link: [https://github.com/Rickybarb5/Blazor.Flows](https://github.com/Rickybarb5/Blazor.Flows)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-[contributors-shield]: https://img.shields.io/github/contributors/Rickybarb5/Blazored.Diagrams.svg?style=for-the-badge
-[contributors-url]: https://github.com/Rickybarb5/Blazored.Diagrams/graphs/contributors
+[contributors-shield]: https://img.shields.io/github/contributors/Rickybarb5/Blazor.Flows.svg?style=for-the-badge
+[contributors-url]: https://github.com/Rickybarb5/Blazor.Flows/graphs/contributors
 
-[forks-shield]: https://img.shields.io/github/forks/Rickybarb5/Blazored.Diagrams.svg?style=for-the-badge
-[forks-url]: https://github.com/Rickybarb5/Blazored.Diagrams/network/members
+[forks-shield]: https://img.shields.io/github/forks/Rickybarb5/Blazor.Flows.svg?style=for-the-badge
+[forks-url]: https://github.com/Rickybarb5/Blazor.Flows/network/members
 
-[stars-shield]: https://img.shields.io/github/stars/Rickybarb5/Blazored.Diagrams.svg?style=for-the-badge
-[stars-url]: https://github.com/Rickybarb5/Blazored.Diagrams/stargazers
+[stars-shield]: https://img.shields.io/github/stars/Rickybarb5/Blazor.Flows.svg?style=for-the-badge
+[stars-url]: https://github.com/Rickybarb5/Blazor.Flows/stargazers
 
-[issues-shield]: https://img.shields.io/github/issues/Rickybarb5/Blazored.Diagrams.svg?style=for-the-badge
-[issues-url]: https://github.com/Rickybarb5/Blazored.Diagrams/issues
+[issues-shield]: https://img.shields.io/github/issues/Rickybarb5/Blazor.Flows.svg?style=for-the-badge
+[issues-url]: https://github.com/Rickybarb5/Blazor.Flows/issues
 
-[license-shield]: https://img.shields.io/github/license/Rickybarb5/Blazored.Diagrams.svg?style=for-the-badge
-[license-url]: https://github.com/Rickybarb5/Blazored.Diagrams/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/github/license/Rickybarb5/Blazor.Flows.svg?style=for-the-badge
+[license-url]: https://github.com/Rickybarb5/Blazor.Flows/blob/master/LICENSE.txt
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew

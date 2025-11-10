@@ -1,0 +1,19 @@
+@page "/Experiments"
+
+<MudPaper Class="mud-height-full" Elevation="4">
+    <DiagramContainer DiagramService="Service"></DiagramContainer>
+</MudPaper>
+@code {
+    [Inject]
+    private IDiagramService Service { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Service.AddNode(new PortExperiment());
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+}

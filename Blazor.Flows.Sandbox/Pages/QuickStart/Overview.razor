@@ -1,0 +1,112 @@
+@page "/"
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="my-8">
+    <MudGrid Justify="Justify.Center">
+
+        <MudItem xs="12" sm="10">
+            <MudCard Elevation="8" Outlined="true">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h4" Color="Color.Primary">🚀 Get Started</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTimeline  TimelineAlign="TimelineAlign.Default" TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start">
+
+                        <MudTimelineItem Color="Color.Primary" Size="Size.Medium">
+                                <MudText Typo="Typo.h6">Step 1: Install NuGet Package</MudText>
+                                <MudText Class="mb-2">Add the core package to your Blazor project:</MudText>
+                                <CodeHighlighter Code="dotnet add package Blazor.Flows" Language="powershell"></CodeHighlighter>
+                        </MudTimelineItem>
+
+                        <MudTimelineItem Color="Color.Secondary" Size="Size.Medium">
+                                <MudText Typo="Typo.h6">Step 2: Register Services</MudText>
+                                <MudText Class="mb-2">In your `Program.cs` or `Startup.cs`, register the required services:</MudText>
+                                <CodeHighlighter Code="@($"builder.Services.{nameof(BlazorFlowsExtensions.AddBlazorFlows)}();")" Language="csharp"></CodeHighlighter>
+                                <MudText Class="mb-2">In your `index.html` or `_Host.cs` add:</MudText>
+                                <CodeHighlighter Code="@($"<script src=\"_content/Blazor.Flows/Blazor.Flows.js\"></script>")" Language="markup"></CodeHighlighter>
+                                @* <CodeHighlighter Code="@($"<link href=\"_content/Blazor.Flows/Blazor.Flows.css\" rel=\"stylesheet\"/>")" Language="markup"></CodeHighlighter> *@
+                                
+                        </MudTimelineItem>
+                        <MudTimelineItem Color="Color.Success" Size="Size.Medium">
+                            <MudText Typo="Typo.h6">Step 3: Start developing!</MudText>
+                        </MudTimelineItem>
+                    </MudTimeline>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" Class="my-6"></MudItem>
+
+        <MudItem xs="12" sm="10">
+            <MudCard Elevation="8" Outlined="true">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h4" Color="Color.Tertiary">✨ Core Features</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="mb-4">Components & Capabilities</MudText>
+                    <MudList T="object" Dense="true">
+                        <MudListItem Icon="@Icons.Material.Filled.Layers" >
+                            <b>Layers</b> - Allows separation and organization of all diagram components.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.CropSquare">
+                            <b>Nodes</b> - Objects that represent an element, entity, or component.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.GroupWork">
+                            <b>Groups</b> -Group multiple components together for easy management.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.PrivateConnectivity">
+                            <b>Ports</b> - Connection points on nodes for creating links.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.Timeline">
+                            <b>Links</b> - Create links between ports by dragging the mouse.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.ControlPoint">
+                            <b>Panning</b> - Changes the position of the diagram view using the mouse.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.ZoomIn">
+                            <b>Zooming</b> - Scale the diagram view in and out via mouse scroll.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.Mouse">
+                            <b>Selection & Multi-Selection</b> - Select diagram objects using the mouse and keyboard controls.
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.DeleteForever">
+                            <b>Deletion with Key</b> - Delete items from the diagram using a keyboard press (e.g., Delete key).
+                        </MudListItem>
+                        <MudDivider />
+                        <MudListItem Icon="@Icons.Material.Filled.EventNote">
+                            <b>Logging</b> - Log diagram events so you always know what is happening in the background.
+                        </MudListItem>
+                    </MudList>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" Class="my-6"></MudItem>
+
+        <MudItem xs="12" sm="10">
+            <MudCard Elevation="8" Outlined="true">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h4" Color="Color.Secondary">🔗 Source Code</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body1">
+                        Check the source code, contribute, and request new features on GitHub:
+                    </MudText>
+                    <div class="mt-4">
+                        <MudLink Href="https://github.com/Rickybarb5/Blazor.Flows" Target="_blank" Typo="Typo.h6" Color="Color.Primary">
+                            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="mr-2" />
+                            Rickybarb5/Blazor.Flows
+                        </MudLink>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

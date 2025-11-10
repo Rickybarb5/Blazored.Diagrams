@@ -1,0 +1,34 @@
+@using Blazor.Flows.Sandbox.Pages.Examples.CalculatorExample.Nodes
+
+<MudCard Elevation="4" 
+         Outlined="true" 
+         Style="width: 180px; -webkit-user-select: none;-ms-user-select: none;user-select: none;"
+         Class="mb-2">
+    
+    <MudCardHeader Class="mud-theme-primary white--text py-2 drag-handle">
+        <MudText Typo="Typo.subtitle1" Class="ml-2">
+            🔢 Number Input
+        </MudText>
+    </MudCardHeader>
+
+    <MudCardContent Class="pa-3">
+        <MudNumericField T="decimal?" 
+                         Placeholder="Enter Value" 
+                         Variant="Variant.Filled" 
+                         Margin="Margin.Dense"
+                         Required="true" 
+                         Immediate="true" 
+                         @bind-Value="Node.NumberResult"
+                         Adornment="Adornment.Start"
+                         AdornmentIcon="@Icons.Material.Filled.Calculate"
+                         HideSpinButtons="true">
+        </MudNumericField>
+    </MudCardContent>
+    <MudCardActions Class="pa-2">
+        <MudText Typo="Typo.caption" Color="Color.Secondary">Output Port Ready</MudText>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter] public required NumberNode Node { get; set; }
+}

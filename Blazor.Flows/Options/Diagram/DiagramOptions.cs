@@ -1,0 +1,23 @@
+using Blazor.Flows.Interfaces;
+using Blazor.Flows.Options.Behaviours;
+
+namespace Blazor.Flows.Options.Diagram;
+
+/// <inheritdoc />
+public class DiagramOptions : IDiagramOptions
+{
+    /// <inheritdoc />
+    public IDiagramStyleOptions Style { get; set; } = new DiagramStyleOptions();
+    
+    /// <inheritdoc />
+    public CurvedLinkOptions CurvedLinkOptions { get; set; } = new();
+    
+    /// <inheritdoc />
+    public LineLinkOptions LineLinkOptions { get; set; } = new();
+    
+    /// <inheritdoc />
+    public OrthogonalLinkOptions OrthogonalLinkOptions { get; set; } = new();
+
+    /// <inheritdoc />
+    public List<IBehaviourOptions> BehaviourOptions { get; set; } = [];
+}

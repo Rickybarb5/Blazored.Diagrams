@@ -35,7 +35,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
       
     - name: Run tests
-      run: dotnet test Blazored.Diagrams.Test/Blazored.Diagrams.Test.csproj --no-build --configuration Release --verbosity normal
+      run: dotnet test Blazor.Flows.Test/Blazor.Flows.Test.csproj --no-build --configuration Release --verbosity normal
 
   build-and-publish-nuget:
     name: Build and Publish NuGet Package
@@ -55,10 +55,10 @@ jobs:
         run: dotnet restore
 
       - name: Build RCL
-        run: dotnet build Blazored.Diagrams/Blazored.Diagrams.csproj --configuration Release --no-restore
+        run: dotnet build Blazor.Flows/Blazor.Flows.csproj --configuration Release --no-restore
 
       - name: Pack NuGet package (use version from .csproj)
-        run: dotnet pack Blazored.Diagrams/Blazored.Diagrams.csproj --configuration Release --no-build --output ./artifacts
+        run: dotnet pack Blazor.Flows/Blazor.Flows.csproj --configuration Release --no-build --output ./artifacts
 
       - name: Publish to NuGet
         run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
@@ -88,16 +88,16 @@ jobs:
       run: dotnet restore
       
     - name: Publish Blazor WASM
-      run: dotnet publish Blazored.Diagrams.Sandbox/Blazored.Diagrams.Sandbox.csproj -c Release -o publish --nologo -p:GHPages=true
+      run: dotnet publish Blazor.Flows.Sandbox/Blazor.Flows.Sandbox.csproj -c Release -o publish --nologo -p:GHPages=true
       
     - name: Update base href and all paths
       working-directory: publish/wwwroot
       run: |
         # Update base href
-        find . -name "index.html" -exec sed -i 's|base href="/"|base href="/Blazored.Diagrams/"|g' {} \;
+        find . -name "index.html" -exec sed -i 's|base href="/"|base href="/Blazor.Flows/"|g' {} \;
         # Also check for variations
-        find . -name "index.html" -exec sed -i 's|<base href="/" />|<base href="/Blazored.Diagrams/" />|g' {} \;
-        find . -name "index.html" -exec sed -i "s|<base href='/' />|<base href='/Blazored.Diagrams/' />|g" {} \;
+        find . -name "index.html" -exec sed -i 's|<base href="/" />|<base href="/Blazor.Flows/" />|g' {} \;
+        find . -name "index.html" -exec sed -i "s|<base href='/' />|<base href='/Blazor.Flows/' />|g" {} \;
       
     - name: Copy index.html to 404.html
       run: cp publish/wwwroot/index.html publish/wwwroot/404.html

@@ -1,0 +1,36 @@
+
+<MudCard>
+    <MudCardContent>
+        <MudList T="string">
+            @for(var i =0;i<Node.Ports.Count;i++)
+            {
+                var i1 = i;
+                <div style="display: flex;flex-direction: row">
+                    <PortContainer Port="Node.Ports.ElementAt(i1)"></PortContainer>
+                    <MudListItem>
+                        @items.ElementAt(i1)
+                    </MudListItem>
+                </div>
+               
+            }
+        </MudList>
+    </MudCardContent>
+    <MudCardActions>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddItem"></MudIconButton>
+    </MudCardActions>
+</MudCard>
+@code {
+
+    [CascadingParameter]
+    public IDiagramService Service { get; set; }
+    [Parameter]
+    public INode Node { get; set; }
+    List<string> items = [];
+
+    private void AddItem(MouseEventArgs obj)
+    {
+        items.Add($"Item {items.Count + 1}");
+        Service.AddPortTo(Node, new Port() { Alignment = PortAlignment.Custom });
+    }
+
+}

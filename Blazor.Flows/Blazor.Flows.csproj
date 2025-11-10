@@ -1,0 +1,121 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>Blazor.Flows</PackageId>
+        <Version>0.0.1</Version>
+        <PackageVersion>0.0.1</PackageVersion>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="wwwroot\Blazor.Flows.js">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Ports\Port.Features.cs">
+            <DependentUpon>Port.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Links\LinkFeatures.cs">
+            <DependentUpon>Link.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Diagrams\Diagram.Features.cs">
+            <DependentUpon>Diagram.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Events\EventAggregator.Propagation.cs">
+          <DependentUpon>EventAggregator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Options\Behaviours\CurvedLinkOptions.cs">
+          <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Options\Behaviours\LineLinkOptions.cs">
+          <DependentUpon>DrawLinkBehaviourOptions.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Positioning.cs">
+          <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Ports\Port.Events.cs">
+            <DependentUpon>Port.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Nodes\Node.Features.cs">
+          <DependentUpon>Node.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Nodes\Node.Events.cs">
+          <DependentUpon>Node.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Links\Link.Events.cs">
+          <DependentUpon>Link.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Groups\GroupFeatures.cs">
+          <DependentUpon>Group.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Groups\Group.Events.cs">
+          <DependentUpon>Group.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Diagrams\Diagram.Events.cs">
+          <DependentUpon>Diagram.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Addcs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Removecs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Add.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Remove.cs">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Serialization">
+            <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Parameters.cs">
+          <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Serialization.cs">
+          <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Services\Diagrams\DiagramService.Layers.cs">
+          <DependentUpon>DiagramService.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(MSBuildProjectName).Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Components\Renderers\GroupRenderer.razor" />
+      <UpToDateCheckInput Remove="Components\Renderers\NodeRenderer.razor" />
+      <UpToDateCheckInput Remove="Components\Renderers\PortRenderer.razor" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\Readme.md">
+        <Link>Readme.md</Link>
+          
+      </Content>
+    </ItemGroup>
+
+</Project>

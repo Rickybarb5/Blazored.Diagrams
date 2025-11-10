@@ -1,0 +1,240 @@
+@page "/group-overview"
+@using Blazor.Flows.Events
+@implements IDisposable
+
+<MudContainer MaxWidth="MaxWidth.False" Style="height:100%; padding-top: 20px;">
+    <MudGrid Style="height:100%">
+
+        <MudItem xs="12" md="6" Style="height:100%;">
+            <MudPaper Class="pa-4 mud-height-full d-flex flex-column overflow-y-auto" Elevation="4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-4">Groups</MudText>
+
+                <MudText Typo="Typo.subtitle1" Class="mb-3">
+                    Groups allow you to create **hierarchical structures** within your diagram. Drag the outer group on the right to see how its children automatically follow.
+                </MudText>
+
+                <MudExpansionPanels MultiExpansion="true">
+
+                    <MudExpansionPanel Text="Initialization (C#)" Expanded="true">
+                        <CodeHighlighter Language="csharp" Code="@initializationCode"></CodeHighlighter>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Selected Group Actions" Expanded="true">
+                        <MudText Typo="Typo.h6" Class="mt-4 mb-2">Actions for Selected Group</MudText>
+
+                        @if (_selectedGroup is not null)
+                        {
+                            <MudAlert Severity="Severity.Info" Dense="true" Class="mb-3">
+                                Group Selected: **@_selectedGroup.Id**
+                            </MudAlert>
+
+                            <MudStack Row="true" Spacing="2" Class="my-3 flex-wrap">
+                                <MudButton OnClick="AddNodeToSelectedGroup"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           StartIcon="@Icons.Material.Filled.Add"
+                                           Disabled="@(_selectedGroup == null)">
+                                    Add Node
+                                </MudButton>
+
+                                <MudButton OnClick="AddPortToSelectedGroup"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Secondary"
+                                           StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                                           Disabled="@(_selectedGroup == null)">
+                                    Add Port (Right)
+                                </MudButton>
+                            </MudStack>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Warning" Dense="true">
+                                Click any group to select it and enable actions.
+                            </MudAlert>
+                        }
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel Text="Global Group Actions" Expanded="true">
+                        <MudStack Row="true" Spacing="2" Class="my-3 flex-wrap">
+                            <MudButton OnClick="MoveOuterGroup"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.GpsFixed"
+                                       Disabled="@(_outerGroup == null)">
+                                Move Outer Group (20, 20)
+                            </MudButton>
+
+                            <MudButton OnClick="ToggleChildGroupVisibility"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Dark"
+                                       StartIcon="@(_childGroup?.IsVisible ?? false ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                       Disabled="@(_childGroup == null)">
+                                Toggle Child Group Visibility
+                            </MudButton>
+
+                            <MudButton OnClick="RemoveChildNode"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Warning"
+                                       StartIcon="@Icons.Material.Filled.Delete"
+                                       Disabled="@(_childNode == null)">
+                                Remove Child Node
+                            </MudButton>
+                        </MudStack>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6" Style="height:100%">
+            <MudPaper Class="mud-height-full" Elevation="4">
+                <DiagramContainer DiagramService="Service"></DiagramContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+    [Inject] public IDiagramService Service { get; set; } = null!;
+
+    private Group? _outerGroup;
+    private Group? _childGroup;
+    private Node? _childNode;
+    private IGroup? _selectedGroup; // Tracks the single selected group
+    private IDisposable? _selectionSubscription; // Holds the event subscription
+
+    protected override Task OnInitializedAsync()
+    {
+        // 1. Create the Outer Group (Layer-level)
+        _outerGroup = new Group();
+        _outerGroup.SetPosition(100, 100);
+        _outerGroup.SetSize(600, 400);
+        Service.AddGroup(_outerGroup);
+
+        // 2. Create the Child Group (Nested)
+        _childGroup = new Group();
+        _childGroup.SetPosition(150, 150);
+        _childGroup.SetSize(300, 200);
+        Service.AddGroupTo(_outerGroup, _childGroup);
+
+        // 3. Create the Child Node (Nested inside the Child Group)
+        _childNode = new Node();
+        _childNode.SetPosition(200, 200);
+        Service.AddNodeTo(_childGroup, _childNode);
+
+        // 4. Add a Node directly to the Outer Group
+        var siblingNode = new Node();
+        siblingNode.SetPosition(500, 150);
+        Service.AddNodeTo(_outerGroup, siblingNode);
+
+        // 5. Subscribe to Group Selection Changes to update the UI
+        _selectionSubscription = Service.Events.SubscribeTo<GroupSelectionChangedEvent>( UpdateSelectedGroup);
+
+        // Find the single currently selected group across all layers
+        // We use FirstOrDefault as we'll only display actions for one selected group.
+        _selectedGroup = Service.Diagram.Layers
+            .SelectMany(l => l.AllGroups)
+            .FirstOrDefault(g => g.IsSelected);
+
+        return base.OnInitializedAsync();
+    }
+
+    /// <summary>
+    /// Finds the first selected group in the diagram to update the UI controls.
+    /// </summary>
+    private void UpdateSelectedGroup(GroupSelectionChangedEvent ev)
+    {
+        if (ev.Model.IsSelected)
+        {
+            _selectedGroup = ev.Model;
+        }
+        else
+        {
+            _selectedGroup = null;
+        }
+        StateHasChanged();
+    }
+
+    // --- New Action Methods ---
+
+    private void AddNodeToSelectedGroup()
+    {
+        if (_selectedGroup is not null)
+        {
+            // Calculate a position slightly offset from the top-left of the group
+            int x = _selectedGroup.PositionX + _selectedGroup.Padding + 20;
+            int y = _selectedGroup.PositionY + _selectedGroup.Padding + 20;
+
+            var newNode = new Node();
+            newNode.SetPosition(x, y);
+
+            // Add the new node to the selected group's collection
+            Service.AddNodeTo(_selectedGroup, newNode);
+
+            // Force the group component to redraw to account for the new child
+            Service.Events.Publish(new GroupRedrawEvent(_selectedGroup));
+        }
+    }
+
+    private void AddPortToSelectedGroup()
+    {
+        if (_selectedGroup is not null)
+        {
+            // Add a new port to the group on the right side
+            var newPort = new Port { Alignment = PortAlignment.Right };
+
+            // Add the new port to the selected group's port collection
+            Service.AddPortTo(_selectedGroup, newPort);
+
+            // Force the group component to redraw to account for the new port
+            Service.Events.Publish(new GroupRedrawEvent(_selectedGroup));
+        }
+    }
+
+    // --- Existing Live Action Methods ---
+
+    private void MoveOuterGroup()
+    {
+        _outerGroup?.SetPosition(20, 20);
+    }
+
+    private void ToggleChildGroupVisibility()
+    {
+        if (_childGroup != null)
+        {
+            _childGroup.IsVisible = !_childGroup.IsVisible;
+        }
+    }
+
+    private void RemoveChildNode()
+    {
+        if (_childNode != null)
+        {
+            Service.RemoveNode(_childNode);
+            _childNode = null;
+        }
+    }
+
+    // --- C# Code Snippet for Display ---
+    private const string initializationCode =
+        @"// 1. Create Models
+var outerGroup = new Group();
+var childGroup = new Group();
+var node = new Node();
+
+// 2. Add to the Diagram Layer
+Service.AddGroup(outerGroup); 
+
+// 3. Nest the models
+Service.AddAddGroupTo(outerGroup, childGroup);
+Service.AddNodeTo(childGroup, node);
+
+// Now, dragging 'outerGroup' will drag all other models.";
+
+    public void Dispose()
+    {
+        _selectionSubscription?.Dispose();
+    }
+
+}

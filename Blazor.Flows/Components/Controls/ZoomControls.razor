@@ -1,0 +1,138 @@
+@using Blazor.Flows.Options.Behaviours
+@using Blazor.Flows.Services.Diagrams
+
+@if (IsVisible)
+{
+    <div class="@ContainerClass">
+
+        <button @onclick="ZoomIn"
+                disabled="@IsZoomLimitReached(ZoomDirection.In)"
+                title="Zoom In"
+                class="@GetButtonClass(ZoomDirection.In)">
+            +
+        </button>
+
+        <div @onclick="ResetZoom"
+             title="Reset Zoom (100%)"
+             class="@DisplayClass">
+            @($"{(Service.Diagram.Zoom * 100):0}%")
+        </div>
+
+        <button @onclick="ZoomOut"
+                disabled="@IsZoomLimitReached(ZoomDirection.Out)"
+                title="Zoom Out"
+                class="@GetButtonClass(ZoomDirection.Out)">
+            &minus;
+        </button>
+    </div> 
+}
+@code {
+    [CascadingParameter] private IDiagramService Service { get; set; } = null!;
+
+    /// <summary>
+    /// Css class for the container of the control.
+    /// </summary>
+    [Parameter]
+    public string ContainerClass { get; set; } = "diagram-zoom-container";
+
+    /// <summary>
+    /// Css class for the zoom in button
+    /// </summary>
+    [Parameter]
+    public string ZoomInClass { get; set; } = "zoom-in-button";
+
+    /// <summary>
+    /// Css class for the zoom in button disabled state.
+    /// </summary>
+    [Parameter]
+    public string ZoomInDisabledClass { get; set; } = "zoom-in-disabled";
+
+    /// <summary>
+    /// Css class for the zoom out button
+    /// </summary>
+    [Parameter]
+    public string ZoomOutClass { get; set; } = "zoom-out-button";
+
+    /// <summary>
+    /// Css class for the zoom out button disabled state.
+    /// </summary>
+    [Parameter]
+    public string ZoomOutDisabledClass { get; set; } = "zoom-out-disabled";
+
+    /// <summary>
+    /// Css class for the zoom display section.
+    /// </summary>
+    [Parameter]
+    public string DisplayClass { get; set; } = "zoom-display";
+
+    /// <summary>
+    /// Shows/Hides the control
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    private enum ZoomDirection
+    {
+        In,
+        Out
+    }
+    private ZoomBehaviourOptions _options = new();
+
+
+    /// <inheritdoc />
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _options = Service.Behaviours.GetBehaviourOptions<ZoomBehaviourOptions>()!;
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    // --- Styling Logic ---
+
+    private string GetButtonClass(ZoomDirection direction)
+    {
+        bool isDisabled = IsZoomLimitReached(direction);
+
+        var baseClass = direction == ZoomDirection.In ? ZoomInClass : ZoomOutClass;
+
+        var disabledClass = direction == ZoomDirection.In ? ZoomInDisabledClass : ZoomOutDisabledClass;
+
+        if (isDisabled)
+        {
+            // If disabled, append the disabled class
+            return $"{baseClass} {disabledClass}";
+        }
+
+        return baseClass;
+    }
+
+    private void ZoomIn()
+    {
+        Service.SetZoom(Service.Diagram.Zoom + _options.ZoomStep);
+    }
+
+    private void ZoomOut()
+    {
+        Service.SetZoom(Service.Diagram.Zoom - _options.ZoomStep);
+    }
+
+    private void ResetZoom()
+    {
+        Service.SetZoom(1);
+    }
+
+    private bool IsZoomLimitReached(ZoomDirection direction)
+    {
+        // Use the fetched options
+        return direction switch
+        {
+            ZoomDirection.In => Service.Diagram.Zoom >= _options.MaxZoom,
+            ZoomDirection.Out => Service.Diagram.Zoom <= _options.MinZoom,
+            _ => false
+        };
+    }
+
+}
