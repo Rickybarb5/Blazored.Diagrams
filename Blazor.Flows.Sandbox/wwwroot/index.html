@@ -5,7 +5,16 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
     <title>Blazor.Flows.Sandbox</title>
-    <base href="/Blazor.Flows" />
+    <base href="/" />
+    <script>
+        // Fix base path automatically if hosted under a subdirectory (like GitHub Pages)
+        (function() {
+            const base = document.querySelector('base');
+            if (window.location.hostname.endsWith('github.io')) {
+                base.setAttribute('href', '/Blazor.Flows/');
+            }
+        })();
+    </script>
     <link href="css/app.css" rel="stylesheet"/>
     <link href="favicon.png" rel="icon" type="image/png"/>
     <link href="Blazor.Flows.Sandbox.styles.css" rel="stylesheet"/>
