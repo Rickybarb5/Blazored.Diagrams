@@ -134,7 +134,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Ricardo - [@RickyBarb5](https://github.com/RickyBarb5)
+Baboo - [@RickyBarb5](https://github.com/RickyBarb5)
 
 Project Link: [https://github.com/Rickybarb5/Blazor.Flows](https://github.com/Rickybarb5/Blazor.Flows)
 
