@@ -10,10 +10,10 @@
         <Version>0.0.2</Version>
         <PackageVersion>0.0.2</PackageVersion>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>Readme-nuget.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="..\artifacts\Readme-nuget.md" Pack="true" PackagePath="\"/>
+        <None Include="Readme-nuget.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
