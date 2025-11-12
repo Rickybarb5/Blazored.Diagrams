@@ -40,4 +40,8 @@ public partial class Node
     [JsonIgnore]
     public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; } =
         new TypedEvent<PortRemovedFromNodeEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<NodeZIndexChanged> OnZIndexChanged { get; init; } = new TypedEvent<NodeZIndexChanged>();
 }

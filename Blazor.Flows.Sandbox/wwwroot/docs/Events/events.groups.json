@@ -298,6 +298,17 @@
     ]
   },
   {
+    "Name": "GroupZIndexChangedEvent",
+    "Summary": "Event triggered when <see cref=\"!:IGroup.ZIndex\" /> changes;",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "IGroup",
+        "Documentation": "The group that triggered the event."
+      }
+    ]
+  },
+  {
     "Name": "NodeAddedToGroupEvent",
     "Summary": "Event triggered when a node is added to a group.",
     "Parameters": [

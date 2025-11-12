@@ -33,6 +33,12 @@
                             <MudNumericField Label="Padding" @bind-Value="pad.Padding" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"/>
                         }
 
+                        @* Z-Index *@
+                        @if (SelectedModel is IDepth d)
+                        {
+                            <MudNumericField Label="Z-Index" @bind-Value="d.ZIndex" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"/>
+                        }
+
                         @* IVisible Interface *@
                         @if (SelectedModel is IVisible vis)
                         {
@@ -172,32 +178,32 @@
                                        Label="Layer Visible"
                                        Class="ml-4"/>
 
-                                @foreach (var group in layer.AllGroups)
-                                {
-                                    <MudListItem T="object" Icon="@Icons.Material.Filled.GroupWork" OnClick="@(() => SelectModel(group))" Class="text-sm">
-                                        Group: @(group.Id)
-                                    </MudListItem>
-                                }
+                            @foreach (var group in layer.AllGroups)
+                            {
+                                <MudListItem T="object" Dense="true" Icon="@Icons.Material.Filled.GroupWork" OnClick="@(() => SelectModel(group))" Class="text-sm">
+                                    <MudText Typo="Typo.caption">Group</MudText>
+                                </MudListItem>
+                            }
 
-                                @foreach (var node in layer.AllNodes)
-                                {
-                                    <MudListItem T="object" Icon="@Icons.Material.Filled.Square" OnClick="@(() => SelectModel(node))" Class="text-sm">
-                                        Node: @(node.Id)
-                                    </MudListItem>
-                                }
-                            
-                                @foreach (var link in layer.AllLinks)
-                                {
-                                    <MudListItem T="object" Icon="@Icons.Material.Filled.Segment" OnClick="@(() => SelectModel(link))" Class="text-sm">
-                                        Link: @(link.SourcePort.Parent.Id) -> @(link.TargetPort?.Parent.Id ?? "Floating")
-                                    </MudListItem>
-                                }
+                            @foreach (var node in layer.AllNodes)
+                            {
+                                <MudListItem Dense="true" T="object" Icon="@Icons.Material.Filled.Square" OnClick="@(() => SelectModel(node))" Class="text-sm">
+                                    <MudText Typo="Typo.caption">Node</MudText>
+                                </MudListItem>
+                            }
+
+                            @foreach (var link in layer.AllLinks)
+                            {
+                                <MudListItem T="object" Dense="true" Icon="@Icons.Material.Filled.Segment" OnClick="@(() => SelectModel(link))" Class="text-sm">
+                                    <MudText Typo="Typo.caption">Link</MudText>
+                                </MudListItem>
+                            }
                         </MudExpansionPanel>
                     }
                     <MudExpansionPanel Text="Controls">
-                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showLoggingControls" Label="Show Logging Control"></MudSwitch>
-                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showMinimapControls" Label="Show Minimap Control"></MudSwitch>
-                            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showZoomControls" Label="Show Zoom Control"></MudSwitch>
+                        <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showLoggingControls" Label="Show Logging Control"></MudSwitch>
+                        <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showMinimapControls" Label="Show Minimap Control"></MudSwitch>
+                        <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_showZoomControls" Label="Show Zoom Control"></MudSwitch>
                     </MudExpansionPanel>
 
                 </MudExpansionPanels>
@@ -249,20 +255,25 @@
     {
         if (SelectedModel is null) return;
 
-        if (SelectedModel is Node node)
+        if (SelectedModel is INode node)
         {
             DiagramService.RemoveNode(node);
             Snackbar.Add($"Node deleted: {node.Id}", Severity.Error);
         }
-        else if (SelectedModel is Group group)
+        else if (SelectedModel is IGroup group)
         {
             DiagramService.RemoveGroup(group);
             Snackbar.Add($"Group deleted: {group.Id}", Severity.Error);
         }
-        else if (SelectedModel is Link link)
+        else if (SelectedModel is ILink link)
         {
             DiagramService.RemoveLink(link);
             Snackbar.Add($"Link deleted: {link.Id}", Severity.Error);
+        }
+        else if (SelectedModel is IPort port)
+        {
+            DiagramService.RemovePort(port);
+            Snackbar.Add($"Port deleted: {port.Id}", Severity.Error);
         }
 
         SelectedModel = null;

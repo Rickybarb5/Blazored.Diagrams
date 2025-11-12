@@ -124,6 +124,8 @@ public class ComponentRegistryTests
             throw new NotImplementedException();
         }
 
+        public ITypedEvent<NodeZIndexChanged> OnZIndexChanged { get; init; }
+
         public void SetPositionInternal(int x, int y)
         {
             throw new NotImplementedException();
@@ -178,6 +180,7 @@ public class ComponentRegistryTests
 
         public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
         public Rect Bounds { get; }
+        public int ZIndex { get; set; }
     }
 
     private abstract class BaseTestNode : Node, IHasComponent<TestComponent>;

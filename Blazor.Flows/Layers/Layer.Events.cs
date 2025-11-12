@@ -45,4 +45,8 @@ public partial class Layer
     /// <inheritdoc />
     [JsonIgnore]
     public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
+    
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<LayerZIndexChanged> OnZIndexChanged { get; init; } = new TypedEvent<LayerZIndexChanged>();
 }

@@ -170,3 +170,9 @@ public record GroupAddedToGroupEvent(IGroup ParentModel, IGroup AddedGroup) : Gr
 /// <param name="ParentModel">The parent group from which the child group was removed.</param>
 /// <param name="RemovedGroup">The <see cref="IGroup"/> that was removed.</param>
 public record GroupRemovedFromGroupEvent(IGroup ParentModel, IGroup RemovedGroup) : GroupEvent(ParentModel);
+
+/// <summary>
+/// Event triggered when <see cref="IGroup.ZIndex"/> changes;
+/// </summary>
+/// <param name="Model">The group that triggered the event.</param>
+public record GroupZIndexChangedEvent(IGroup Model): GroupEvent(Model);

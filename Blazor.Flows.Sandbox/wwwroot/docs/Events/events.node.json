@@ -245,6 +245,17 @@
     ]
   },
   {
+    "Name": "NodeZIndexChanged",
+    "Summary": "Event triggered when <see cref=\"!:INode.ZIndex\" /> changes;",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "INode",
+        "Documentation": "The <see cref=\"T:Blazor.Flows.Nodes.INode\" /> that triggered the event."
+      }
+    ]
+  },
+  {
     "Name": "PortAddedToNodeEvent",
     "Summary": "Event triggered when a port is added to a node's collection.",
     "Parameters": [

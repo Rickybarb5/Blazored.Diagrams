@@ -1,22 +1,26 @@
 @using Blazor.Flows.Services.Diagrams
 @implements IDisposable
-@if (Layer is not null && Layer.IsVisible )
+@implements IDepth;
+@if (Layer is not null && Layer.IsVisible)
 {
     <div id="@(ContainerId)">
-            @foreach (var node in Layer.Nodes)
-            {
-                <NodeContainer Node="node"></NodeContainer>
-            }
-
-            @foreach (var group in Layer.Groups)
-            {
-                <GroupContainer Group="group"></GroupContainer>
-            }
-
-            @foreach (var link in Layer.AllLinks)
-            {
-                <LinkContainer Link="link"></LinkContainer>
-            }
+        @* @key is important otherwise there are rendering errors*@
+        @foreach (var item in Layer.AllGroups)
+        {
+            <GroupContainer Group="@item" @key="item.Id"></GroupContainer>
+        }
+        @foreach (var item in Layer.AllNodes)
+        {
+            <NodeContainer Node="@item" @key="item.Id"></NodeContainer>
+        }
+        @foreach (var item in Layer.AllLinks)
+        {
+            <LinkContainer Link="@item" @key="item.Id"></LinkContainer>
+        }
+        @foreach (var item in Layer.AllPorts)
+        {
+            <PortContainer Port="@item" @key="item.Id"></PortContainer>
+        }
     </div>
 }
 
@@ -25,7 +29,8 @@
     /// <summary>
     /// Cascading from <see cref="DiagramContainer"/>.
     /// </summary>
-    [CascadingParameter] public required IDiagramService DiagramService { get; set; }
+    [CascadingParameter]
+    public required IDiagramService DiagramService { get; set; }
 
     /// <summary>
     /// Layer to be rendered.
@@ -34,12 +39,17 @@
     [EditorRequired]
     public required ILayer Layer { get; set; }
 
-    
+    /// <inheritdoc />
+    [Parameter]
+    [EditorRequired]
+    public required int ZIndex { get; set; }
+
     /// <summary>
-    /// ID of the node container
+    /// ID of the layer container
     /// </summary>
     public string ContainerId => $"layer-container-{Layer.Id}";
-    
+
+    private List<IDisposable> _subscriptions = [];
     /// <inheritdoc />
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,9 +68,6 @@
     {
         StateHasChanged();
     }
-    
-
-    private List<IDisposable> _subscriptions = [];
 
     /// <inheritdoc />
     public void Dispose()

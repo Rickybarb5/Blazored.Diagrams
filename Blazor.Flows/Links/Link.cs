@@ -18,6 +18,7 @@ public abstract partial class Link : ILink, IHasComponent<DefaultLinkComponent>
     private int _targetPositionY;
     private int _width;
     private int _height;
+    private int _zIndex;
 
     /// <inheritdoc />
     public virtual string Id { get; init; } = Guid.NewGuid().ToString();
@@ -172,5 +173,19 @@ public abstract partial class Link : ILink, IHasComponent<DefaultLinkComponent>
     {
         _sourcePort?.OutgoingLinks.RemoveInternal(this);
         _targetPort?.IncomingLinks.RemoveInternal(this);
+    }
+
+    /// <inheritdoc />
+    public int ZIndex
+    {
+        get => _zIndex;
+        set
+        {
+            if (_zIndex != value)
+            {
+                _zIndex = value;
+                OnZIndexChanged.Publish(new (this));
+            }
+        } 
     }
 }

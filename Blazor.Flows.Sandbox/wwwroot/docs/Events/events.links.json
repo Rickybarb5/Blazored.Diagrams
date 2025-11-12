@@ -285,5 +285,16 @@
         "Documentation": "The <see cref=\"T:Microsoft.AspNetCore.Components.Web.WheelEventArgs\" />."
       }
     ]
+  },
+  {
+    "Name": "LinkZIndexChangedEvent",
+    "Summary": "Event triggered when <see cref=\"!:ILink.ZIndex\" /> changes;",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILink",
+        "Documentation": "The <see cref=\"T:Blazor.Flows.Links.ILink\" /> that triggered the event."
+      }
+    ]
   }
 ]

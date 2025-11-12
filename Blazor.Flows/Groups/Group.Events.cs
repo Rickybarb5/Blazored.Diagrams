@@ -82,4 +82,9 @@ public partial class Group
     /// <inheritdoc />
     [JsonIgnore]
     public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } = new TypedEvent<GroupRemovedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<GroupZIndexChangedEvent> OnZIndexChanged { get; init; } =
+        new TypedEvent<GroupZIndexChangedEvent>();
 }

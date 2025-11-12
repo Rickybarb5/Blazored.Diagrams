@@ -23,7 +23,7 @@
       <ProjectReference Include="..\Blazor.Flows\Blazor.Flows.csproj" />
     </ItemGroup>
 
-    <Target Name="GenerateEventDocs" AfterTargets="Build">
+    <Target Name="GenerateEventDocs" AfterTargets="Build" Condition="'$(Configuration)' != 'Release'">
         <Exec Command="dotnet run --project ../Tools/EventDocGenerator/EventDocGenerator.csproj $(ProjectDir)wwwroot\docs\Events"/>
         <Exec Command="dotnet run --project ../Tools/ClassFilesGenerator/ClassFilesGenerator.csproj  $(ProjectDir) $(ProjectDir)wwwroot/docs/Code"/>
     </Target>

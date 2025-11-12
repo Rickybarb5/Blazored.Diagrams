@@ -48,7 +48,7 @@
     /// <summary>
     /// Current container style.
     /// </summary>
-    public string ContainerStyle => $"position:absolute;left:{PositionX}px;top:{PositionY}px;width:{Width}px;height:{Height}px;pointer-events:none;";
+    public string ContainerStyle => $"position:absolute;left:{PositionX}px;top:{PositionY}px;width:{Width}px;height:{Height}px;pointer-events:none;z-index:{Link.ZIndex}";
 
 
     /// <summary>
@@ -88,7 +88,7 @@
             ];
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var size = await Js.GetBoundingClientRect(_componentRef);
-            Link.SetSize((int)(size.Width), (int)(size.Height));
+            Link.SetSize((int)size.Width, (int)size.Height);
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -102,7 +102,7 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        Link.SetSize((int)(obj.Width), (int)(obj.Height));
+        Link.SetSize((int)obj.Width, (int)obj.Height);
     }
 
     /// <inheritdoc />

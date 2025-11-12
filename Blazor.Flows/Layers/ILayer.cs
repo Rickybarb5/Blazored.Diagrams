@@ -13,6 +13,7 @@ namespace Blazor.Flows.Layers;
 /// </summary>
 public interface ILayer : IId,
     IVisible,
+    IDepth,
     INodeContainer,
     IGroupContainer,
     IDisposable
@@ -102,7 +103,11 @@ public ITypedEvent<GroupAddedEvent> OnGroupAdded { get; init; }
     [JsonIgnore]
 public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; } 
     
-    
+    /// <summary>
+    ///     Event triggered when the ZIndex of a Layer changes.
+    /// </summary>
+    [JsonIgnore]
+    public ITypedEvent<LayerZIndexChanged> OnZIndexChanged { get; init; }
 
     /// <summary>
     /// Unselects all models in a layer

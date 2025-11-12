@@ -55,12 +55,14 @@ public class RedrawBehaviour : BaseBehaviour
             _service.Events.SubscribeTo<NodeRemovedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<NodeSizeChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<NodePositionChangedEvent>(e => NotifyRedraw(e.Model)),
+            _service.Events.SubscribeTo<NodeZIndexChanged>(e => NotifyRedraw(e.Model)),
 
             _service.Events.SubscribeTo<GroupAddedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<GroupRemovedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<GroupSizeChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<GroupPositionChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<GroupPaddingChangedEvent>(e => NotifyRedraw(e.Model)),
+            _service.Events.SubscribeTo<GroupZIndexChangedEvent>(e => NotifyRedraw(e.Model)),
 
             _service.Events.SubscribeTo<PortAddedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<PortAddedToGroupEvent>(e => NotifyRedraw(e.Model)),
@@ -69,12 +71,15 @@ public class RedrawBehaviour : BaseBehaviour
             _service.Events.SubscribeTo<PortSizeChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<PortPositionChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<PortJustificationChangedEvent>(e => NotifyRedraw(e.Model)),
+            _service.Events.SubscribeTo<PortZIndexChanged>(e => NotifyRedraw(e.Model)),
 
             _service.Events.SubscribeTo<LinkAddedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkRemovedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkSourcePortChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkTargetPortChangedEvent>(e => NotifyRedraw(e.Model)),
             _service.Events.SubscribeTo<LinkTargetPositionChangedEvent>(e => NotifyRedraw(e.Model)),
+            _service.Events.SubscribeTo<LinkZIndexChangedEvent>(e => NotifyRedraw(e.Model)),
+            
             _service.Events.SubscribeTo<DiagramRedrawEvent>(RedrawFullDiagram),
             _service.Events.SubscribeTo<DiagramSwitchEvent>(RedrawFullDiagram),
         ];

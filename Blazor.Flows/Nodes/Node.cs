@@ -19,6 +19,7 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
     private int _positionX;
     private int _positionY;
     private int _width;
+    private int _zIndex;
 
     /// <summary>
     /// Instantiates a new <see cref="Node"/>
@@ -121,8 +122,21 @@ public partial class Node : INode, IHasComponent<DefaultNodeComponent>
             }
         }
     }
-
-
+    
+    /// <inheritdoc />
+    public int ZIndex
+    {
+        get => _zIndex;
+        set
+        {
+            if (_zIndex != value)
+            {
+                _zIndex = value;
+                OnZIndexChanged.Publish(new (this));
+            }
+        } 
+    }
+    
     /// <inheritdoc />
     public virtual ObservableList<IPort> Ports
     {

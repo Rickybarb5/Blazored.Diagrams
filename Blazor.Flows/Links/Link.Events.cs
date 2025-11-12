@@ -33,4 +33,9 @@ public partial class Link
     [JsonIgnore]
     public ITypedEvent<LinkVisibilityChangedEvent> OnVisibilityChanged { get; init; } =
         new TypedEvent<LinkVisibilityChangedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<LinkZIndexChangedEvent> OnZIndexChanged { get; init; } =
+        new TypedEvent<LinkZIndexChangedEvent>();
 }

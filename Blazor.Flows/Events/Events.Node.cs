@@ -136,3 +136,9 @@ public record NodeDoubleClickedEvent(INode Model, MouseEventArgs Args) : ModelIn
 /// </summary>
 /// <param name="Model">The <see cref="INode"/> that requested the redraw.</param>
 public record NodeRedrawEvent(INode Model) : NodeEvent(Model);
+
+/// <summary>
+/// Event triggered when <see cref="INode.ZIndex"/> changes;
+/// </summary>
+/// <param name="Model">The <see cref="INode"/> that triggered the event.</param>
+public record NodeZIndexChanged(INode Model): NodeEvent(Model);

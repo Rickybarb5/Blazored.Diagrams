@@ -180,8 +180,8 @@
     // New Method: Add Node to Active Layer
     private void AddNodeToActiveLayer()
     {
-        var newX = 50 + (_newNodeCount % 8) * 100; // Simple positioning logic
-        var newY = 450 + (_newNodeCount / 8) * 50;
+        var newX = 50 + _newNodeCount % 8 * 100; // Simple positioning logic
+        var newY = 450 + _newNodeCount / 8 * 50;
 
         var node = new NamedNode { Name = $"New Node on Layer {Service.Diagram.Layers.IndexOf(Service.Diagram.CurrentLayer) + 1}" };
         node.SetPosition(newX, newY);

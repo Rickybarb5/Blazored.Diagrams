@@ -1,5 +1,6 @@
 ﻿using Blazor.Flows.Events;
 using Blazor.Flows.Interfaces;
+using Newtonsoft.Json;
 
 namespace Blazor.Flows.Ports;
 
@@ -8,6 +9,7 @@ namespace Blazor.Flows.Ports;
 /// </summary>
 public interface IPort :
     IId,
+    IDepth,
     IVisible,
     ISize,
     IPosition,
@@ -60,67 +62,86 @@ public interface IPort :
     /// <summary>
     ///     Event triggered when the port alignment changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<PortJustificationChangedEvent> OnPortJustificationChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when PortPosition changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<PortAlignmentChangedEvent> OnPortAlignmentChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the position is changed.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<PortPositionChangedEvent> OnPositionChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the size changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<PortSizeChangedEvent> OnSizeChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the port is assigned to a container.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<PortParentChangedEvent> OnPortParentChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the <see cref="IVisible.IsVisible" /> flag is changed.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<PortVisibilityChangedEvent> OnVisibilityChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when a incoming link is attached to the port.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<IncomingLinkAddedEvent> OnIncomingLinkAdded { get; init; }
 
     /// <summary>
     ///     Event triggered when a incoming link is detached to the port.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<IncomingLinkRemovedEvent> OnIncomingLinkRemoved { get; init; }
 
     /// <summary>
     ///     Event triggered when a outgoing link is attached to the port.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<OutgoingLinkAddedEvent> OnOutgoingLinkAdded { get; init; }
 
     /// <summary>
     ///     Event triggered when a outgoing link is detached to the port.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<OutgoingLinkRemovedEvent> OnOutgoingLinkRemoved { get; init; }
 
     /// <summary>
     ///     Event triggered when a link removed from the port.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkRemovedEvent> OnLinkRemoved { get; init; }
 
     /// <summary>
     ///     Event triggered when a link is added the port.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; }
 
     /// <summary>
     /// Event triggered when a port is selected/unselected.
     /// </summary>
+    [JsonIgnore]
     public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; }
+    
+    /// <summary>
+    /// Event triggered when the <see cref="IPort.ZIndex"/> changes.
+    /// </summary>
+    [JsonIgnore]
+    ITypedEvent<PortZIndexChanged> OnZIndexChanged { get; init; }
 
     /// <summary>
     /// Indicates if link creation is possible from this port.

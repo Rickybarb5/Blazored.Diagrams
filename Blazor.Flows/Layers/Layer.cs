@@ -18,6 +18,7 @@ public partial class Layer : ILayer
     private readonly ObservableList<IGroup> _groups = [];
     private readonly ObservableList<INode> _nodes = [];
     private bool _isVisible = true;
+    private int _zIndex;
 
 
     /// <summary>
@@ -94,6 +95,20 @@ public partial class Layer : ILayer
                 OnVisibilityChanged.Publish(new(this));
             }
         }
+    }
+    
+    /// <inheritdoc />
+    public int ZIndex
+    {
+        get => _zIndex;
+        set
+        {
+            if (_zIndex != value)
+            {
+                _zIndex = value;
+                OnZIndexChanged.Publish(new (this));
+            }
+        } 
     }
 
 

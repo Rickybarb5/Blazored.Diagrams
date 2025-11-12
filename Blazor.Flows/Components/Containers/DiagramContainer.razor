@@ -21,9 +21,10 @@
             @ref="_componentRef"
             style="@(GetContainerStyle())">
             <div style=@($"transform: translate({DiagramService.Diagram.PanX}px,{DiagramService.Diagram.PanY}px) scale({DiagramService.Diagram.Zoom.ToString(_nfi)});transition: transform 0.1s ease-out;")>
-                @foreach (var layer in DiagramService.Diagram.Layers)
+                @for (var idx = 0; idx < DiagramService.Diagram.Layers.Count; idx++)
                 {
-                    <LayerContainer Layer="layer"></LayerContainer>
+                    var zIndex = idx + 1;
+                    <LayerContainer Layer="DiagramService.Diagram.Layers.ElementAt(idx)" ZIndex="zIndex"></LayerContainer>
                 }
             </div>
             @if (ChildContent is not null)
@@ -34,13 +35,12 @@
     </CascadingValue>
 }
 
-
 @code {
     readonly NumberFormatInfo _nfi = new();
     readonly StringBuilder _sb = new();
     private ElementReference _componentRef;
     private List<IDisposable> _subscriptions = [];
-    
+
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
 
     /// <summary>
@@ -83,7 +83,7 @@
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var rect = await Js.GetBoundingClientRect(_componentRef);
             DiagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
-            DiagramService.Diagram.SetSize((int)(rect.Width), (int)(rect.Height));
+            DiagramService.Diagram.SetSize((int)rect.Width, (int)rect.Height);
             await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
             DiagramService.Events.Publish(new DiagramRedrawEvent(DiagramService.Diagram));
             _subscriptions =
@@ -97,7 +97,7 @@
 
     private void OnSizeChanged(ResizeObserverEntry obj)
     {
-        DiagramService.Diagram.SetSize((int)(obj.Width), (int)(obj.Height));
+        DiagramService.Diagram.SetSize((int)obj.Width, (int)obj.Height);
     }
 
     private string GetContainerStyle()
@@ -135,4 +135,5 @@
     {
         StateHasChanged();
     }
+
 }

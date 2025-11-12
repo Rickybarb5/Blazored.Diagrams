@@ -178,3 +178,9 @@ public record PortRedrawEvent(IPort Model) : PortEvent(Model);
 /// </summary>
 /// <param name="Model">The <see cref="IPort"/> whose selection status changed.</param>
 public record PortSelectionChangedEvent(IPort Model) : PortEvent(Model);
+
+/// <summary>
+/// Event triggered when <see cref="IPort.ZIndex"/> changes;
+/// </summary>
+/// <param name="Model">The <see cref="IPort"/> that triggered the event.</param>
+public record PortZIndexChanged(IPort Model): PortEvent(Model);

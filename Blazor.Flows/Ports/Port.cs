@@ -26,6 +26,7 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
     private int _positionY;
     private bool _selected;
     private int _width;
+    private int _zIndex;
 
     /// <summary>
     ///     Instantiates a new <see cref="Port" />
@@ -273,5 +274,20 @@ public partial class Port : IPort, IHasComponent<DefaultPortComponent>
                 OnSelectionChanged.Publish(new(this));
             }
         }
+    }
+    
+    
+    /// <inheritdoc />
+    public int ZIndex
+    {
+        get => _zIndex;
+        set
+        {
+            if (_zIndex != value)
+            {
+                _zIndex = value;
+                OnZIndexChanged.Publish(new (this));
+            }
+        } 
     }
 }

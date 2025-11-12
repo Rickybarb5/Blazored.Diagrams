@@ -15,7 +15,7 @@
         <div @onclick="ResetZoom"
              title="Reset Zoom (100%)"
              class="@DisplayClass">
-            @($"{(Service.Diagram.Zoom * 100):0}%")
+            @($"{Service.Diagram.Zoom * 100:0}%")
         </div>
 
         <button @onclick="ZoomOut"
@@ -24,7 +24,7 @@
                 class="@GetButtonClass(ZoomDirection.Out)">
             &minus;
         </button>
-    </div> 
+    </div>
 }
 @code {
     [CascadingParameter] private IDiagramService Service { get; set; } = null!;
@@ -76,6 +76,7 @@
         In,
         Out
     }
+
     private ZoomBehaviourOptions _options = new();
 
 

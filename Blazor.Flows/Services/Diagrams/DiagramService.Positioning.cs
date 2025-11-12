@@ -26,8 +26,8 @@ public partial class DiagramService
         var innerPositionY = parameters.Container.PositionY + padding;
 
         
-        var innerWidth = parameters.Container.Width - (padding * 2);
-        var innerHeight = parameters.Container.Height - (padding * 2);
+        var innerWidth = parameters.Container.Width - padding * 2;
+        var innerHeight = parameters.Container.Height - padding * 2;
 
         
         var targetCenterX = innerPositionX + innerWidth / 2;

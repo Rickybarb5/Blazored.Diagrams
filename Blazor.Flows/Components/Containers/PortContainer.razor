@@ -4,7 +4,7 @@
 @implements IAsyncDisposable;
 @if (Port is not null && Port.IsVisible)
 {
-    <div style="@($"left:{Port.PositionX}px;top:{Port.PositionY}px;position:absolute;")"
+    <div style="@($"left:{Port.PositionX}px;top:{Port.PositionY}px;position:absolute;z-index:{Port.ZIndex}")"
          @onpointerleave="ctx => DiagramService.Events.Publish(new PortPointerLeaveEvent(Port, ctx))"
          @onpointerdown="ctx => DiagramService.Events.Publish(new PortPointerDownEvent(Port, ctx))"
          @onpointerenter="ctx => DiagramService.Events.Publish(new PortPointerEnterEvent(Port, ctx))"
@@ -47,7 +47,7 @@
         get;
         set;
     }
-
+    
     /// <summary>
     /// ID of the port container.
     /// </summary>
@@ -143,8 +143,8 @@
                 Port.Parent.PositionX + Port.Parent.Width - Port.Width / 2,
                 Port.Parent.PositionY + Port.Parent.Height - Port.Height / 2),
             (PortAlignment.CenterParent, _) => (
-                Port.Parent.PositionX + (Port.Parent.Width / 2) - (Port.Width / 2),
-                Port.Parent.PositionY + (Port.Parent.Height / 2) - (Port.Height / 2)),
+                Port.Parent.PositionX + Port.Parent.Width / 2 - Port.Width / 2,
+                Port.Parent.PositionY + Port.Parent.Height / 2 - Port.Height / 2),
             (PortAlignment.Custom, _) => Port.CustomPositioning(),
             _ => (Port.PositionX, Port.PositionY)
         };

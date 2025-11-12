@@ -3,7 +3,7 @@
 @implements IDisposable
 @if (Group is not null && Group.IsVisible)
 {
-    <div style="@($"left:{Group.PositionX}px;top:{Group.PositionY}px;position:absolute;width:{Group.Width}px;height:{Group.Height}px")"
+    <div style="@($"left:{Group.PositionX}px;top:{Group.PositionY}px;position:absolute;width:{Group.Width}px;height:{Group.Height}px;z-index:{Group.ZIndex}")"
          @onpointerleave="ctx => DiagramService.Events.Publish(new GroupPointerLeaveEvent(Group, ctx))"
          @onpointerdown="ctx => DiagramService.Events.Publish(new GroupPointerDownEvent(Group, ctx))"
          @onpointerenter="ctx => DiagramService.Events.Publish(new GroupPointerEnterEvent(Group, ctx))"
@@ -16,21 +16,6 @@
          id="@(ContainerId)">
         <DynamicComponent Type="@(ComponentRegistry.GetComponentType(Group.GetType()))" Parameters="Parameters"></DynamicComponent>
     </div>
-    
-    @foreach (var node in Group.Nodes)
-    {
-        <NodeContainer Node="node"></NodeContainer>
-    }
-
-    @foreach (var port in Group.Ports)
-    {
-        <PortContainer Port="port"></PortContainer>
-    }
-
-    @foreach (var group in Group.Groups)
-    {
-        <GroupContainer Group="group"></GroupContainer>
-    }
 }
 
 @code {

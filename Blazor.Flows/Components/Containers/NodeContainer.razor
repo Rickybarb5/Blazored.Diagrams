@@ -4,7 +4,7 @@
 @implements IAsyncDisposable
 @if (Node is not null && Node.IsVisible)
 {
-    <div style="@($"left:{Node.PositionX}px;top:{Node.PositionY}px;position:absolute;")"
+    <div style="@($"left:{Node.PositionX}px;top:{Node.PositionY}px;position:absolute;z-index:{Node.ZIndex}")"
          @onpointerleave="ctx => DiagramService?.Events.Publish(new NodePointerLeaveEvent(Node, ctx))"
          @onpointerdown="ctx => DiagramService?.Events.Publish(new NodePointerDownEvent(Node, ctx))"
          @onpointerenter="ctx => DiagramService?.Events.Publish(new NodePointerEnterEvent(Node, ctx))"
@@ -17,11 +17,6 @@
          @ref="_componentRef" id="@(ContainerId)">
         <DynamicComponent Type=@(ComponentRegistry.GetComponentType(Node.GetType())) Parameters="@(Parameters)"></DynamicComponent>
     </div>
-    
-    @foreach (var port in Node.Ports)
-    {
-        <PortContainer Port="port"></PortContainer>
-    }
 }
 
 @code {
@@ -54,7 +49,6 @@
 
     [Inject] private IResizeObserverService ResizeObserverService { get; set; } = null!;
 
-
     private ElementReference _componentRef;
     private List<IDisposable> _subscriptions = [];
     private Dictionary<string, object> Parameters => new() { { nameof(Node), Node } };
@@ -76,7 +70,7 @@
             await ResizeObserverService.ObserveAsync(ContainerId, OnSizeChanged);
             var bounds = await Js.GetBoundingClientRect(_componentRef);
             Bounds = bounds;
-            Node.SetSize((int)(bounds.Width), (int)(bounds.Height));
+            Node.SetSize((int)bounds.Width, (int)bounds.Height);
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -93,7 +87,7 @@
         {
             var bounds = await Js.GetBoundingClientRect(_componentRef);
             Bounds = bounds;
-            Node.SetSize((int)(obj.Width), (int)(obj.Height));
+            Node.SetSize((int)obj.Width, (int)obj.Height);
         });
     }
 

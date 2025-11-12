@@ -12,6 +12,7 @@ namespace Blazor.Flows.Groups;
 public interface IGroup :
     IId,
     IVisible,
+    IDepth,
     INodeContainer,
     IGroupContainer,
     IPortContainer,
@@ -144,6 +145,12 @@ public interface IGroup :
     /// </summary>
     [JsonIgnore]
     public ITypedEvent<GroupRemovedEvent> OnGroupRemoved { get; init; }
+        
+    /// <summary>
+    /// Event triggered when the <see cref="IGroup.ZIndex"/> changes.
+    /// </summary>
+    [JsonIgnore]
+    ITypedEvent<GroupZIndexChangedEvent> OnZIndexChanged { get; init; }
 
     /// <summary>
     ///     Sets the X and Y coordinates on the screen.

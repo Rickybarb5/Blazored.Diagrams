@@ -70,3 +70,9 @@ public record GroupAddedToLayerEvent(ILayer Model, IGroup AddedGroup) : LayerEve
 /// <param name="Model">The <see cref="ILayer"/> the group was removed from.</param>
 /// <param name="RemovedGroup">The <see cref="IGroup"/> that was removed.</param>
 public record GroupRemovedFromLayerEvent(ILayer Model, IGroup RemovedGroup) : LayerEvent(Model);
+
+/// <summary>
+///  Event triggered when the ZIndex of a Layer changes.
+/// </summary>
+/// <param name="Model">The <see cref="ILayer"/> whose ZIndex was changed.</param>
+public record LayerZIndexChanged(ILayer Model) : LayerEvent(Model);

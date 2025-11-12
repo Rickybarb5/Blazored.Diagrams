@@ -9,6 +9,7 @@ namespace Blazor.Flows.Nodes;
 /// </summary>
 public interface INode :
     IId,
+    IDepth,
     IVisible,
     ISelectable,
     IPortContainer,
@@ -61,6 +62,12 @@ public interface INode :
     /// </summary>
     [JsonIgnore]
     public ITypedEvent<PortRemovedFromNodeEvent> OnPortRemovedFromNode { get; init; }
+    
+    /// <summary>
+    /// Event triggered when the <see cref="INode.ZIndex"/> changes.
+    /// </summary>
+    [JsonIgnore]
+    ITypedEvent<NodeZIndexChanged> OnZIndexChanged { get; init; }
 
     /// <summary>
     ///     Sets the X and Y coordinates on the screen.

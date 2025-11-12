@@ -92,6 +92,17 @@
     ]
   },
   {
+    "Name": "LayerZIndexChanged",
+    "Summary": "Event triggered when the ZIndex of a Layer changes.",
+    "Parameters": [
+      {
+        "Name": "Model",
+        "TypeName": "ILayer",
+        "Documentation": "The <see cref=\"T:Blazor.Flows.Layers.ILayer\" /> whose ZIndex was changed."
+      }
+    ]
+  },
+  {
     "Name": "NodeAddedToLayerEvent",
     "Summary": "Event triggered when a node is added to a layer's collection.",
     "Parameters": [

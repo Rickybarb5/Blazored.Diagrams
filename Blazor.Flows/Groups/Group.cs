@@ -24,6 +24,7 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
     private int _positionX;
     private int _positionY;
     private int _width;
+    private int _zIndex;
 
     /// <summary>
     ///     Initializes a new <see cref="Group"/>
@@ -292,5 +293,20 @@ public partial class Group : IGroup, IHasComponent<DefaultGroupComponent>
     protected void AddGroupInternal(IGroup group)
     {
         Groups.AddInternal(group);
+    }
+
+    
+    /// <inheritdoc />
+    public int ZIndex
+    {
+        get => _zIndex;
+        set
+        {
+            if (_zIndex != value)
+            {
+                _zIndex = value;
+                OnZIndexChanged.Publish(new (this));
+            }
+        } 
     }
 }

@@ -61,10 +61,13 @@ public partial class Port
     /// <inheritdoc />
     [JsonIgnore]
     public ITypedEvent<LinkAddedEvent> OnLinkAdded { get; init; } = new TypedEvent<LinkAddedEvent>();
-
-
+    
     /// <inheritdoc />
     [JsonIgnore]
     public ITypedEvent<PortSelectionChangedEvent> OnSelectionChanged { get; init; } =
         new TypedEvent<PortSelectionChangedEvent>();
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ITypedEvent<PortZIndexChanged> OnZIndexChanged { get; init; } = new TypedEvent<PortZIndexChanged>();
 }

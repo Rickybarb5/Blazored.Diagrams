@@ -135,3 +135,10 @@ public record LinkDoubleClickedEvent(ILink Model, MouseEventArgs Args) : ModelIn
 /// </summary>
 /// <param name="Model">The <see cref="ILink"/> that requested the redraw.</param>
 public record LinkRedrawEvent(ILink Model) : LinkEvent(Model);
+
+
+/// <summary>
+/// Event triggered when <see cref="ILink.ZIndex"/> changes;
+/// </summary>
+/// <param name="Model">The <see cref="ILink"/> that triggered the event.</param>
+public record LinkZIndexChangedEvent(ILink Model): LinkEvent(Model);

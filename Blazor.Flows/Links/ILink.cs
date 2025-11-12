@@ -11,6 +11,7 @@ namespace Blazor.Flows.Links;
 /// </summary>
 public interface ILink : IId,
     ISelectable,
+    IDepth,
     IVisible,
     ISize,
     IDisposable
@@ -54,30 +55,42 @@ public interface ILink : IId,
     /// <summary>
     /// Event triggered when the link container size changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkSizeChangedEvent> OnSizeChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the target port is set.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkTargetPortChangedEvent> OnTargetPortChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the source port is set.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkSourcePortChangedEvent> OnSourcePortChanged { get; init; }
 
     /// <summary>
     ///     Event triggered when the target position of the link changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkTargetPositionChangedEvent> OnTargetPositionChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the <see cref="ISelectable.IsSelected"/> flag changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkSelectionChangedEvent> OnSelectionChanged { get; init; }
 
     /// <summary>
     /// Event triggered when the <see cref="IVisible.IsVisible"/> flag changes.
     /// </summary>
+    [JsonIgnore]
     ITypedEvent<LinkVisibilityChangedEvent> OnVisibilityChanged { get; init; }
+    
+    /// <summary>
+    /// Event triggered when the <see cref="ILink.ZIndex"/> changes.
+    /// </summary>
+    [JsonIgnore]
+    ITypedEvent<LinkZIndexChangedEvent> OnZIndexChanged { get; init; }
 }

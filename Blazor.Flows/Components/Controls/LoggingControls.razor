@@ -1,5 +1,3 @@
-@using Blazor.Flows.Options.Behaviours
-@using Blazor.Flows.Services.Diagrams
 @if (IsVisible)
 {
     <h6>Logging</h6>
@@ -24,15 +22,4 @@
     </div>
 
     <hr /> 
-}
-@code {
-
-    private LoggingBehaviourOptions Options => DiagramService.Behaviours.GetBehaviourOptions<LoggingBehaviourOptions>();
-
-    [CascadingParameter] private IDiagramService DiagramService { get; set; } = null!;
-    /// <summary>
-    /// Shows/Hides the control
-    /// </summary>
-    [Parameter]
-    public bool IsVisible { get; set; }
 }

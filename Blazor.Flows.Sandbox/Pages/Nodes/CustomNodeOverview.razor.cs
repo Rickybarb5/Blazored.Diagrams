@@ -43,7 +43,7 @@ public partial class CustomNodeOverview
     {
         _nodeCount++;
         var node = new MyCustomNode { Name = $"Node #{_nodeCount}" };
-        node.SetPosition(100 + (_nodeCount % 5) * 50, 100 + (_nodeCount / 5) * 50);
+        node.SetPosition(100 + _nodeCount % 5 * 50, 100 + _nodeCount / 5 * 50);
 
         Service.AddNode(node);
     }
