@@ -14,8 +14,9 @@ permissions:
   id-token: write
 
 jobs:
-  test:
-    name: Run Tests
+  # 1. The initial job: Restores dependencies, builds the solution once, and uploads the artifacts.
+  build:
+    name: Restore, Build, and Upload Artifacts
     runs-on: ubuntu-latest
     
     steps:
@@ -28,44 +29,81 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
+        # This is now the only required restore step
         run: dotnet restore
 
       - name: Build solution
-        run: dotnet build --no-restore --configuration Release
+        # Build necessary projects once
+        run: dotnet build Blazor.Flows.sln --no-restore --configuration Release
 
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: solution-build-output
+          # Package all necessary outputs for testing, publishing, and deploying
+          path: |
+            Blazor.Flows/bin/Release/
+            Blazor.Flows.Test/bin/Release/
+            Blazor.Flows.Sandbox/bin/Release/
+
+  # 2. Test job: Depends on the build, downloads the artifact, and runs tests.
+  test:
+    name: Run Tests
+    needs: build # Wait for the single build to complete
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: solution-build-output
+  
+      - name: Setup .NET (Needed for the dotnet CLI)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+  
       - name: Run tests
+        # Use --no-build since assemblies are already present in the downloaded artifact
         run: dotnet test Blazor.Flows.Test/Blazor.Flows.Test.csproj --no-build --configuration Release --verbosity normal
-
+        
+  # 3. Publish NuGet job: Runs in parallel with the deploy job if tests pass.
   build-and-publish-nuget:
     name: Build and Publish NuGet Package
-    needs: test
+    needs: test # Only run if tests pass
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: solution-build-output
+  
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build RCL
-        run: dotnet build Blazor.Flows/Blazor.Flows.csproj --configuration Release --no-restore
-
+  
       - name: Pack NuGet package (use version from .csproj)
+        # Using --no-build relies on the assemblies being present from the 'build' job
         run: dotnet pack Blazor.Flows/Blazor.Flows.csproj --configuration Release --no-build --output ./artifacts
-
+      
       # 🧩 Publish to GitHub Packages
       - name: Publish to GitHub Packages
-        run: dotnet nuget push ./artifacts/*.nupkg \
-          --api-key ${{ secrets.GITHUB_TOKEN }} \
-          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-          --skip-duplicate
-
+        run: |
+          # 1. Register the GitHub Packages feed as a source for authentication
+          dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
+            --name "GitHubPackages" \
+            --username ${{ github.repository_owner }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text
+          
+          # 2. Push the package to the named source
+          dotnet nuget push ./artifacts/*.nupkg \
+            --source "GitHubPackages" \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate
+      
       # 🚀 Publish to NuGet.org
       - name: Publish to NuGet.org
         run: dotnet nuget push ./artifacts/*.nupkg \
@@ -74,10 +112,10 @@ jobs:
           --skip-duplicate
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-
+  # 4. Deploy job: Runs in parallel with the NuGet job if tests pass.
   deploy-github-pages:
     name: Deploy Sandbox to GitHub Pages
-    needs: test
+    needs: test # Only run if tests pass
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
@@ -86,53 +124,54 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: solution-build-output
+  
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
+  
       - name: Publish Blazor WASM
+        # This step re-runs the publish command which is specific to Blazor WASM output structure
         run: dotnet publish Blazor.Flows.Sandbox/Blazor.Flows.Sandbox.csproj -c Release -o publish --nologo -p:GHPages=true
-
+  
       - name: Update base href and all paths
         working-directory: publish/wwwroot
         run: |
-          # Update base href
-          find . -name "index.html" -exec sed -i 's|base href="/"|base href="/Blazor.Flows/"|g' {} \;
+          REPO_NAME=$(basename ${{ github.repository }})
+          # Update base href to handle GitHub Pages subfolder hosting
+          find . -name "index.html" -exec sed -i "s|base href=\"/\"|base href=\"/${REPO_NAME}/\"|g" {} \;
           # Also check for variations
-          find . -name "index.html" -exec sed -i 's|<base href="/" />|<base href="/Blazor.Flows/" />|g' {} \;
-          find . -name "index.html" -exec sed -i "s|<base href='/' />|<base href='/Blazor.Flows/' />|g" {} \;
-
+          find . -name "index.html" -exec sed -i "s|<base href=\"/\" />|<base href=\"/${REPO_NAME}/\" />|g" {} \;
+          find . -name "index.html" -exec sed -i "s|<base href='/' />|<base href='/${REPO_NAME}/' />|g" {} \;
+  
       - name: Copy index.html to 404.html
         run: cp publish/wwwroot/index.html publish/wwwroot/404.html
-
+  
       - name: Add .nojekyll file
         run: touch publish/wwwroot/.nojekyll
-
+  
       - name: Setup Pages
         uses: actions/configure-pages@v4
-
+  
       - name: Determine upload path
         id: upload_path
         working-directory: publish
         run: |
           if [ -d "wwwroot" ]; then
-            echo "path=publish/wwwroot" >> $GITHUB_OUTPUT
+            echo "path=wwwroot" >> $GITHUB_OUTPUT
           else
-            echo "path=publish" >> $GITHUB_OUTPUT
+            echo "path=." >> $GITHUB_OUTPUT
           fi
-
+  
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ steps.upload_path.outputs.path }}
-
+          path: publish/${{ steps.upload_path.outputs.path }}
+  
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
