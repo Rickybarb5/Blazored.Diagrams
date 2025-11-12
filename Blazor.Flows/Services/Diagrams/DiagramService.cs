@@ -64,6 +64,7 @@ public partial class DiagramService : IDiagramService
 
     private void InitializeBehaviours()
     {
+        Behaviours.RegisterBehaviour(new DefaultCenteringBehaviour(this));
         Behaviours.RegisterBehaviour(new DefaultGroupBehaviour(this));
         Behaviours.RegisterBehaviour(new DefaultLayerBehaviour(this));
         Behaviours.RegisterBehaviour(new DefaultLinkBehaviour(this));
@@ -77,7 +78,6 @@ public partial class DiagramService : IDiagramService
         Behaviours.RegisterBehaviour(new ZoomBehavior(this));
         Behaviours.RegisterBehaviour(new SelectBehaviour(this));
         Behaviours.RegisterBehaviour(new EventLoggingBehavior(this));
-        Behaviours.RegisterBehaviour(new DefaultCenteringBehaviour(this));
         Behaviours.RegisterBehaviour(new ZIndexBehaviour(this));
     }
 
@@ -85,6 +85,7 @@ public partial class DiagramService : IDiagramService
     {
         Diagram.Options.BehaviourOptions =
         [
+            new DefaultCenteringBehaviourOptions(),
             new DefaultGroupBehaviourOptions(),
             new DefaultLayerBehaviourOptions(),
             new DefaultLinkBehaviourOptions(),
@@ -98,7 +99,6 @@ public partial class DiagramService : IDiagramService
             new SelectBehaviourOptions(),
             new ZoomBehaviourOptions(),
             new LoggingBehaviourOptions(),
-            new DefaultCenteringBehaviourOptions(),
             new ZIndexBehaviourOptions(),
         ];
     }

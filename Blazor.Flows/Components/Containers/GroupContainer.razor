@@ -62,71 +62,9 @@
             _subscriptions =
             [
                 DiagramService.Events.SubscribeWhere<GroupRedrawEvent>(p => p.Model.Id == Group.Id, Redraw),
-                DiagramService.Events.SubscribeWhere<NodeSizeChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllNodes.Contains(p.Model)), Resize),
-                DiagramService.Events.SubscribeWhere<NodePositionChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllNodes.Contains(p.Model)), Resize),
-                DiagramService.Events.SubscribeWhere<NodeAddedToGroupEvent>(p => p.Model.Id == Group.Id, Resize),
-                DiagramService.Events.SubscribeWhere<NodeRemovedFromGroupEvent>(p => p.Model.Id == Group.Id, Resize),
-
-                DiagramService.Events.SubscribeWhere<GroupAddedToGroupEvent>(p => p.ParentModel.Id == Group.Id, Resize),
-                DiagramService.Events.SubscribeWhere<GroupRemovedFromGroupEvent>(p => p.ParentModel.Id == Group.Id, Resize),
-                DiagramService.Events.SubscribeWhere<GroupPaddingChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllGroups.Contains(p.Model)), Resize),
-                DiagramService.Events.SubscribeWhere<GroupPaddingChangedEvent>(p => p.Model.Id == Group.Id, Resize),
-                DiagramService.Events.SubscribeWhere<GroupPositionChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllGroups.Contains(p.Model)), Resize),
-                DiagramService.Events.SubscribeWhere<GroupSizeChangedEvent>(p => DiagramService.Diagram.AllGroups.Any(g => g.Id == Group.Id && g.AllGroups.Contains(p.Model)), Resize),
             ];
         }
 
         return base.OnAfterRenderAsync(firstRender);
-    }
-
-    private void Resize(IEvent ev)
-    {
-        ChangeGroupSizeAndPosition(Group);
-    }
-
-    private void ChangeGroupSizeAndPosition(IGroup group)
-    {
-        if (group.AllNodes.Count == 0 && group.AllGroups.Count == 0) return;
-
-        var minX = int.MaxValue;
-        var minY = int.MaxValue;
-        var maxX = int.MinValue;
-        var maxY = int.MinValue;
-        
-        // Calculate bounding box for nodes
-        // (X, Y) is the top-left corner
-        foreach (var node in group.AllNodes)
-        {
-            minX = Math.Min(minX, node.PositionX);                     // Smallest X (Left edge)
-            minY = Math.Min(minY, node.PositionY);                     // Smallest Y (Top edge)
-            maxX = Math.Max(maxX, node.PositionX + node.Width);        // Largest X (Right edge)
-            maxY = Math.Max(maxY, node.PositionY + node.Height);       // Largest Y (Bottom edge)
-        }
-
-        // Calculate bounding box for nested groups
-        // (X, Y) is the top-left corner
-        foreach (var nestedGroup in group.AllGroups)
-        {
-            minX = Math.Min(minX, nestedGroup.PositionX);                  // Smallest X (Left edge)
-            minY = Math.Min(minY, nestedGroup.PositionY);                  // Smallest Y (Top edge)
-            maxX = Math.Max(maxX, nestedGroup.PositionX + nestedGroup.Width);  // Largest X (Right edge)
-            maxY = Math.Max(maxY, nestedGroup.PositionY + nestedGroup.Height); // Largest Y (Bottom edge)
-        }
-
-        // Update group position and size
-        // Position: Top-Left of the BBox, adjusted by Padding
-        var newPositionX = minX - group.Padding;
-        var newPositionY = minY - group.Padding;
-
-        // Size: The distance between Max and Min, adjusted by Padding
-        var newWidth = maxX - minX + group.Padding * 2;
-        var newHeight = maxY - minY + group.Padding * 2;
-
-        group.SetPositionInternal(newPositionX, newPositionY);
-        group.SetSizeInternal(newWidth, newHeight);
-        
-        // Redraw ports manually, as we are not triggering group events
-        group.Ports.ForEach(p => DiagramService.Events.Publish(new PortRedrawEvent(p)));
-        StateHasChanged();
     }
 }

@@ -82,6 +82,5 @@ public class ZoomBehavior : BaseBehaviour
         }
 
         _diagramService.Diagram.Zoom = zoom;
-        _diagramService.Events.Publish(new DiagramRedrawEvent(_diagramService.Diagram));
     }
 }

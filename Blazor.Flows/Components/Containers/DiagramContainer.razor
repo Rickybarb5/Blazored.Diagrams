@@ -54,13 +54,13 @@
     /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
+    
     /// <summary>
     /// Diagram instance to show in the UI.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public required IDiagramService DiagramService { get; set; }
+    public required IDiagramService DiagramService { get; init; }
 
     /// <summary>
     /// ID of the diagram container
@@ -85,7 +85,6 @@
             DiagramService.Diagram.SetPosition((int)rect.Left, (int)rect.Top);
             DiagramService.Diagram.SetSize((int)rect.Width, (int)rect.Height);
             await Js.HandleWheelEvent(ContainerId, DotNetObjectReference.Create(this));
-            DiagramService.Events.Publish(new DiagramRedrawEvent(DiagramService.Diagram));
             _subscriptions =
             [
                 DiagramService.Events.SubscribeTo<DiagramRedrawEvent>(Redraw),
@@ -129,6 +128,7 @@
     public void OnZoom(WheelEventArgs args)
     {
         DiagramService.Events.Publish(new DiagramWheelEvent(DiagramService.Diagram, args));
+        StateHasChanged();
     }
 
     private void Redraw(DiagramRedrawEvent obj)
