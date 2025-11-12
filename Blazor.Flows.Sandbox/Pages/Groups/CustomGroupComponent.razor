@@ -1,27 +1,40 @@
-<div class="custom-group @(Group.IsSelected ? "selected" : "")" >
-    <div class="group-title">
-        @Group.Title
+<div class="custom-group @(Group.IsSelected ? "selected" : "")">
+    <div class="group-header">
+        <div class="group-title">
+            @Group.Title
+        </div>
+    </div>
+
+    <div class="group-content">
+    </div>
+
+    <div class="group-footer">
+        <div class="group-title">
+            This is a footer!
+        </div>
     </div>
 </div>
 
 
 @code {
-    [Parameter]
-    public required CustomGroup Group { get; set; }
+    [Parameter] public required CustomGroup Group { get; set; }
 }
 
 <style>
     .custom-group {
-        width: 100%; /* Occupy the whole container */
-        height: 100%;/* Occupy the whole container */
-        border: 2px solid #1e88e5; 
-        background-color: #e3f2fd; 
+        width: 100%;
+        height: 100%;
+        border: 2px solid #1e88e5;
+        background-color: #e3f2fd;
         border-radius: 8px;
         transition: box-shadow 0.15s;
         min-width: 150px;
         min-height: 150px;
         padding: 5px;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .custom-group.selected {
@@ -30,9 +43,27 @@
 
     .group-title {
         font-weight: bold;
-        color: #1565c0; /* Darker blue text */
-        margin-bottom: 5px;
+        color: #1565c0;
         text-align: center;
+        flex-shrink: 0;
+    }
+
+    .group-content {
+        flex-grow: 1;
+    }
+
+    .group-header {
+        font-size: small;
+        color: #64b5f6;
+        text-align: center;
+        flex-shrink: 0;
         border-bottom: 1px dashed #90caf9;
+    }
+    .group-footer {
+        font-size: small;
+        color: #64b5f6;
+        text-align: center;
+        border-top: 1px dashed #90caf9;
+        flex-shrink: 0;
     }
 </style>

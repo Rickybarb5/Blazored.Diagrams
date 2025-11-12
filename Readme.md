@@ -75,6 +75,8 @@ Follow these simple steps to integrate **Blazor.Flows** into your Blazor project
 3. **Register Services**
     In your `Program.cs` or `Startup.cs`, register the required services:
     ```csharp
+   using Blazor.Flows;
+   
     builder.Services.AddBlazorFlows();
     ```
 
@@ -99,9 +101,9 @@ The library is designed with a set of core features to support professional diag
 
 ## Roadmap
 
-- Add Z-index to diagram models
-- Move to front/back feature
-- Use element positioning for custom port position.
+- [x] Add Z-index to diagram models (v0.0.2)
+- [ ] Move to front/back feature
+- [ ] Use element positioning for custom port position.
 
 See the [open issues](https://github.com/Rickybarb5/Blazor.Flows/issues) for a full list of proposed features (and known issues).
 

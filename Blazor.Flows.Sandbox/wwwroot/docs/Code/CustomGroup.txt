@@ -9,6 +9,6 @@ public class CustomGroup : Group, IHasComponent<CustomGroupComponent>
 
     public CustomGroup()
     {
-        Padding = 30;
+        Padding = 35;
     }
 }
